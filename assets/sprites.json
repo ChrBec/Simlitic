@@ -1,0 +1,620 @@
+{
+ "buildings/storage": {
+  "anchor": [
+   228,
+   240
+  ]
+ },
+ "buildings/tent": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/hut": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/cottage": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/longhouse": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/farmstead": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/fireplace": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/woodcutter": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/berrygatherer": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/nutgatherer": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/trapper": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/hunter": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/tanner": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/shaman": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/cavepaint": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/flintquarry": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/scout": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/fisher": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/toolmaker": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/claypit": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/potter": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/winery": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/dance": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/graingatherer": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/porridgekitchen": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/flaxgarden": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/weaver": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/herbalist": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/beekeeper": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/meadery": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/coppermine": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/smelter": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/jeweler": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/stonecircle": {
+  "anchor": [
+   228,
+   240
+  ]
+ },
+ "buildings/wheatfield": {
+  "anchor": [
+   228,
+   240
+  ]
+ },
+ "buildings/mill": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/bakery": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/sheepfarm": {
+  "anchor": [
+   228,
+   240
+  ]
+ },
+ "buildings/tailor": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/cattlefarm": {
+  "anchor": [
+   228,
+   240
+  ]
+ },
+ "buildings/dairy": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/tinmine": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/bronzesmith": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/brewery": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/wheelwright": {
+  "anchor": [
+   164,
+   240
+  ]
+ },
+ "buildings/square": {
+  "anchor": [
+   228,
+   240
+  ]
+ },
+ "nature/tree_0": {
+  "anchor": [
+   48,
+   116
+  ]
+ },
+ "nature/tree_1": {
+  "anchor": [
+   48,
+   116
+  ]
+ },
+ "nature/tree_2": {
+  "anchor": [
+   48,
+   116
+  ]
+ },
+ "nature/tree_3": {
+  "anchor": [
+   48,
+   116
+  ]
+ },
+ "nature/tree_4": {
+  "anchor": [
+   48,
+   116
+  ]
+ },
+ "nature/tree_5": {
+  "anchor": [
+   48,
+   116
+  ]
+ },
+ "nature/tree_6": {
+  "anchor": [
+   48,
+   116
+  ]
+ },
+ "nature/tree_7": {
+  "anchor": [
+   48,
+   116
+  ]
+ },
+ "nature/tree_8": {
+  "anchor": [
+   48,
+   116
+  ]
+ },
+ "nature/bush_0": {
+  "anchor": [
+   30,
+   38
+  ]
+ },
+ "nature/bush_1": {
+  "anchor": [
+   30,
+   38
+  ]
+ },
+ "nature/bush_2": {
+  "anchor": [
+   30,
+   38
+  ]
+ },
+ "nature/bush_3": {
+  "anchor": [
+   30,
+   38
+  ]
+ },
+ "nature/rock_0": {
+  "anchor": [
+   28,
+   32
+  ]
+ },
+ "nature/rock_1": {
+  "anchor": [
+   28,
+   32
+  ]
+ },
+ "nature/rock_2": {
+  "anchor": [
+   28,
+   32
+  ]
+ },
+ "nature/deposit_flint": {
+  "anchor": [
+   70,
+   44
+  ]
+ },
+ "nature/deposit_copper": {
+  "anchor": [
+   70,
+   44
+  ]
+ },
+ "nature/deposit_tin": {
+  "anchor": [
+   70,
+   44
+  ]
+ },
+ "nature/peak_0_0": {
+  "anchor": [
+   80,
+   84
+  ]
+ },
+ "nature/peak_0_25": {
+  "anchor": [
+   98,
+   139
+  ]
+ },
+ "nature/peak_0_50": {
+  "anchor": [
+   115,
+   194
+  ]
+ },
+ "nature/peak_0_75": {
+  "anchor": [
+   133,
+   249
+  ]
+ },
+ "nature/peak_0_100": {
+  "anchor": [
+   150,
+   304
+  ]
+ },
+ "nature/peak_1_0": {
+  "anchor": [
+   80,
+   84
+  ]
+ },
+ "nature/peak_1_25": {
+  "anchor": [
+   98,
+   139
+  ]
+ },
+ "nature/peak_1_50": {
+  "anchor": [
+   115,
+   194
+  ]
+ },
+ "nature/peak_1_75": {
+  "anchor": [
+   133,
+   249
+  ]
+ },
+ "nature/peak_1_100": {
+  "anchor": [
+   150,
+   304
+  ]
+ },
+ "nature/peak_2_0": {
+  "anchor": [
+   80,
+   84
+  ]
+ },
+ "nature/peak_2_25": {
+  "anchor": [
+   98,
+   139
+  ]
+ },
+ "nature/peak_2_50": {
+  "anchor": [
+   115,
+   194
+  ]
+ },
+ "nature/peak_2_75": {
+  "anchor": [
+   133,
+   249
+  ]
+ },
+ "nature/peak_2_100": {
+  "anchor": [
+   150,
+   304
+  ]
+ },
+ "nature/peak_3_0": {
+  "anchor": [
+   80,
+   84
+  ]
+ },
+ "nature/peak_3_25": {
+  "anchor": [
+   98,
+   139
+  ]
+ },
+ "nature/peak_3_50": {
+  "anchor": [
+   115,
+   194
+  ]
+ },
+ "nature/peak_3_75": {
+  "anchor": [
+   133,
+   249
+  ]
+ },
+ "nature/peak_3_100": {
+  "anchor": [
+   150,
+   304
+  ]
+ },
+ "nature/peak_4_0": {
+  "anchor": [
+   80,
+   84
+  ]
+ },
+ "nature/peak_4_25": {
+  "anchor": [
+   98,
+   139
+  ]
+ },
+ "nature/peak_4_50": {
+  "anchor": [
+   115,
+   194
+  ]
+ },
+ "nature/peak_4_75": {
+  "anchor": [
+   133,
+   249
+  ]
+ },
+ "nature/peak_4_100": {
+  "anchor": [
+   150,
+   304
+  ]
+ },
+ "nature/peak_5_0": {
+  "anchor": [
+   80,
+   84
+  ]
+ },
+ "nature/peak_5_25": {
+  "anchor": [
+   98,
+   139
+  ]
+ },
+ "nature/peak_5_50": {
+  "anchor": [
+   115,
+   194
+  ]
+ },
+ "nature/peak_5_75": {
+  "anchor": [
+   133,
+   249
+  ]
+ },
+ "nature/peak_5_100": {
+  "anchor": [
+   150,
+   304
+  ]
+ },
+ "people/porter": {
+  "anchor": [
+   14,
+   40
+  ]
+ },
+ "people/scout": {
+  "anchor": [
+   14,
+   40
+  ]
+ },
+ "people/gatherers": {
+  "anchor": [
+   14,
+   40
+  ]
+ },
+ "people/hunters": {
+  "anchor": [
+   14,
+   40
+  ]
+ },
+ "people/settlers": {
+  "anchor": [
+   14,
+   40
+  ]
+ },
+ "people/artisans": {
+  "anchor": [
+   14,
+   40
+  ]
+ },
+ "people/farmers": {
+  "anchor": [
+   14,
+   40
+  ]
+ },
+ "misc/flag_rival": {
+  "anchor": [
+   16,
+   92
+  ]
+ }
+}

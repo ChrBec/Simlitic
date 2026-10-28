@@ -1,0 +1,11 @@
+[
+  { "id": "berries",   "name": { "de": "Beerensträucher", "en": "Berry Bushes" },  "color": "#7a2348" },
+  { "id": "hazel",     "name": { "de": "Haselsträucher",  "en": "Hazel" },         "color": "#a8743a" },
+  { "id": "deer",      "name": { "de": "Rehwild",         "en": "Deer" },          "color": "#9a6a3a" },
+  { "id": "fish",      "name": { "de": "Fischgründe",     "en": "Fishing Grounds" },"color": "#5f8ea0" },
+  { "id": "clay",      "name": { "de": "Lehmboden",       "en": "Clay Soil" },     "color": "#b0683c" },
+  { "id": "wildgrain", "name": { "de": "Wildgetreide",    "en": "Wild Grain" },    "color": "#c9a24a" },
+  { "id": "flax",      "name": { "de": "Wilder Flachs",   "en": "Wild Flax" },     "color": "#8aa070" },
+  { "id": "herbs",     "name": { "de": "Heilkräuter",     "en": "Herbs" },         "color": "#4f7a3a" },
+  { "id": "honey",     "name": { "de": "Wildbienen",      "en": "Wild Bees" },     "color": "#e0a12c" }
+]

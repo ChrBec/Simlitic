@@ -1,0 +1,5 @@
+[
+  { "id": "aruk", "name": { "de": "Aruk der Graue", "en": "Aruk the Grey" }, "color": "#6a7a8a",
+    "greeting": { "de": "Ihr seid weit gegangen, Fremde. Die Berge gehören niemandem – aber Graufels gehört uns.", "en": "You have walked far, strangers. The mountains belong to no one – but Greyrock is ours." },
+    "sells": ["flint", "fish", "meat", "pottery"], "buys": ["nuts", "furs", "wine", "jewelry"] }
+]

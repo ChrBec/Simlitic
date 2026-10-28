@@ -1,0 +1,70 @@
+[
+  {
+    "id": "gatherers", "name": { "de": "Sammler", "en": "Gatherers" }, "age": { "de": "Altsteinzeit", "en": "Paleolithic" },
+    "house": "tent", "baseResidents": 1, "color": "#9a7a4a",
+    "unlock": null, "upgradeCost": {},
+    "intro": { "de": "Ein kleiner Stamm, der von dem lebt, was das Tal schenkt. Beeren, Feuer und Zusammenhalt.", "en": "A small tribe living off what the valley gives: berries, fire and kinship." },
+    "needs": [
+      { "id": "berries",   "kind": "basic",  "consumption": 0.075, "residents": 2, "income": 0.9 },
+      { "id": "fireplace", "kind": "service",                       "residents": 1, "income": 0.4 },
+      { "id": "nuts",      "kind": "luxury", "consumption": 0.04,                     "income": 1.0 }
+    ]
+  },
+  {
+    "id": "hunters", "name": { "de": "Jäger", "en": "Hunters" }, "age": { "de": "Mittelsteinzeit", "en": "Mesolithic" },
+    "house": "hut", "baseResidents": 2, "color": "#8a4a2a",
+    "unlock": { "tier": "gatherers", "population": 40 }, "upgradeCost": { "wood": 2, "hides": 1 },
+    "intro": { "de": "Bogen und Mikrolithen verändern alles. Die Jäger folgen dem Wild – und brauchen Felle gegen die Kälte.", "en": "Bows and microliths change everything. Hunters follow the game and need furs against the cold." },
+    "needs": [
+      { "id": "meat",      "kind": "basic",  "consumption": 0.07, "residents": 2, "income": 1.2 },
+      { "id": "furs",      "kind": "basic",  "consumption": 0.04, "residents": 2, "income": 1.2 },
+      { "id": "shaman",    "kind": "service",                      "residents": 2, "income": 0.6 },
+      { "id": "nuts",      "kind": "luxury", "consumption": 0.04,                  "income": 1.0 },
+      { "id": "cavepaint", "kind": "service-luxury",                              "income": 1.2 }
+    ]
+  },
+  {
+    "id": "settlers", "name": { "de": "Siedler", "en": "Settlers" }, "age": { "de": "Frühes Neolithikum", "en": "Early Neolithic" },
+    "house": "cottage", "baseResidents": 4, "color": "#a0603a",
+    "unlock": { "tier": "hunters", "population": 60 }, "upgradeCost": { "wood": 2, "tools": 1 },
+    "intro": { "de": "Man bleibt. Lehmhäuser, Töpferei und geschliffene Beile – das Tal wird zur Heimat.", "en": "People stay. Clay houses, pottery and polished axes – the valley becomes home." },
+    "needs": [
+      { "id": "fish",      "kind": "basic",  "consumption": 0.07, "residents": 3, "income": 1.4 },
+      { "id": "tools",     "kind": "basic",  "consumption": 0.03, "residents": 2, "income": 1.6 },
+      { "id": "pottery",   "kind": "basic",  "consumption": 0.03, "residents": 2, "income": 1.6 },
+      { "id": "shaman",    "kind": "service",                      "residents": 1, "income": 0.5 },
+      { "id": "wine",      "kind": "luxury", "consumption": 0.04,                  "income": 2.2 },
+      { "id": "dance",     "kind": "service-luxury",                              "income": 1.4 }
+    ]
+  },
+  {
+    "id": "artisans", "name": { "de": "Handwerker", "en": "Artisans" }, "age": { "de": "Neolithikum", "en": "Neolithic" },
+    "house": "longhouse", "baseResidents": 6, "color": "#6a6a3a",
+    "unlock": { "tier": "settlers", "population": 80 }, "upgradeCost": { "wood": 3, "pottery": 2, "tools": 2 },
+    "intro": { "de": "Weber, Imker, Kupferschmelzer: Spezialisten entstehen, und mit ihnen Wohlstand und Vorrat.", "en": "Weavers, beekeepers, copper smelters: specialists arise, and with them wealth and stores." },
+    "needs": [
+      { "id": "porridge",   "kind": "basic",  "consumption": 0.07, "residents": 4, "income": 1.8 },
+      { "id": "linen",      "kind": "basic",  "consumption": 0.035,"residents": 3, "income": 2.0 },
+      { "id": "herbs",      "kind": "basic",  "consumption": 0.03, "residents": 3, "income": 1.8 },
+      { "id": "dance",      "kind": "service",                     "residents": 2, "income": 0.8 },
+      { "id": "mead",       "kind": "luxury", "consumption": 0.035,                "income": 2.8 },
+      { "id": "jewelry",    "kind": "luxury", "consumption": 0.015,                "income": 3.2 },
+      { "id": "stonecircle","kind": "service-luxury",                             "income": 2.0 }
+    ]
+  },
+  {
+    "id": "farmers", "name": { "de": "Bauern", "en": "Farmers" }, "age": { "de": "Kupfer- und Bronzezeit", "en": "Copper & Bronze Age" },
+    "house": "farmstead", "baseResidents": 8, "color": "#7a6a2a",
+    "unlock": { "tier": "artisans", "population": 100 }, "upgradeCost": { "wood": 4, "copper": 2 },
+    "intro": { "de": "Die Neolithische Revolution ist vollbracht: Äcker, Herden, Pflug und Rad. Ein neues Zeitalter beginnt.", "en": "The Neolithic Revolution is complete: fields, herds, plough and wheel. A new age begins." },
+    "needs": [
+      { "id": "bread",       "kind": "basic",  "consumption": 0.07, "residents": 5, "income": 2.2 },
+      { "id": "woolcoat",    "kind": "basic",  "consumption": 0.03, "residents": 4, "income": 2.4 },
+      { "id": "cheese",      "kind": "basic",  "consumption": 0.04, "residents": 4, "income": 2.2 },
+      { "id": "bronzetools", "kind": "basic",  "consumption": 0.015,"residents": 3, "income": 2.6 },
+      { "id": "square",      "kind": "service",                     "residents": 2, "income": 1.0 },
+      { "id": "beer",        "kind": "luxury", "consumption": 0.035,                "income": 3.4 },
+      { "id": "cart",        "kind": "luxury", "consumption": 0.006,                "income": 4.0 }
+    ]
+  }
+]

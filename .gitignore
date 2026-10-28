@@ -1,0 +1,5 @@
+.godot/
+node_modules/
+build/
+*.translation
+export_credentials.cfg

@@ -1,0 +1,16 @@
+[
+  { "id": "main",    "name": { "de": "Tal der Ersten",     "en": "Valley of the First" }, "size": 1.35, "home": true,
+    "fertilities": ["berries", "hazel", "deer", "fish", "clay"], "deposits": [], "water": "lake" },
+  { "id": "flint",   "name": { "de": "Feuersteinschlucht", "en": "Flint Gorge" },         "size": 0.8,
+    "fertilities": ["deer", "herbs", "berries"], "deposits": ["flint", "flint", "flint"], "water": "stream" },
+  { "id": "bees",    "name": { "de": "Bienental",          "en": "Bee Valley" },          "size": 1.0,
+    "fertilities": ["honey", "wildgrain", "berries", "fish"], "deposits": ["copper", "copper"], "water": "lake" },
+  { "id": "flax",    "name": { "de": "Flachsaue",          "en": "Flax Meadow" },         "size": 1.0,
+    "fertilities": ["flax", "clay", "fish", "hazel"], "deposits": ["tin", "tin"], "water": "stream" },
+  { "id": "deer",    "name": { "de": "Hirschgrund",        "en": "Stag Hollow" },         "size": 0.9,
+    "fertilities": ["deer", "hazel", "herbs", "wildgrain"], "deposits": ["flint", "copper"], "water": "none" },
+  { "id": "mist",    "name": { "de": "Nebelkessel",        "en": "Mist Cauldron" },       "size": 0.85,
+    "fertilities": ["herbs", "honey", "flax"], "deposits": ["tin", "copper"], "water": "lake" },
+  { "id": "rival",   "name": { "de": "Graufels",           "en": "Greyrock" },            "size": 1.0, "rival": "aruk",
+    "fertilities": ["berries", "deer", "fish", "clay"], "deposits": ["flint"], "water": "lake" }
+]
