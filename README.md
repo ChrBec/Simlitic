@@ -1,28 +1,29 @@
 # SimLitic – Täler der Ersten
 
-Ein handgemaltes Aufbau- und Wirtschaftsspiel in der Steinzeit, inspiriert von Anno 1800: Statt Inseln besiedelst du Täler zwischen den Bergen, statt Schiffen ziehen Kundschafter und Träger über Bergpfade. Dein Stamm durchläuft die Neolithische Revolution – vom Sammler über Jäger, Siedler und Handwerker bis zum Bauern mit Feldern, Vieh und Rad.
+Ein stilisiertes 3D-Aufbau- und Wirtschaftsspiel in der Steinzeit, inspiriert von Anno 1800: Statt Inseln besiedelst du Täler zwischen den Bergen, statt Schiffen ziehen Karawanen über Pässe. Dein Stamm durchläuft die Neolithische Revolution so, wie sie wirklich ablief – erst sesshaft, dann Ackerbau, dann Keramik, Milch, Wolle, Rad und Kupfer, bis zur Bronze.
 
 Das vollständige Spielkonzept steht in [docs/GDD.md](docs/GDD.md).
 
-## Stand: Prototyp (Phase 1)
+## Stand: Kernspiel (Phase 2)
 
 Spielbar:
-- 3D-Bergwelt mit 7 Tälern zwischen echten Gipfeln, Seen, Wäldern, Fruchtbarkeiten und Lagerstätten; unerkundetes Land liegt im Nebel
-- Anno-artige Kamera: schwenken, zoomen (flacher beim Hineinzoomen), drehen; Licht, Schatten, Rauch und Feuer
-- 5 Bevölkerungsstufen mit Grund- und Luxusbedürfnissen, Aufstieg der Häuser, Einkommen in Muscheln
-- 45 Gebäude, Produktionsketten, Arbeitskräfte, Einzugsbereiche, Pfade bauen und abreißen
-- Kundschafter erkunden Bergpfade, Besiedlung weiterer Täler, Trägerrouten zwischen Tälern
-- Fahrender Händler und ein rivalisierender Stamm (Handel, Geschenke)
-- Ziele als Einführung, Hauptmenü, Neue Partie, Speichern/Laden, Pausemenü, Einstellungen (Grafik, Audio, Sprache DE/EN, Steuerung)
+- 3D-Bergwelt mit 12 Tälern (Haupttal plus zwei Ringe) und 21 Pässen; unerkundetes Land liegt im Nebel
+- 5 historisch begründete Stufen: Wildbeuter → Sesshafte Sammler (Natufien) → Erste Bauern → Dorfgemeinschaft → Kupferzeitliche Sippen
+- 42 Waren, 58 Gebäude, Ketten mit bis zu vier Stufen (z. B. Emmerfeld → Mühle → Backofen, Erz + Holzkohle → Schmelze → Kupferschmied)
+- Pässe mit Hindernissen (Geröllhang, Wildfluss, Schlucht, Gletscher), die man mit Steigen, Fähren, Seilbrücken und Steinmännern überwindet, plus Bohlenwege für Ochsenkarren
+- Karawanen als „Schiffe der Berge“: Trägertrupp, Eselkarawane, Ochsenkarren mit Routen, Ladeplätzen und Laden/Abladen je Halt
+- Jahreszeiten mit Winter: Schnee, Felder ruhen, Gletscherpässe gesperrt
+- Kettenplaner (wie viele Betriebe für 100 Bewohner, wo liegt die Fruchtbarkeit), Warenbilanz, 23 Ziele bis zur Bronze
+- Fahrender Händler, zwei rivalisierende Stämme (Handel, Geschenke), Hauptmenü, Speichern/Laden, Einstellungen (DE/EN)
 
-Noch nicht enthalten (siehe Roadmap im GDD): Multiplayer, Steam-Anbindung, Naturwunder, Religion, Jahreszeiten-Effekte, endgültige Grafiken und Musik.
+Noch nicht enthalten (siehe Roadmap im GDD): Multiplayer, Steam-Anbindung, Naturwunder, Religion, Vorfälle, endgültige Grafiken und Musik.
 
 ## Starten
 
 1. [Godot 4.4](https://godotengine.org/download) (Standard-Version, nicht .NET) installieren.
 2. Godot öffnen → *Importieren* → `project.godot` wählen → *Ausführen* (F5).
 
-Steuerung: WASD/Pfeile oder Rechtsklick ziehen (bzw. Linksklick auf freiem Boden) bewegt die Kamera, `Q`/`E` oder Mittelklick ziehen dreht sie, Mausrad zoomt, Linksklick wählt/baut, Rechtsklick bricht ab. `P` Pfad, `X` Abreißen, `1–9` Gebäude, `Tab` Stufe wechseln, `B` Bevölkerung, `M` Täler, `T` Handel, `H` zum Haupttal, Leertaste Pause, `F5` Schnellspeichern, `Esc` Menü.
+Steuerung: WASD/Pfeile oder Rechtsklick ziehen (bzw. Linksklick auf freiem Boden) bewegt die Kamera, `Q`/`E` oder Mittelklick ziehen dreht sie, Mausrad zoomt, Linksklick wählt/baut, Rechtsklick bricht ab. `P` Pfad, `X` Abreißen, `1–9` Gebäude, `Tab` Stufe wechseln, `B` Bevölkerung, `C` Produktionsketten, `M` Täler & Pässe, `K` Karawanen, `T` Handel, `H` zum Haupttal, Leertaste Pause, `F5` Schnellspeichern, `Esc` Menü.
 
 ## Tests
 
@@ -30,7 +31,9 @@ Steuerung: WASD/Pfeile oder Rechtsklick ziehen (bzw. Linksklick auf freiem Boden
 GODOT=/pfad/zu/godot tests/run.sh
 ```
 
-Die Tests laufen ohne Fenster und prüfen Kartenerzeugung, Determinismus (Grundlage für Multiplayer), Wachstum und Aufstieg, Bauregeln, Erkundung/Trägerrouten und Speichern/Laden.
+Die Tests laufen ohne Fenster und prüfen Kartenerzeugung, Determinismus (Grundlage für Multiplayer), Wachstum und Aufstieg, Bauregeln, Erkundung, Pass-Hindernisse, Karawanen, Winter, die Stimmigkeit aller Inhalte (jede Ware hat einen Erzeuger, jede Fruchtbarkeit ein Tal) und Speichern/Laden.
+
+Werkzeuge für Entwickler: `tools/mapdump.tscn` (Karte als PNG), `tools/balance.tscn` (Testspieler mit Wirtschaftsprotokoll), `tools/content/generate.py` (erzeugt `content/*.json`), `npm run bake:goods` (Waren-Symbole).
 
 Screenshot eines laufenden Spiels (braucht `xvfb-run`):
 
@@ -51,7 +54,7 @@ Für Steam fehlt noch die Anbindung über [GodotSteam](https://godotsteam.com/) 
 ## Projektaufbau
 
 ```
-content/       Spielinhalte als JSON (Güter, Gebäude, Stufen, Täler, Rivalen) – zweisprachig
+content/       Spielinhalte als JSON (Güter, Gebäude, Stufen, Täler, Pässe, Hindernisse, Karawanen, Rivalen) – zweisprachig
 assets/        Austauschbare 3D-Modelle (.glb), Symbole, UI-Skins, Schriften, Klänge
 scripts/sim/   Deterministische Simulation (ohne Grafik)
 scripts/view/  3D-Welt: Gelände, Modelle, Kamera, Shader

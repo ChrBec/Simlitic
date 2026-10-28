@@ -1,177 +1,1968 @@
 [
-  { "id": "storage", "name": { "de": "Lagerplatz", "en": "Storage Yard" }, "category": "infrastructure", "size": [3,3], "style": "storage", "accent": "#8a5a32",
-    "unlockTier": "gatherers", "cost": { "shells": 300, "wood": 20 }, "upkeep": 0,
-    "desc": { "de": "Herz eines Tals. Betriebe müssen über Pfade angebunden sein. In einem neuen Tal gründet er die Siedlung.", "en": "Heart of a valley. Workplaces must connect to it by paths. Founds a settlement in a new valley." } },
-  { "id": "path", "name": { "de": "Trampelpfad", "en": "Footpath" }, "category": "infrastructure", "size": [1,1], "style": "path", "accent": "#a88a5a",
-    "unlockTier": "gatherers", "cost": { "shells": 2 }, "upkeep": 0,
-    "desc": { "de": "Verbindet Hütten und Betriebe mit dem Lagerplatz.", "en": "Connects homes and workplaces to the storage yard." } },
-  { "id": "tent", "name": { "de": "Fellzelt", "en": "Hide Tent" }, "category": "residence", "size": [2,2], "style": "tent", "accent": "#b48a5c",
-    "unlockTier": "gatherers", "cost": { "wood": 1 }, "upkeep": 0, "tier": "gatherers",
-    "desc": { "de": "Wohnstatt der Sammler. Steigt zur Rindenhütte auf, wenn alle Grundbedürfnisse erfüllt sind.", "en": "Home of the gatherers. Upgrades to a bark hut when basic needs are met." } },
-  { "id": "hut", "name": { "de": "Rindenhütte", "en": "Bark Hut" }, "category": "residence", "size": [2,2], "style": "hut", "accent": "#7a5a3a",
-    "unlockTier": "hunters", "buildable": false, "cost": {}, "upkeep": 0, "tier": "hunters", "desc": { "de": "Wohnstatt der Jäger.", "en": "Home of the hunters." } },
-  { "id": "cottage", "name": { "de": "Lehmhaus", "en": "Wattle House" }, "category": "residence", "size": [2,2], "style": "cottage", "accent": "#c08a5a",
-    "unlockTier": "settlers", "buildable": false, "cost": {}, "upkeep": 0, "tier": "settlers", "desc": { "de": "Wohnstatt der Siedler.", "en": "Home of the settlers." } },
-  { "id": "longhouse", "name": { "de": "Langhaus", "en": "Longhouse" }, "category": "residence", "size": [2,2], "style": "longhouse", "accent": "#9a7a4a",
-    "unlockTier": "artisans", "buildable": false, "cost": {}, "upkeep": 0, "tier": "artisans", "desc": { "de": "Wohnstatt der Handwerker.", "en": "Home of the artisans." } },
-  { "id": "farmstead", "name": { "de": "Gehöft", "en": "Farmstead" }, "category": "residence", "size": [2,2], "style": "farmstead", "accent": "#8a6a3a",
-    "unlockTier": "farmers", "buildable": false, "cost": {}, "upkeep": 0, "tier": "farmers", "desc": { "de": "Wohnstatt der Bauern.", "en": "Home of the farmers." } },
-
-  { "id": "fireplace", "name": { "de": "Feuerstelle", "en": "Fire Pit" }, "category": "service", "size": [2,2], "style": "fire", "accent": "#e0702a",
-    "unlockTier": "gatherers", "cost": { "shells": 80, "wood": 4 }, "upkeep": 8, "service": { "id": "fireplace", "radius": 7 },
-    "desc": { "de": "Wärme, Geschichten und Gemeinschaft. Deckt das Bedürfnis 'Feuerstelle' im Umkreis.", "en": "Warmth, stories and community. Covers the fire pit need nearby." } },
-  { "id": "woodcutter", "name": { "de": "Holzfäller", "en": "Woodcutter" }, "category": "production", "size": [2,2], "style": "workshop", "accent": "#8a5a32",
-    "unlockTier": "gatherers", "cost": { "shells": 40 }, "upkeep": 5, "workforce": { "tier": "gatherers", "amount": 3 },
-    "cycle": 15, "outputs": { "wood": 1 }, "requires": { "nature": { "kind": "tree", "radius": 3, "min": 8 } },
-    "desc": { "de": "Fällt Bäume im Umkreis. Braucht Wald in der Nähe.", "en": "Fells trees nearby. Needs forest." } },
-  { "id": "berrygatherer", "name": { "de": "Beerensammler", "en": "Berry Gatherer" }, "category": "production", "size": [2,2], "style": "basket", "accent": "#7a2348",
-    "unlockTier": "gatherers", "cost": { "shells": 40 }, "upkeep": 5, "workforce": { "tier": "gatherers", "amount": 3 },
-    "cycle": 20, "outputs": { "berries": 1 }, "requires": { "fertility": "berries", "nature": { "kind": "bush", "radius": 3, "min": 4 } },
-    "desc": { "de": "Sammelt Beeren von Sträuchern im Umkreis.", "en": "Gathers berries from bushes nearby." } },
-  { "id": "nutgatherer", "name": { "de": "Nusssammler", "en": "Nut Gatherer" }, "category": "production", "size": [2,2], "style": "basket", "accent": "#a8743a",
-    "unlockTier": "gatherers", "cost": { "shells": 60 }, "upkeep": 6, "workforce": { "tier": "gatherers", "amount": 3 },
-    "cycle": 30, "outputs": { "nuts": 1 }, "requires": { "fertility": "hazel", "nature": { "kind": "tree", "radius": 3, "min": 6 } },
-    "desc": { "de": "Sammelt Haselnüsse – ein Luxus für Sammler und Jäger.", "en": "Collects hazelnuts – a luxury for gatherers and hunters." } },
-
-  { "id": "trapper", "name": { "de": "Fallensteller", "en": "Trapper" }, "category": "production", "size": [2,2], "style": "lean", "accent": "#b48a5c",
-    "unlockTier": "hunters", "cost": { "shells": 80, "wood": 2 }, "upkeep": 8, "workforce": { "tier": "gatherers", "amount": 3 },
-    "cycle": 30, "outputs": { "hides": 1 }, "requires": { "fertility": "deer", "nature": { "kind": "tree", "radius": 3, "min": 5 } },
-    "desc": { "de": "Fängt Wild für Häute. Braucht Rehwild und Wald.", "en": "Traps game for hides. Needs deer and forest." } },
-  { "id": "hunter", "name": { "de": "Jägerlager", "en": "Hunting Lodge" }, "category": "production", "size": [2,2], "style": "lean", "accent": "#a33a2c",
-    "unlockTier": "hunters", "cost": { "shells": 80, "wood": 2 }, "upkeep": 8, "workforce": { "tier": "gatherers", "amount": 4 },
-    "cycle": 24, "outputs": { "meat": 1 }, "requires": { "fertility": "deer", "nature": { "kind": "tree", "radius": 3, "min": 5 } },
-    "desc": { "de": "Jagt Rehwild. Braucht Rehwild und Wald.", "en": "Hunts deer. Needs deer and forest." } },
-  { "id": "tanner", "name": { "de": "Gerber", "en": "Tanner" }, "category": "production", "size": [2,2], "style": "rack", "accent": "#6b4a2e",
-    "unlockTier": "hunters", "cost": { "shells": 120, "wood": 4 }, "upkeep": 12, "workforce": { "tier": "hunters", "amount": 4 },
-    "cycle": 30, "inputs": { "hides": 1 }, "outputs": { "furs": 1 },
-    "desc": { "de": "Gerbt Häute zu warmer Fellkleidung.", "en": "Tans hides into warm fur clothing." } },
-  { "id": "shaman", "name": { "de": "Schamanenplatz", "en": "Shaman's Circle" }, "category": "service", "size": [2,2], "style": "totem", "accent": "#5a3a6a",
-    "unlockTier": "hunters", "cost": { "shells": 200, "wood": 6 }, "upkeep": 15, "service": { "id": "shaman", "radius": 9 },
-    "desc": { "de": "Die Schamanin spricht mit den Geistern der Tiere.", "en": "The shaman speaks with the spirits of animals." } },
-  { "id": "cavepaint", "name": { "de": "Malhöhle", "en": "Painted Cave" }, "category": "service", "size": [2,2], "style": "cave", "accent": "#b0502a",
-    "unlockTier": "hunters", "cost": { "shells": 250, "wood": 4 }, "upkeep": 15, "service": { "id": "cavepaint", "radius": 10 }, "requires": { "nearMountain": true },
-    "desc": { "de": "Ocker und Kohle an der Felswand. Muss am Berg stehen.", "en": "Ochre and charcoal on the rock wall. Must stand against a mountain." } },
-  { "id": "flintquarry", "name": { "de": "Feuersteinbruch", "en": "Flint Quarry" }, "category": "production", "size": [2,2], "style": "pit", "accent": "#4d5560",
-    "unlockTier": "hunters", "cost": { "shells": 120, "wood": 4 }, "upkeep": 10, "workforce": { "tier": "hunters", "amount": 3 },
-    "cycle": 30, "outputs": { "flint": 1 }, "requires": { "deposit": "flint" },
-    "desc": { "de": "Bricht Feuersteinknollen. Muss auf einem Feuersteinvorkommen stehen.", "en": "Mines flint nodules. Must be built on a flint deposit." } },
-  { "id": "scout", "name": { "de": "Kundschafterlager", "en": "Scout Camp" }, "category": "infrastructure", "size": [2,2], "style": "scout", "accent": "#3a6a8a",
-    "unlockTier": "hunters", "cost": { "shells": 300, "wood": 8 }, "upkeep": 10,
-    "desc": { "de": "Von hier ziehen Kundschafter über die Bergpfade in unbekannte Täler.", "en": "Scouts set out from here across mountain paths to unknown valleys." } },
-
-  { "id": "fisher", "name": { "de": "Fischer", "en": "Fisher" }, "category": "production", "size": [2,2], "style": "fisher", "accent": "#5f8ea0",
-    "unlockTier": "settlers", "cost": { "shells": 120, "wood": 4 }, "upkeep": 10, "workforce": { "tier": "hunters", "amount": 3 },
-    "cycle": 22, "outputs": { "fish": 1 }, "requires": { "fertility": "fish", "nearWater": 2 },
-    "desc": { "de": "Fischt mit Reusen und Speeren. Muss am Wasser stehen.", "en": "Fishes with traps and spears. Must stand by water." } },
-  { "id": "toolmaker", "name": { "de": "Werkzeugmacher", "en": "Toolmaker" }, "category": "production", "size": [2,2], "style": "workshop", "accent": "#5b6168",
-    "unlockTier": "settlers", "cost": { "shells": 200, "wood": 6 }, "upkeep": 15, "workforce": { "tier": "hunters", "amount": 4 },
-    "cycle": 40, "inputs": { "flint": 1, "wood": 1 }, "outputs": { "tools": 1 },
-    "desc": { "de": "Schleift Beile und Klingen aus Feuerstein und Holz.", "en": "Grinds axes and blades from flint and wood." } },
-  { "id": "claypit", "name": { "de": "Lehmgrube", "en": "Clay Pit" }, "category": "production", "size": [2,2], "style": "pit", "accent": "#b0683c",
-    "unlockTier": "settlers", "cost": { "shells": 100, "wood": 2 }, "upkeep": 8, "workforce": { "tier": "hunters", "amount": 3 },
-    "cycle": 30, "outputs": { "clay": 1 }, "requires": { "fertility": "clay" },
-    "desc": { "de": "Sticht Lehm. Braucht Lehmboden im Tal.", "en": "Digs clay. Needs clay soil in the valley." } },
-  { "id": "potter", "name": { "de": "Töpferei", "en": "Pottery" }, "category": "production", "size": [2,2], "style": "kiln", "accent": "#c0703e",
-    "unlockTier": "settlers", "cost": { "shells": 220, "wood": 6 }, "upkeep": 16, "workforce": { "tier": "settlers", "amount": 4 },
-    "cycle": 40, "inputs": { "clay": 1, "wood": 1 }, "outputs": { "pottery": 1 },
-    "desc": { "de": "Formt und brennt Tongefäße – Vorratshaltung wird möglich.", "en": "Shapes and fires pottery – storing food becomes possible." } },
-  { "id": "winery", "name": { "de": "Gärgrube", "en": "Fermenting Pit" }, "category": "production", "size": [2,2], "style": "kiln", "accent": "#5a1838",
-    "unlockTier": "settlers", "cost": { "shells": 260, "wood": 6, "tools": 2 }, "upkeep": 18, "workforce": { "tier": "settlers", "amount": 3 },
-    "cycle": 60, "inputs": { "berries": 1, "pottery": 1 }, "outputs": { "wine": 1 },
-    "desc": { "de": "Vergärt Beeren in Tongefäßen zu Wein.", "en": "Ferments berries in pots into wine." } },
-  { "id": "dance", "name": { "de": "Tanzplatz", "en": "Dance Ground" }, "category": "service", "size": [2,2], "style": "dance", "accent": "#c0502a",
-    "unlockTier": "settlers", "cost": { "shells": 300, "wood": 6, "tools": 2 }, "upkeep": 20, "service": { "id": "dance", "radius": 9 },
-    "desc": { "de": "Trommeln, Tanz und Feste unter dem Mond.", "en": "Drums, dance and feasts under the moon." } },
-
-  { "id": "graingatherer", "name": { "de": "Kornsammler", "en": "Grain Gatherer" }, "category": "production", "size": [2,2], "style": "basket", "accent": "#c9a24a",
-    "unlockTier": "artisans", "cost": { "shells": 200, "wood": 4, "tools": 2 }, "upkeep": 14, "workforce": { "tier": "settlers", "amount": 4 },
-    "cycle": 30, "outputs": { "grain": 1 }, "requires": { "fertility": "wildgrain" },
-    "desc": { "de": "Erntet Wildgetreide – der erste Schritt zum Ackerbau.", "en": "Harvests wild grain – the first step towards farming." } },
-  { "id": "porridgekitchen", "name": { "de": "Breiküche", "en": "Porridge Kitchen" }, "category": "production", "size": [2,2], "style": "kiln", "accent": "#d8c08a",
-    "unlockTier": "artisans", "cost": { "shells": 300, "wood": 6, "tools": 2 }, "upkeep": 20, "workforce": { "tier": "artisans", "amount": 4 },
-    "cycle": 30, "inputs": { "grain": 1, "pottery": 1 }, "outputs": { "porridge": 1 },
-    "desc": { "de": "Kocht Kornbrei in Tongefäßen.", "en": "Cooks porridge in pots." } },
-  { "id": "flaxgarden", "name": { "de": "Flachsgarten", "en": "Flax Garden" }, "category": "production", "size": [2,2], "style": "field", "accent": "#8aa070",
-    "unlockTier": "artisans", "cost": { "shells": 200, "wood": 4 }, "upkeep": 12, "workforce": { "tier": "settlers", "amount": 4 },
-    "cycle": 30, "outputs": { "flax": 1 }, "requires": { "fertility": "flax" },
-    "desc": { "de": "Pflegt wilden Flachs.", "en": "Tends wild flax." } },
-  { "id": "weaver", "name": { "de": "Weberei", "en": "Weaver" }, "category": "production", "size": [2,2], "style": "rack", "accent": "#e2d6b8",
-    "unlockTier": "artisans", "cost": { "shells": 320, "wood": 6, "tools": 2 }, "upkeep": 22, "workforce": { "tier": "artisans", "amount": 4 },
-    "cycle": 40, "inputs": { "flax": 1 }, "outputs": { "linen": 1 },
-    "desc": { "de": "Webt Leinen am Gewichtswebstuhl.", "en": "Weaves linen on a warp-weighted loom." } },
-  { "id": "herbalist", "name": { "de": "Kräuterfrau", "en": "Herbalist" }, "category": "production", "size": [2,2], "style": "basket", "accent": "#4f7a3a",
-    "unlockTier": "artisans", "cost": { "shells": 220, "wood": 4 }, "upkeep": 14, "workforce": { "tier": "settlers", "amount": 2 },
-    "cycle": 40, "outputs": { "herbs": 1 }, "requires": { "fertility": "herbs" },
-    "desc": { "de": "Kennt jede Wurzel und jedes Blatt.", "en": "Knows every root and leaf." } },
-  { "id": "beekeeper", "name": { "de": "Zeidler", "en": "Beekeeper" }, "category": "production", "size": [2,2], "style": "basket", "accent": "#e0a12c",
-    "unlockTier": "artisans", "cost": { "shells": 220, "wood": 4 }, "upkeep": 14, "workforce": { "tier": "settlers", "amount": 2 },
-    "cycle": 40, "outputs": { "honey": 1 }, "requires": { "fertility": "honey", "nature": { "kind": "tree", "radius": 3, "min": 4 } },
-    "desc": { "de": "Erntet Honig wilder Bienen aus hohlen Bäumen.", "en": "Harvests honey from wild bees in hollow trees." } },
-  { "id": "meadery", "name": { "de": "Metsiederei", "en": "Meadery" }, "category": "production", "size": [2,2], "style": "kiln", "accent": "#c78a1c",
-    "unlockTier": "artisans", "cost": { "shells": 380, "wood": 6, "pottery": 2 }, "upkeep": 24, "workforce": { "tier": "artisans", "amount": 3 },
-    "cycle": 60, "inputs": { "honey": 1, "pottery": 1 }, "outputs": { "mead": 1 },
-    "desc": { "de": "Siedet Met aus Honig.", "en": "Brews mead from honey." } },
-  { "id": "coppermine", "name": { "de": "Kupfermine", "en": "Copper Mine" }, "category": "production", "size": [2,2], "style": "pit", "accent": "#4f8a7a",
-    "unlockTier": "artisans", "cost": { "shells": 300, "wood": 6, "tools": 2 }, "upkeep": 20, "workforce": { "tier": "settlers", "amount": 4 },
-    "cycle": 40, "outputs": { "copperore": 1 }, "requires": { "deposit": "copper" },
-    "desc": { "de": "Baut grünes Kupfererz ab. Muss auf einem Kupfervorkommen stehen.", "en": "Mines green copper ore. Must be built on a copper deposit." } },
-  { "id": "smelter", "name": { "de": "Kupferschmelze", "en": "Copper Smelter" }, "category": "production", "size": [2,2], "style": "kiln", "accent": "#c06a3a",
-    "unlockTier": "artisans", "cost": { "shells": 400, "wood": 8, "pottery": 2 }, "upkeep": 26, "workforce": { "tier": "artisans", "amount": 4 },
-    "cycle": 45, "inputs": { "copperore": 1, "wood": 1 }, "outputs": { "copper": 1 },
-    "desc": { "de": "Schmilzt Erz in Tiegeln.", "en": "Smelts ore in crucibles." } },
-  { "id": "jeweler", "name": { "de": "Schmuckmacher", "en": "Jeweler" }, "category": "production", "size": [2,2], "style": "workshop", "accent": "#d9864a",
-    "unlockTier": "artisans", "cost": { "shells": 420, "wood": 6, "pottery": 2 }, "upkeep": 28, "workforce": { "tier": "artisans", "amount": 3 },
-    "cycle": 60, "inputs": { "copper": 1 }, "outputs": { "jewelry": 1 },
-    "desc": { "de": "Treibt Kupfer zu Armreifen und Perlen.", "en": "Hammers copper into bangles and beads." } },
-  { "id": "stonecircle", "name": { "de": "Steinkreis", "en": "Stone Circle" }, "category": "service", "size": [3,3], "style": "stonecircle", "accent": "#7a7a7a",
-    "unlockTier": "artisans", "cost": { "shells": 800, "wood": 10, "tools": 6 }, "upkeep": 30, "service": { "id": "stonecircle", "radius": 12 },
-    "desc": { "de": "Ein Kalender aus Stein. Feste zur Sonnenwende.", "en": "A calendar of stone. Solstice feasts." } },
-
-  { "id": "wheatfield", "name": { "de": "Getreideacker", "en": "Wheat Field" }, "category": "production", "size": [3,3], "style": "field", "accent": "#d6b04e",
-    "unlockTier": "farmers", "cost": { "shells": 300, "wood": 4, "tools": 2 }, "upkeep": 16, "workforce": { "tier": "artisans", "amount": 4 },
-    "cycle": 30, "outputs": { "wheat": 1 },
-    "desc": { "de": "Domestiziertes Getreide – wächst in jedem Tal.", "en": "Domesticated grain – grows in any valley." } },
-  { "id": "mill", "name": { "de": "Mahlstein", "en": "Grinding Stone" }, "category": "production", "size": [2,2], "style": "workshop", "accent": "#efe4cc",
-    "unlockTier": "farmers", "cost": { "shells": 300, "wood": 6, "tools": 2 }, "upkeep": 18, "workforce": { "tier": "artisans", "amount": 3 },
-    "cycle": 30, "inputs": { "wheat": 1 }, "outputs": { "flour": 1 },
-    "desc": { "de": "Mahlt Getreide zu Mehl.", "en": "Grinds wheat into flour." } },
-  { "id": "bakery", "name": { "de": "Backofen", "en": "Bakehouse" }, "category": "production", "size": [2,2], "style": "kiln", "accent": "#c48a44",
-    "unlockTier": "farmers", "cost": { "shells": 420, "wood": 6, "pottery": 2 }, "upkeep": 26, "workforce": { "tier": "farmers", "amount": 3 },
-    "cycle": 40, "inputs": { "flour": 1, "wood": 1 }, "outputs": { "bread": 1 },
-    "desc": { "de": "Bäckt Fladenbrot im Lehmofen.", "en": "Bakes flatbread in a clay oven." } },
-  { "id": "sheepfarm", "name": { "de": "Schafweide", "en": "Sheep Pasture" }, "category": "production", "size": [3,3], "style": "pasture", "accent": "#e8e0d0",
-    "unlockTier": "farmers", "cost": { "shells": 320, "wood": 6 }, "upkeep": 18, "workforce": { "tier": "artisans", "amount": 3 },
-    "cycle": 30, "outputs": { "wool": 1 },
-    "desc": { "de": "Domestizierte Schafe liefern Wolle.", "en": "Domesticated sheep provide wool." } },
-  { "id": "tailor", "name": { "de": "Mantelnäherei", "en": "Coat Maker" }, "category": "production", "size": [2,2], "style": "rack", "accent": "#8c7a5c",
-    "unlockTier": "farmers", "cost": { "shells": 420, "wood": 6, "tools": 2 }, "upkeep": 26, "workforce": { "tier": "farmers", "amount": 3 },
-    "cycle": 40, "inputs": { "wool": 1 }, "outputs": { "woolcoat": 1 },
-    "desc": { "de": "Walkt und näht Wollmäntel.", "en": "Fulls and sews wool coats." } },
-  { "id": "cattlefarm", "name": { "de": "Rinderweide", "en": "Cattle Pasture" }, "category": "production", "size": [3,3], "style": "pasture", "accent": "#7a5a3a",
-    "unlockTier": "farmers", "cost": { "shells": 360, "wood": 6 }, "upkeep": 20, "workforce": { "tier": "artisans", "amount": 3 },
-    "cycle": 30, "outputs": { "milk": 1 },
-    "desc": { "de": "Gezähmte Auerochsen geben Milch.", "en": "Tamed aurochs give milk." } },
-  { "id": "dairy", "name": { "de": "Käserei", "en": "Dairy" }, "category": "production", "size": [2,2], "style": "kiln", "accent": "#e8c860",
-    "unlockTier": "farmers", "cost": { "shells": 420, "wood": 6, "pottery": 2 }, "upkeep": 26, "workforce": { "tier": "farmers", "amount": 3 },
-    "cycle": 40, "inputs": { "milk": 1, "pottery": 1 }, "outputs": { "cheese": 1 },
-    "desc": { "de": "Macht Käse in gelochten Tongefäßen.", "en": "Makes cheese in perforated pots." } },
-  { "id": "tinmine", "name": { "de": "Zinnmine", "en": "Tin Mine" }, "category": "production", "size": [2,2], "style": "pit", "accent": "#9aa4a8",
-    "unlockTier": "farmers", "cost": { "shells": 360, "wood": 6, "tools": 2 }, "upkeep": 22, "workforce": { "tier": "artisans", "amount": 4 },
-    "cycle": 40, "outputs": { "tin": 1 }, "requires": { "deposit": "tin" },
-    "desc": { "de": "Seltenes Zinn – nur in wenigen Tälern.", "en": "Rare tin – found in only a few valleys." } },
-  { "id": "bronzesmith", "name": { "de": "Bronzegießer", "en": "Bronze Caster" }, "category": "production", "size": [2,2], "style": "kiln", "accent": "#a87a34",
-    "unlockTier": "farmers", "cost": { "shells": 600, "wood": 8, "copper": 4 }, "upkeep": 34, "workforce": { "tier": "farmers", "amount": 4 },
-    "cycle": 60, "inputs": { "copper": 1, "tin": 1 }, "outputs": { "bronzetools": 1 },
-    "desc": { "de": "Gießt Bronzewerkzeug in Steinformen.", "en": "Casts bronze tools in stone moulds." } },
-  { "id": "brewery", "name": { "de": "Brauerei", "en": "Brewery" }, "category": "production", "size": [2,2], "style": "kiln", "accent": "#b07a24",
-    "unlockTier": "farmers", "cost": { "shells": 500, "wood": 6, "pottery": 4 }, "upkeep": 30, "workforce": { "tier": "farmers", "amount": 3 },
-    "cycle": 60, "inputs": { "wheat": 1, "pottery": 1 }, "outputs": { "beer": 1 },
-    "desc": { "de": "Braut Bier aus gemälztem Getreide.", "en": "Brews beer from malted grain." } },
-  { "id": "wheelwright", "name": { "de": "Stellmacher", "en": "Wheelwright" }, "category": "production", "size": [2,2], "style": "workshop", "accent": "#7a5230",
-    "unlockTier": "farmers", "cost": { "shells": 700, "wood": 10, "bronzetools": 2 }, "upkeep": 36, "workforce": { "tier": "farmers", "amount": 4 },
-    "cycle": 90, "inputs": { "wood": 2, "bronzetools": 1 }, "outputs": { "cart": 1 },
-    "desc": { "de": "Das Rad! Baut Ochsenkarren.", "en": "The wheel! Builds ox carts." } },
-  { "id": "square", "name": { "de": "Dorfplatz", "en": "Village Green" }, "category": "service", "size": [3,3], "style": "square", "accent": "#8a7a4a",
-    "unlockTier": "farmers", "cost": { "shells": 900, "wood": 10, "bronzetools": 2 }, "upkeep": 36, "service": { "id": "square", "radius": 12 },
-    "desc": { "de": "Markt, Rat und Feste der Bauern.", "en": "Market, council and feasts of the farmers." } }
+ {
+  "id": "storage",
+  "name": {
+   "de": "Lagerplatz",
+   "en": "Storage Yard"
+  },
+  "category": "infrastructure",
+  "size": [
+   3,
+   3
+  ],
+  "style": "storage",
+  "accent": "#8a5a32",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 300,
+   "wood": 20
+  },
+  "upkeep": 0,
+  "desc": {
+   "de": "Herz eines Tals: Alle Betriebe müssen über Pfade mit ihm verbunden sein. In einem neuen Tal gründet er die Siedlung – dafür muss ein begehbarer Pfad dorthin führen.",
+   "en": "Heart of a valley: every workplace must connect to it by paths. In a new valley it founds the settlement – which needs a passable path leading there."
+  }
+ },
+ {
+  "id": "path",
+  "name": {
+   "de": "Trampelpfad",
+   "en": "Footpath"
+  },
+  "category": "infrastructure",
+  "size": [
+   1,
+   1
+  ],
+  "style": "path",
+  "accent": "#a88a5a",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 2
+  },
+  "upkeep": 0,
+  "desc": {
+   "de": "Verbindet Häuser und Betriebe mit dem Lagerplatz.",
+   "en": "Connects homes and workplaces to the storage yard."
+  }
+ },
+ {
+  "id": "scout",
+  "name": {
+   "de": "Kundschafterlager",
+   "en": "Scout Camp"
+  },
+  "category": "infrastructure",
+  "size": [
+   2,
+   2
+  ],
+  "style": "scout",
+  "accent": "#3a6a8a",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 150,
+   "wood": 8
+  },
+  "upkeep": 5,
+  "desc": {
+   "de": "Schickt Kundschafter über unbekannte Bergpfade (Proviant: 5 Fleisch). Kundschafter überwinden jedes Hindernis – Karawanen nicht.",
+   "en": "Sends scouts across unknown mountain paths (provisions: 5 meat). Scouts cross any obstacle – caravans do not."
+  }
+ },
+ {
+  "id": "caravanpost",
+  "name": {
+   "de": "Rastplatz",
+   "en": "Caravan Camp"
+  },
+  "category": "infrastructure",
+  "size": [
+   3,
+   3
+  ],
+  "style": "caravan",
+  "accent": "#a8743a",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 400,
+   "wood": 12,
+   "hides": 4
+  },
+  "upkeep": 10,
+  "requires": {
+   "nearPass": 4
+  },
+  "desc": {
+   "de": "Ausgangspunkt der Karawanen – das Gegenstück zu Hafen und Werft. Muss nahe am Fuß eines Bergpfads liegen. Hier werden Trägertrupps, Eselkarawanen und Ochsenkarren ausgerüstet.",
+   "en": "Home of the caravans – the counterpart to harbour and shipyard. Must lie near the foot of a mountain path. Porter teams, donkey trains and ox carts are equipped here."
+  }
+ },
+ {
+  "id": "tent",
+  "name": {
+   "de": "Fellzelt",
+   "en": "Hide Tent"
+  },
+  "category": "residence",
+  "size": [
+   2,
+   2
+  ],
+  "style": "tent",
+  "accent": "#b48a5c",
+  "unlockTier": "foragers",
+  "cost": {
+   "wood": 1
+  },
+  "upkeep": 0,
+  "desc": {
+   "de": "Wohnstatt der Wildbeuter. Steigt zum Grubenhaus auf, sobald Sesshafte Sammler freigeschaltet und die Grundbedürfnisse gedeckt sind.",
+   "en": "Home of the foragers. Upgrades to a pit house once settled foragers are unlocked and basic needs are met."
+  },
+  "tier": "foragers"
+ },
+ {
+  "id": "hut",
+  "name": {
+   "de": "Grubenhaus",
+   "en": "Pit House"
+  },
+  "category": "residence",
+  "size": [
+   2,
+   2
+  ],
+  "style": "hut",
+  "accent": "#7a5a3a",
+  "unlockTier": "sedentary",
+  "cost": {},
+  "upkeep": 0,
+  "buildable": false,
+  "desc": {
+   "de": "Rundes, halb eingetieftes Haus der Natufier mit Steinfundament.",
+   "en": "Round, half-sunken Natufian house with a stone footing."
+  },
+  "tier": "sedentary"
+ },
+ {
+  "id": "cottage",
+  "name": {
+   "de": "Lehmziegelhaus",
+   "en": "Mud-Brick House"
+  },
+  "category": "residence",
+  "size": [
+   2,
+   2
+  ],
+  "style": "mudhouse",
+  "accent": "#c08a5a",
+  "unlockTier": "farmers",
+  "cost": {},
+  "upkeep": 0,
+  "buildable": false,
+  "desc": {
+   "de": "Eckiges Haus aus luftgetrockneten Lehmziegeln mit Flachdach.",
+   "en": "Rectangular house of sun-dried mud bricks with a flat roof."
+  },
+  "tier": "farmers"
+ },
+ {
+  "id": "longhouse",
+  "name": {
+   "de": "Langhaus",
+   "en": "Longhouse"
+  },
+  "category": "residence",
+  "size": [
+   2,
+   2
+  ],
+  "style": "longhouse",
+  "accent": "#9a7a4a",
+  "unlockTier": "villagers",
+  "cost": {},
+  "upkeep": 0,
+  "buildable": false,
+  "desc": {
+   "de": "Großes Haus für eine ganze Familie samt Vorräten.",
+   "en": "Large house for a whole family and its stores."
+  },
+  "tier": "villagers"
+ },
+ {
+  "id": "farmstead",
+  "name": {
+   "de": "Gehöft",
+   "en": "Farmstead"
+  },
+  "category": "residence",
+  "size": [
+   2,
+   2
+  ],
+  "style": "farmstead",
+  "accent": "#8a6a3a",
+  "unlockTier": "chieftains",
+  "cost": {},
+  "upkeep": 0,
+  "buildable": false,
+  "desc": {
+   "de": "Hof mit Stall und Speicher – der Sitz einer kupferzeitlichen Sippe.",
+   "en": "Farm with byre and granary – seat of a Copper Age clan."
+  },
+  "tier": "chieftains"
+ },
+ {
+  "id": "fireplace",
+  "name": {
+   "de": "Lagerfeuer",
+   "en": "Campfire"
+  },
+  "category": "service",
+  "size": [
+   2,
+   2
+  ],
+  "style": "fire",
+  "accent": "#e0702a",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 60,
+   "wood": 4
+  },
+  "upkeep": 4,
+  "service": {
+   "id": "fireplace",
+   "radius": 10
+  },
+  "desc": {
+   "de": "Wärme, Licht und Geschichten. Versorgt die Zelte im Umkreis.",
+   "en": "Warmth, light and stories. Serves the tents around it."
+  }
+ },
+ {
+  "id": "shaman",
+  "name": {
+   "de": "Schamanenplatz",
+   "en": "Shaman's Place"
+  },
+  "category": "service",
+  "size": [
+   2,
+   2
+  ],
+  "style": "totem",
+  "accent": "#5a3a6a",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 150,
+   "wood": 8,
+   "hides": 2
+  },
+  "upkeep": 10,
+  "service": {
+   "id": "shaman",
+   "radius": 13
+  },
+  "desc": {
+   "de": "Heilkunde und Geisterglaube.",
+   "en": "Healing lore and the spirit world."
+  }
+ },
+ {
+  "id": "ancestors",
+  "name": {
+   "de": "Ahnenstätte",
+   "en": "Ancestor Shrine"
+  },
+  "category": "service",
+  "size": [
+   2,
+   2
+  ],
+  "style": "mound",
+  "accent": "#7a6a5a",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 250,
+   "wood": 10,
+   "tools": 2
+  },
+  "upkeep": 12,
+  "service": {
+   "id": "ancestors",
+   "radius": 12
+  },
+  "desc": {
+   "de": "Hier ehrt man die Toten – die Natufier bestatteten sie unter den Häusern und schmückten Schädel.",
+   "en": "Here the dead are honoured – Natufians buried them beneath their houses and adorned skulls."
+  }
+ },
+ {
+  "id": "shrine",
+  "name": {
+   "de": "Heiligtum",
+   "en": "Sanctuary"
+  },
+  "category": "service",
+  "size": [
+   3,
+   3
+  ],
+  "style": "tpillars",
+  "accent": "#8a7a6a",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 400,
+   "wood": 10,
+   "tools": 4
+  },
+  "upkeep": 18,
+  "service": {
+   "id": "shrine",
+   "radius": 16
+  },
+  "desc": {
+   "de": "Ein Kreis aus T-förmigen Steinpfeilern mit Tierreliefs, wie am Göbekli Tepe.",
+   "en": "A ring of T-shaped stone pillars carved with animals, as at Göbekli Tepe."
+  }
+ },
+ {
+  "id": "dance",
+  "name": {
+   "de": "Festplatz",
+   "en": "Feasting Ground"
+  },
+  "category": "service",
+  "size": [
+   2,
+   2
+  ],
+  "style": "dance",
+  "accent": "#c0502a",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 300,
+   "wood": 8,
+   "tools": 2
+  },
+  "upkeep": 12,
+  "service": {
+   "id": "dance",
+   "radius": 13
+  },
+  "desc": {
+   "de": "Gemeinsame Feste mit Musik und Tanz stärken das Dorf.",
+   "en": "Shared feasts with music and dance bind the village."
+  }
+ },
+ {
+  "id": "square",
+  "name": {
+   "de": "Dorfplatz",
+   "en": "Village Square"
+  },
+  "category": "service",
+  "size": [
+   3,
+   3
+  ],
+  "style": "square",
+  "accent": "#8a7a4a",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 500,
+   "bricks": 8,
+   "tools": 4
+  },
+  "upkeep": 20,
+  "service": {
+   "id": "square",
+   "radius": 17
+  },
+  "desc": {
+   "de": "Treffpunkt, Tauschplatz, Brunnen.",
+   "en": "Meeting place, barter ground, well."
+  }
+ },
+ {
+  "id": "megalith",
+  "name": {
+   "de": "Großsteingrab",
+   "en": "Megalithic Tomb"
+  },
+  "category": "service",
+  "size": [
+   3,
+   3
+  ],
+  "style": "dolmen",
+  "accent": "#7a7a7a",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 1200,
+   "bricks": 10,
+   "coppertools": 4
+  },
+  "upkeep": 40,
+  "service": {
+   "id": "megalith",
+   "radius": 20
+  },
+  "desc": {
+   "de": "Riesige Steine für die Ahnen der Sippe – sichtbar über das ganze Tal.",
+   "en": "Giant stones for the clan's ancestors – visible across the whole valley."
+  }
+ },
+ {
+  "id": "woodcutter",
+  "name": {
+   "de": "Holzfäller",
+   "en": "Woodcutter"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "workshop",
+  "accent": "#8a5a32",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 50,
+   "wood": 2
+  },
+  "upkeep": 5,
+  "workforce": {
+   "tier": "foragers",
+   "amount": 3
+  },
+  "cycle": 15,
+  "outputs": {
+   "wood": 1
+  },
+  "requires": {
+   "nature": {
+    "kind": "tree",
+    "radius": 4,
+    "min": 6
+   }
+  },
+  "desc": {
+   "de": "Fällt Bäume im Umkreis.",
+   "en": "Fells trees nearby."
+  }
+ },
+ {
+  "id": "berrygatherer",
+  "name": {
+   "de": "Beerensammler",
+   "en": "Berry Gatherer"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "basket",
+  "accent": "#7a2348",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 40,
+   "wood": 2
+  },
+  "upkeep": 3,
+  "workforce": {
+   "tier": "foragers",
+   "amount": 3
+  },
+  "cycle": 20,
+  "outputs": {
+   "berries": 1
+  },
+  "requires": {
+   "fertility": "berries",
+   "nature": {
+    "kind": "bush",
+    "radius": 4,
+    "min": 4
+   }
+  },
+  "desc": {
+   "de": "Sammelt Beeren an den Sträuchern.",
+   "en": "Picks berries from the bushes."
+  }
+ },
+ {
+  "id": "hunter",
+  "name": {
+   "de": "Jagdlager",
+   "en": "Hunting Camp"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "lean",
+  "accent": "#a33a2c",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 60,
+   "wood": 3
+  },
+  "upkeep": 5,
+  "workforce": {
+   "tier": "foragers",
+   "amount": 4
+  },
+  "cycle": 24,
+  "outputs": {
+   "meat": 1
+  },
+  "requires": {
+   "fertility": "deer",
+   "nature": {
+    "kind": "tree",
+    "radius": 5,
+    "min": 6
+   }
+  },
+  "desc": {
+   "de": "Jäger pirschen im Wald.",
+   "en": "Hunters stalk the forest."
+  }
+ },
+ {
+  "id": "trapper",
+  "name": {
+   "de": "Fallensteller",
+   "en": "Trapper"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "rack",
+  "accent": "#b48a5c",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 60,
+   "wood": 3
+  },
+  "upkeep": 4,
+  "workforce": {
+   "tier": "foragers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "hides": 1
+  },
+  "requires": {
+   "nature": {
+    "kind": "tree",
+    "radius": 5,
+    "min": 5
+   }
+  },
+  "desc": {
+   "de": "Fängt Pelztiere für Häute.",
+   "en": "Traps animals for hides."
+  }
+ },
+ {
+  "id": "nutgatherer",
+  "name": {
+   "de": "Haselsammler",
+   "en": "Hazel Gatherer"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "basket",
+  "accent": "#a8743a",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 60,
+   "wood": 3
+  },
+  "upkeep": 4,
+  "workforce": {
+   "tier": "foragers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "nuts": 1
+  },
+  "requires": {
+   "fertility": "hazel",
+   "nature": {
+    "kind": "bush",
+    "radius": 4,
+    "min": 3
+   }
+  },
+  "desc": {
+   "de": "Sammelt Haselnüsse.",
+   "en": "Gathers hazelnuts."
+  }
+ },
+ {
+  "id": "fisher",
+  "name": {
+   "de": "Fischerplatz",
+   "en": "Fishing Spot"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "fisher",
+  "accent": "#5f8ea0",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 120,
+   "wood": 6
+  },
+  "upkeep": 6,
+  "workforce": {
+   "tier": "sedentary",
+   "amount": 3
+  },
+  "cycle": 20,
+  "outputs": {
+   "fish": 1
+  },
+  "requires": {
+   "fertility": "fish",
+   "nearWater": 1
+  },
+  "desc": {
+   "de": "Reusen und Speere am Ufer.",
+   "en": "Fish traps and spears at the shore."
+  }
+ },
+ {
+  "id": "graingatherer",
+  "name": {
+   "de": "Wildgetreide-Ernte",
+   "en": "Wild Grain Harvest"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "basket",
+  "accent": "#c9a24a",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 120,
+   "wood": 6
+  },
+  "upkeep": 6,
+  "workforce": {
+   "tier": "sedentary",
+   "amount": 4
+  },
+  "cycle": 20,
+  "outputs": {
+   "wildgrain": 1
+  },
+  "requires": {
+   "fertility": "wildgrain"
+  },
+  "desc": {
+   "de": "Erntet wilde Gerste und Einkorn mit Feuersteinsicheln.",
+   "en": "Harvests wild barley and einkorn with flint sickles."
+  }
+ },
+ {
+  "id": "grinder",
+  "name": {
+   "de": "Mahlplatz",
+   "en": "Grinding Place"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "quern",
+  "accent": "#b89a6a",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 120,
+   "wood": 6
+  },
+  "upkeep": 6,
+  "workforce": {
+   "tier": "sedentary",
+   "amount": 3
+  },
+  "cycle": 20,
+  "outputs": {
+   "porridge": 1
+  },
+  "inputs": {
+   "wildgrain": 1
+  },
+  "desc": {
+   "de": "Mahlsteine machen aus Körnern Brei.",
+   "en": "Grinding stones turn grain into porridge."
+  }
+ },
+ {
+  "id": "tanner",
+  "name": {
+   "de": "Gerberei",
+   "en": "Tannery"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "rack",
+  "accent": "#6b4a2e",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 120,
+   "wood": 6
+  },
+  "upkeep": 6,
+  "workforce": {
+   "tier": "sedentary",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "furs": 1
+  },
+  "inputs": {
+   "hides": 1
+  },
+  "desc": {
+   "de": "Gerbt Häute zu warmer Kleidung.",
+   "en": "Tans hides into warm clothing."
+  }
+ },
+ {
+  "id": "flintquarry",
+  "name": {
+   "de": "Feuersteinbruch",
+   "en": "Flint Quarry"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "pit",
+  "accent": "#4d5560",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 150,
+   "wood": 8
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "sedentary",
+   "amount": 4
+  },
+  "cycle": 20,
+  "outputs": {
+   "flint": 1
+  },
+  "requires": {
+   "deposit": "flint"
+  },
+  "desc": {
+   "de": "Muss auf einem Feuersteinvorkommen stehen.",
+   "en": "Must stand on a flint deposit."
+  }
+ },
+ {
+  "id": "toolmaker",
+  "name": {
+   "de": "Werkzeugmacher",
+   "en": "Toolmaker"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "workshop",
+  "accent": "#5b6168",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 150,
+   "wood": 8
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "sedentary",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "tools": 1
+  },
+  "inputs": {
+   "flint": 1,
+   "wood": 1
+  },
+  "desc": {
+   "de": "Schlägt Klingen und Beile – Baumaterial ab den Ersten Bauern.",
+   "en": "Knaps blades and axes – a building material from the First Farmers on."
+  }
+ },
+ {
+  "id": "beekeeper",
+  "name": {
+   "de": "Zeidlerei",
+   "en": "Honey Hunter"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "basket",
+  "accent": "#e0a12c",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 150,
+   "wood": 6
+  },
+  "upkeep": 6,
+  "workforce": {
+   "tier": "sedentary",
+   "amount": 2
+  },
+  "cycle": 40,
+  "outputs": {
+   "honey": 1
+  },
+  "requires": {
+   "fertility": "honey",
+   "nature": {
+    "kind": "tree",
+    "radius": 4,
+    "min": 4
+   }
+  },
+  "desc": {
+   "de": "Sammelt Honig wilder Bienen in hohlen Bäumen.",
+   "en": "Collects wild honey from hollow trees."
+  }
+ },
+ {
+  "id": "emmerfield",
+  "name": {
+   "de": "Emmerfeld",
+   "en": "Emmer Field"
+  },
+  "category": "production",
+  "size": [
+   3,
+   3
+  ],
+  "style": "field",
+  "accent": "#d6b04e",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 200,
+   "wood": 6,
+   "tools": 2
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "farmers",
+   "amount": 4
+  },
+  "cycle": 30,
+  "outputs": {
+   "emmer": 1,
+   "straw": 1
+  },
+  "requires": {
+   "fertility": "wildgrain"
+  },
+  "desc": {
+   "de": "Domestizierter Weizen – braucht wildes Getreide als Fruchtbarkeit.",
+   "en": "Domesticated wheat – needs wild cereals as a fertility."
+  }
+ },
+ {
+  "id": "mill",
+  "name": {
+   "de": "Mahlsteinhaus",
+   "en": "Quern House"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "quern",
+  "accent": "#efe4cc",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 200,
+   "wood": 6,
+   "tools": 2
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "farmers",
+   "amount": 3
+  },
+  "cycle": 20,
+  "outputs": {
+   "flour": 1
+  },
+  "inputs": {
+   "emmer": 1
+  },
+  "desc": {
+   "de": "Mahlt Emmer zu Mehl.",
+   "en": "Grinds emmer into flour."
+  }
+ },
+ {
+  "id": "bakery",
+  "name": {
+   "de": "Backofen",
+   "en": "Bread Oven"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "kiln",
+  "accent": "#c48a44",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 200,
+   "wood": 6,
+   "tools": 2
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "farmers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "bread": 2
+  },
+  "inputs": {
+   "flour": 1,
+   "wood": 1
+  },
+  "desc": {
+   "de": "Bäckt Fladenbrot auf heißen Steinen.",
+   "en": "Bakes flatbread on hot stones."
+  }
+ },
+ {
+  "id": "goatfarm",
+  "name": {
+   "de": "Ziegenpferch",
+   "en": "Goat Pen"
+  },
+  "category": "production",
+  "size": [
+   3,
+   3
+  ],
+  "style": "pasture",
+  "accent": "#d8cbb0",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 200,
+   "wood": 8,
+   "tools": 2
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "farmers",
+   "amount": 3
+  },
+  "cycle": 40,
+  "outputs": {
+   "meat": 1,
+   "hides": 1
+  },
+  "requires": {
+   "fertility": "mouflon"
+  },
+  "desc": {
+   "de": "Gezähmte Ziegen liefern Fleisch und Häute – braucht Wildziegen im Tal.",
+   "en": "Tamed goats give meat and hides – needs wild goats in the valley."
+  }
+ },
+ {
+  "id": "claypit",
+  "name": {
+   "de": "Lehmgrube",
+   "en": "Clay Pit"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "pit",
+  "accent": "#b0683c",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 150,
+   "wood": 6
+  },
+  "upkeep": 6,
+  "workforce": {
+   "tier": "farmers",
+   "amount": 3
+  },
+  "cycle": 20,
+  "outputs": {
+   "clay": 1
+  },
+  "requires": {
+   "fertility": "clay"
+  },
+  "desc": {
+   "de": "Sticht Lehm.",
+   "en": "Digs clay."
+  }
+ },
+ {
+  "id": "brickmaker",
+  "name": {
+   "de": "Ziegelstreicher",
+   "en": "Brick Maker"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "rack",
+  "accent": "#a8643a",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 200,
+   "wood": 6,
+   "tools": 2
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "farmers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "bricks": 1
+  },
+  "inputs": {
+   "clay": 1,
+   "straw": 1
+  },
+  "desc": {
+   "de": "Formt Lehm und Stroh zu Ziegeln und trocknet sie in der Sonne.",
+   "en": "Shapes clay and straw into bricks and dries them in the sun."
+  }
+ },
+ {
+  "id": "herbalist",
+  "name": {
+   "de": "Kräutergarten",
+   "en": "Herb Garden"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "basket",
+  "accent": "#4f7a3a",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 200,
+   "wood": 6,
+   "tools": 2
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "farmers",
+   "amount": 2
+  },
+  "cycle": 30,
+  "outputs": {
+   "herbs": 1
+  },
+  "requires": {
+   "fertility": "herbs"
+  },
+  "desc": {
+   "de": "Heil- und Würzkräuter.",
+   "en": "Healing and seasoning herbs."
+  }
+ },
+ {
+  "id": "potter",
+  "name": {
+   "de": "Töpferei",
+   "en": "Pottery Kiln"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "kiln",
+  "accent": "#c0703e",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 300,
+   "bricks": 4,
+   "tools": 2
+  },
+  "upkeep": 12,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 4
+  },
+  "cycle": 30,
+  "outputs": {
+   "pottery": 1
+  },
+  "inputs": {
+   "clay": 1,
+   "wood": 1
+  },
+  "desc": {
+   "de": "Brennt Gefäße aus Ton.",
+   "en": "Fires vessels of clay."
+  }
+ },
+ {
+  "id": "flaxfield",
+  "name": {
+   "de": "Flachsfeld",
+   "en": "Flax Field"
+  },
+  "category": "production",
+  "size": [
+   3,
+   3
+  ],
+  "style": "field",
+  "accent": "#8aa070",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 250,
+   "wood": 6,
+   "tools": 2
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "flax": 1
+  },
+  "requires": {
+   "fertility": "flax"
+  },
+  "desc": {
+   "de": "Braucht wilden Flachs als Fruchtbarkeit.",
+   "en": "Needs wild flax as a fertility."
+  }
+ },
+ {
+  "id": "weaver",
+  "name": {
+   "de": "Webstube",
+   "en": "Loom House"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "loom",
+  "accent": "#e2d6b8",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 300,
+   "bricks": 4,
+   "tools": 2
+  },
+  "upkeep": 12,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 4
+  },
+  "cycle": 30,
+  "outputs": {
+   "linen": 1
+  },
+  "inputs": {
+   "flax": 1
+  },
+  "desc": {
+   "de": "Webt Leinen auf dem Gewichtswebstuhl.",
+   "en": "Weaves linen on the warp-weighted loom."
+  }
+ },
+ {
+  "id": "ropemaker",
+  "name": {
+   "de": "Seilerei",
+   "en": "Ropewalk"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "rack",
+  "accent": "#b89a6a",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 250,
+   "bricks": 2,
+   "tools": 2
+  },
+  "upkeep": 10,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "rope": 2
+  },
+  "inputs": {
+   "flax": 1
+  },
+  "desc": {
+   "de": "Dreht Seile – für Brücken, Fähren und Karawanen.",
+   "en": "Twists rope – for bridges, ferries and caravans."
+  }
+ },
+ {
+  "id": "barleyfield",
+  "name": {
+   "de": "Gerstenfeld",
+   "en": "Barley Field"
+  },
+  "category": "production",
+  "size": [
+   3,
+   3
+  ],
+  "style": "field",
+  "accent": "#c8a860",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 250,
+   "wood": 6,
+   "tools": 2
+  },
+  "upkeep": 8,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "barley": 1
+  },
+  "requires": {
+   "fertility": "wildgrain"
+  },
+  "desc": {
+   "de": "Braucht wildes Getreide als Fruchtbarkeit.",
+   "en": "Needs wild cereals as a fertility."
+  }
+ },
+ {
+  "id": "malthouse",
+  "name": {
+   "de": "Mälzerei",
+   "en": "Malt House"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "rack",
+  "accent": "#a8743a",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 250,
+   "bricks": 3,
+   "tools": 2
+  },
+  "upkeep": 10,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 20,
+  "outputs": {
+   "malt": 1
+  },
+  "inputs": {
+   "barley": 1
+  },
+  "desc": {
+   "de": "Lässt Gerste keimen und darrt sie.",
+   "en": "Sprouts and kilns barley."
+  }
+ },
+ {
+  "id": "brewery",
+  "name": {
+   "de": "Brauhaus",
+   "en": "Brewhouse"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "kiln",
+  "accent": "#c78a1c",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 350,
+   "bricks": 4,
+   "tools": 2
+  },
+  "upkeep": 14,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 40,
+  "outputs": {
+   "beer": 2
+  },
+  "inputs": {
+   "malt": 1,
+   "pottery": 1
+  },
+  "desc": {
+   "de": "Braut Bier in großen Tonkrügen.",
+   "en": "Brews beer in large clay jars."
+  }
+ },
+ {
+  "id": "obsidianquarry",
+  "name": {
+   "de": "Obsidianabbau",
+   "en": "Obsidian Diggings"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "pit",
+  "accent": "#2a2a34",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 300,
+   "bricks": 2,
+   "tools": 3
+  },
+  "upkeep": 12,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "obsidian": 1
+  },
+  "requires": {
+   "deposit": "obsidian"
+  },
+  "desc": {
+   "de": "Muss auf einem Obsidianvorkommen stehen.",
+   "en": "Must stand on an obsidian deposit."
+  }
+ },
+ {
+  "id": "jeweler",
+  "name": {
+   "de": "Schmuckschleifer",
+   "en": "Bead Maker"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "workshop",
+  "accent": "#3a3048",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 400,
+   "bricks": 4,
+   "tools": 2
+  },
+  "upkeep": 14,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 2
+  },
+  "cycle": 40,
+  "outputs": {
+   "jewelry": 1
+  },
+  "inputs": {
+   "obsidian": 1
+  },
+  "desc": {
+   "de": "Schleift Obsidian zu Spiegeln und Perlen.",
+   "en": "Grinds obsidian into mirrors and beads."
+  }
+ },
+ {
+  "id": "coppermine",
+  "name": {
+   "de": "Kupferbergwerk",
+   "en": "Copper Mine"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "pit",
+  "accent": "#4f8a7a",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 500,
+   "bricks": 6,
+   "tools": 4
+  },
+  "upkeep": 16,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 4
+  },
+  "cycle": 30,
+  "outputs": {
+   "copperore": 1
+  },
+  "requires": {
+   "deposit": "copper"
+  },
+  "desc": {
+   "de": "Muss auf einem Kupfervorkommen stehen.",
+   "en": "Must stand on a copper deposit."
+  }
+ },
+ {
+  "id": "charcoal",
+  "name": {
+   "de": "Köhlerei",
+   "en": "Charcoal Burner"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "kiln",
+  "accent": "#2e2a28",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 300,
+   "bricks": 4,
+   "tools": 2
+  },
+  "upkeep": 10,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "charcoal": 1
+  },
+  "inputs": {
+   "wood": 2
+  },
+  "requires": {
+   "nature": {
+    "kind": "tree",
+    "radius": 4,
+    "min": 4
+   }
+  },
+  "desc": {
+   "de": "Verkohlt Holz im Meiler.",
+   "en": "Turns wood into charcoal in a clamp."
+  }
+ },
+ {
+  "id": "smelter",
+  "name": {
+   "de": "Schmelzofen",
+   "en": "Smelting Furnace"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "kiln",
+  "accent": "#c06a3a",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 600,
+   "bricks": 8,
+   "tools": 4
+  },
+  "upkeep": 18,
+  "workforce": {
+   "tier": "chieftains",
+   "amount": 3
+  },
+  "cycle": 40,
+  "outputs": {
+   "copper": 1
+  },
+  "inputs": {
+   "copperore": 1,
+   "charcoal": 1
+  },
+  "desc": {
+   "de": "Schmilzt Kupfer aus dem Erz.",
+   "en": "Smelts copper from the ore."
+  }
+ },
+ {
+  "id": "coppersmith",
+  "name": {
+   "de": "Kupferschmiede",
+   "en": "Coppersmith"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "workshop",
+  "accent": "#b0602e",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 600,
+   "bricks": 8,
+   "tools": 4
+  },
+  "upkeep": 18,
+  "workforce": {
+   "tier": "chieftains",
+   "amount": 3
+  },
+  "cycle": 40,
+  "outputs": {
+   "coppertools": 1
+  },
+  "inputs": {
+   "copper": 1,
+   "wood": 1
+  },
+  "desc": {
+   "de": "Treibt Beile, Ahlen und Dolche aus Kupfer.",
+   "en": "Hammers axes, awls and daggers from copper."
+  }
+ },
+ {
+  "id": "cattlefarm",
+  "name": {
+   "de": "Rinderweide",
+   "en": "Cattle Pasture"
+  },
+  "category": "production",
+  "size": [
+   3,
+   3
+  ],
+  "style": "pasture",
+  "accent": "#7a5a3a",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 500,
+   "bricks": 4,
+   "tools": 4
+  },
+  "upkeep": 14,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "milk": 1
+  },
+  "requires": {
+   "fertility": "aurochs"
+  },
+  "desc": {
+   "de": "Gezähmte Auerochsen geben Milch – braucht Auerochsen im Tal.",
+   "en": "Tamed aurochs give milk – needs aurochs in the valley."
+  }
+ },
+ {
+  "id": "dairy",
+  "name": {
+   "de": "Käserei",
+   "en": "Cheese Dairy"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "kiln",
+  "accent": "#e8c860",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 500,
+   "bricks": 6,
+   "tools": 2
+  },
+  "upkeep": 14,
+  "workforce": {
+   "tier": "chieftains",
+   "amount": 3
+  },
+  "cycle": 40,
+  "outputs": {
+   "cheese": 2
+  },
+  "inputs": {
+   "milk": 1,
+   "pottery": 1
+  },
+  "desc": {
+   "de": "Lässt Milch in Siebgefäßen zu Käse reifen.",
+   "en": "Turns milk into cheese in strainer pots."
+  }
+ },
+ {
+  "id": "sheepfarm",
+  "name": {
+   "de": "Schafweide",
+   "en": "Sheep Pasture"
+  },
+  "category": "production",
+  "size": [
+   3,
+   3
+  ],
+  "style": "pasture",
+  "accent": "#e8e0d0",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 500,
+   "bricks": 4,
+   "tools": 4
+  },
+  "upkeep": 14,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 30,
+  "outputs": {
+   "wool": 1
+  },
+  "requires": {
+   "fertility": "mouflon"
+  },
+  "desc": {
+   "de": "Wollschafe – braucht Wildschafe im Tal.",
+   "en": "Wool sheep – needs wild sheep in the valley."
+  }
+ },
+ {
+  "id": "woolweaver",
+  "name": {
+   "de": "Wollweberei",
+   "en": "Wool Weaver"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "loom",
+  "accent": "#7a5a8a",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 600,
+   "bricks": 6,
+   "tools": 4
+  },
+  "upkeep": 16,
+  "workforce": {
+   "tier": "chieftains",
+   "amount": 3
+  },
+  "cycle": 40,
+  "outputs": {
+   "woolcloth": 1
+  },
+  "inputs": {
+   "wool": 1
+  },
+  "desc": {
+   "de": "Spinnt und webt Wolle.",
+   "en": "Spins and weaves wool."
+  }
+ },
+ {
+  "id": "vineyard",
+  "name": {
+   "de": "Rebgarten",
+   "en": "Vineyard"
+  },
+  "category": "production",
+  "size": [
+   3,
+   3
+  ],
+  "style": "field",
+  "accent": "#5a1838",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 500,
+   "bricks": 4,
+   "tools": 4
+  },
+  "upkeep": 12,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 3
+  },
+  "cycle": 40,
+  "outputs": {
+   "grapes": 1
+  },
+  "requires": {
+   "fertility": "grapes"
+  },
+  "desc": {
+   "de": "Braucht wilde Reben als Fruchtbarkeit.",
+   "en": "Needs wild vines as a fertility."
+  }
+ },
+ {
+  "id": "winery",
+  "name": {
+   "de": "Kelterei",
+   "en": "Wine Press"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "kiln",
+  "accent": "#6a1838",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 700,
+   "bricks": 6,
+   "tools": 4
+  },
+  "upkeep": 18,
+  "workforce": {
+   "tier": "chieftains",
+   "amount": 3
+  },
+  "cycle": 40,
+  "outputs": {
+   "wine": 1
+  },
+  "inputs": {
+   "grapes": 1,
+   "pottery": 1
+  },
+  "desc": {
+   "de": "Keltert Wein und füllt ihn in Krüge.",
+   "en": "Presses wine and fills it into jars."
+  }
+ },
+ {
+  "id": "carpenter",
+  "name": {
+   "de": "Zimmerei",
+   "en": "Carpenter"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "workshop",
+  "accent": "#b08050",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 500,
+   "bricks": 6,
+   "tools": 4
+  },
+  "upkeep": 14,
+  "workforce": {
+   "tier": "chieftains",
+   "amount": 2
+  },
+  "cycle": 30,
+  "outputs": {
+   "planks": 2
+  },
+  "inputs": {
+   "wood": 2,
+   "coppertools": 0.25
+  },
+  "desc": {
+   "de": "Spaltet Bretter mit Kupferbeilen – für Bohlenwege und Wagen.",
+   "en": "Splits planks with copper axes – for plank roads and carts."
+  }
+ },
+ {
+  "id": "wheelwright",
+  "name": {
+   "de": "Stellmacher",
+   "en": "Wheelwright"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "workshop",
+  "accent": "#8a6a46",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 800,
+   "bricks": 6,
+   "coppertools": 2
+  },
+  "upkeep": 20,
+  "workforce": {
+   "tier": "chieftains",
+   "amount": 3
+  },
+  "cycle": 60,
+  "outputs": {
+   "wheels": 1
+  },
+  "inputs": {
+   "planks": 2,
+   "coppertools": 0.5
+  },
+  "desc": {
+   "de": "Baut Scheibenräder – die neueste Erfindung!",
+   "en": "Builds disc wheels – the latest invention!"
+  }
+ },
+ {
+  "id": "tinmine",
+  "name": {
+   "de": "Zinnbergwerk",
+   "en": "Tin Mine"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "pit",
+  "accent": "#9aa4a8",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 700,
+   "bricks": 6,
+   "coppertools": 2
+  },
+  "upkeep": 20,
+  "workforce": {
+   "tier": "villagers",
+   "amount": 4
+  },
+  "cycle": 40,
+  "outputs": {
+   "tin": 1
+  },
+  "requires": {
+   "deposit": "tin"
+  },
+  "desc": {
+   "de": "Muss auf einem Zinnvorkommen stehen. Zinn ist selten – nur hinter dem Gletscher.",
+   "en": "Must stand on a tin deposit. Tin is rare – only beyond the glacier."
+  }
+ },
+ {
+  "id": "bronzesmith",
+  "name": {
+   "de": "Bronzegießer",
+   "en": "Bronze Caster"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "kiln",
+  "accent": "#a87a34",
+  "unlockTier": "chieftains",
+  "cost": {
+   "shells": 1500,
+   "bricks": 10,
+   "coppertools": 4
+  },
+  "upkeep": 30,
+  "workforce": {
+   "tier": "chieftains",
+   "amount": 4
+  },
+  "cycle": 60,
+  "outputs": {
+   "bronzeware": 1
+  },
+  "inputs": {
+   "copper": 1,
+   "tin": 1
+  },
+  "desc": {
+   "de": "Legiert Kupfer mit Zinn – die Bronzezeit beginnt.",
+   "en": "Alloys copper with tin – the Bronze Age begins."
+  }
+ }
 ]

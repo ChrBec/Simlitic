@@ -1,0 +1,107 @@
+[
+ {
+  "a": "main",
+  "b": "flint",
+  "obstacle": "none"
+ },
+ {
+  "a": "main",
+  "b": "bees",
+  "obstacle": "scree"
+ },
+ {
+  "a": "main",
+  "b": "flax",
+  "obstacle": "scree"
+ },
+ {
+  "a": "main",
+  "b": "aurochs",
+  "obstacle": "gorge"
+ },
+ {
+  "a": "main",
+  "b": "mouflon",
+  "obstacle": "scree"
+ },
+ {
+  "a": "flint",
+  "b": "bees",
+  "obstacle": "none"
+ },
+ {
+  "a": "bees",
+  "b": "flax",
+  "obstacle": "river"
+ },
+ {
+  "a": "flax",
+  "b": "aurochs",
+  "obstacle": "none"
+ },
+ {
+  "a": "aurochs",
+  "b": "rival",
+  "obstacle": "scree"
+ },
+ {
+  "a": "rival",
+  "b": "mouflon",
+  "obstacle": "none"
+ },
+ {
+  "a": "mouflon",
+  "b": "flint",
+  "obstacle": "none"
+ },
+ {
+  "a": "flint",
+  "b": "obsidian",
+  "obstacle": "gorge"
+ },
+ {
+  "a": "mouflon",
+  "b": "obsidian",
+  "obstacle": "scree"
+ },
+ {
+  "a": "bees",
+  "b": "vine",
+  "obstacle": "none"
+ },
+ {
+  "a": "flax",
+  "b": "vine",
+  "obstacle": "river"
+ },
+ {
+  "a": "flax",
+  "b": "mira",
+  "obstacle": "scree"
+ },
+ {
+  "a": "aurochs",
+  "b": "mira",
+  "obstacle": "none"
+ },
+ {
+  "a": "aurochs",
+  "b": "tin",
+  "obstacle": "glacier"
+ },
+ {
+  "a": "rival",
+  "b": "tin",
+  "obstacle": "glacier"
+ },
+ {
+  "a": "rival",
+  "b": "mist",
+  "obstacle": "scree"
+ },
+ {
+  "a": "mouflon",
+  "b": "mist",
+  "obstacle": "river"
+ }
+]

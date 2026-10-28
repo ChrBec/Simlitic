@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dh0yb6f8i728u"
-path="res://.godot/imported/grain.png-e9615570b9a8a003287e3f9ea719106a.ctex"
+uid="uid://ckrwr60newonn"
+path="res://.godot/imported/charcoal.png-33f238fc1449444ceb950194cbed0a44.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/goods/grain.png"
-dest_files=["res://.godot/imported/grain.png-e9615570b9a8a003287e3f9ea719106a.ctex"]
+source_file="res://assets/goods/charcoal.png"
+dest_files=["res://.godot/imported/charcoal.png-33f238fc1449444ceb950194cbed0a44.ctex"]
 
 [params]
 

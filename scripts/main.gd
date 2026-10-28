@@ -41,6 +41,20 @@ func _ready() -> void:
 		if a.begins_with("--yaw=") and game:
 			game.view.yaw = deg_to_rad(a.substr(6).to_float())
 			game.view.set_zoom(game.view.zoom)
+		if a == "--winter" and game:
+			game.world.time = World.SEASON_LENGTH * 3.0 + 5.0
+			game.world.last_season = World.WINTER
+			game.view._winter = 1.0
+		if a.begins_with("--focus=") and game:
+			for v in game.world.valleys:
+				if v.def == a.substr(8):
+					game.view.center_on(v.cx, v.cy)
+		if a.begins_with("--pass=") and game:
+			# look at the first discovered pass with this obstacle
+			for p in game.world.passes:
+				if p.discovered and p.obstacle == a.substr(7):
+					game.view.center_on(p.mid % game.world.size, p.mid / game.world.size)
+					break
 		if a.begins_with("--menu="):
 			match a.substr(7):
 				"new": show_new_game()
@@ -49,7 +63,7 @@ func _ready() -> void:
 				"pause": open_pause()
 				"settings": show_settings(show_main_menu)
 				"credits": show_credits()
-				"tier": show_tier_card("hunters")
+				"tier": show_tier_card("sedentary")
 		if a.begins_with("--shot="):
 			_screenshot_and_quit(a.substr(7))
 
@@ -107,24 +121,51 @@ func _make_backdrop() -> void:
 	backdrop.view.set_zoom(1.15)
 
 
-## A small hunter village, built by the bot. Used for the menu backdrop and `--demo`.
+## A settled forager village with a colony and a porter caravan, built by the bot. Used for the menu backdrop and `--demo`.
 static func demo_world(seed_value: int) -> World:
 	var w := World.create(seed_value)
 	var home: int = w.home_valley().idx
 	w.shells = 100000
 	Bot.lay_roads(w, home)
-	for i in 14:
+	for i in 16:
 		Bot.build_near(w, home, "tent")
-	Bot.build_near(w, home, "fireplace")
-	Bot.build_near(w, home, "fireplace")
-	Bot.build_near(w, home, "berrygatherer", 4)
-	Bot.build_near(w, home, "woodcutter", 4)
-	Bot.build_near(w, home, "nutgatherer", 4)
+	for t in ["fireplace", "fireplace"]:
+		Bot.build_near(w, home, t)
+	for t in ["berrygatherer", "woodcutter", "woodcutter", "nutgatherer", "hunter", "trapper"]:
+		Bot.build_near(w, home, t, 5)
 	Bot.run_minutes(w, 3)
-	w.unlocked_tiers.append("hunters")
-	Bot.build_near(w, home, "trapper", 4)
-	Bot.build_near(w, home, "hunter", 4)
-	Bot.build_near(w, home, "shaman")
+	if not w.tier_unlocked("sedentary"):
+		w.unlocked_tiers.append("sedentary")
+	for t in ["fisher", "graingatherer", "grinder", "tanner", "toolmaker"]:
+		Bot.build_near(w, home, t, 5)
+	for t in ["shaman", "ancestors", "scout"]:
+		Bot.build_near(w, home, t)
+	# reveal the neighbouring valleys and found the flint gorge
+	for p in w.passes:
+		if p.a == home or p.b == home:
+			p.discovered = true
+			w.valleys[p.b if p.a == home else p.a].discovered = true
+	w.pass_ver += 1
+	var flint := -1
+	for v in w.valleys:
+		if v.def == "flint":
+			flint = v.idx
+	var fv: Dictionary = w.valleys[flint]
+	var spot := w.find_free_spot(flint, 3, 3, fv.cx, fv.cy)
+	w.valleys[home].storage.wood = 120.0
+	w.valleys[home].storage.hides = 20.0
+	var founded := Commands.apply(w, {"type": "build", "building": "storage", "x": spot.x, "y": spot.y})
+	if not founded.ok:
+		push_warning("demo: could not found the flint gorge: %s" % founded.reason.en)
+		return w
+	fv.storage.wood = 60.0
+	Bot.lay_roads(w, flint, 8)
+	Bot.build_near(w, flint, "flintquarry")
+	Bot.build_near_pass(w, home, "caravanpost")
+	var car: Dictionary = Commands.apply(w, {"type": "buy_caravan", "valley": home, "caravan": "porters"})
+	if car.ok:
+		Commands.apply(w, {"type": "caravan_stops", "id": car.id, "stops": [
+			{"v": home, "load": ["wood"], "unload": ["flint"]}, {"v": flint, "load": ["flint"], "unload": ["wood"]}]})
 	Bot.run_minutes(w, 2)
 	return w
 
@@ -227,7 +268,7 @@ func show_main_menu() -> void:
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	menu_root.add_child(center)
 	center.add_child(col)
-	var version := UI.label("v" + str(ProjectSettings.get_setting("application/config/version")) + " · " + Content.L("Prototyp", "Prototype"), "LeatherLabel")
+	var version := UI.label("v" + str(ProjectSettings.get_setting("application/config/version")) + " · " + Content.L("Alpha", "Alpha"), "LeatherLabel")
 	version.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 	version.position = Vector2(-200, -36)
 	menu_root.add_child(version)
@@ -429,6 +470,9 @@ func show_tier_card(tier_id: String) -> void:
 	name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var intro := _wrap(Content.tx(t.intro), 480)
 	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var hist := _wrap(Content.tx(t.get("history", "")), 480)
+	hist.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hist.theme_type_variation = "Muted"
 	var house := UI.icon(Art.building_icon(t.house), 150)
-	var p := UI.panel([_centered(UI.label(Content.L("Eine neue Zeit beginnt", "A new age begins"), "Heading")), age, name, _centered(house), intro, _gap(6), _centered(UI.button(Content.L("Weiter", "Continue"), close_menu))])
+	var p := UI.panel([_centered(UI.label(Content.L("Eine neue Zeit beginnt", "A new age begins"), "Heading")), age, name, _centered(house), intro, _gap(4), hist, _gap(6), _centered(UI.button(Content.L("Weiter", "Continue"), close_menu))])
 	_screen(p)

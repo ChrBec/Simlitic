@@ -15,6 +15,10 @@ function addSprite(path: string, s: Sprite) {
 }
 function addCanvas(path: string, c: HTMLCanvasElement) { out.push({ path, data: c.toDataURL('image/png') }); }
 
+// `npm run bake:goods` (?only=goods) re-bakes just the goods icons and leaves every other file alone.
+const ONLY_GOODS = new URLSearchParams(location.search).get('only') === 'goods';
+if (ONLY_GOODS) for (const g of GOODS) addCanvas(`goods/${g.id}.png`, goodIcon(g.color, g.glyph, 64));
+if (!ONLY_GOODS) {
 for (const b of BUILDINGS) if (b.id !== 'path') addSprite(`buildings/${b.id}.png`, buildingSprite(b.id));
 for (let i = 0; i < 9; i++) addSprite(`nature/tree_${i}.png`, treeSprite(i));
 for (let i = 0; i < 4; i++) addSprite(`nature/bush_${i}.png`, bushSprite(i));
@@ -105,6 +109,8 @@ addCanvas('ui/slot.png', panel(80, 80, '#f2e6c8', 31, 2, 3));
   ctx.fillStyle = '#fff4dc'; ctx.font = 'bold 26px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', 24, 26);
   addCanvas('misc/warning.png', c);
 }
+
+} // !ONLY_GOODS
 
 (window as unknown as { BAKED: Out[] }).BAKED = out;
 document.title = 'done';

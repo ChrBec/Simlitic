@@ -3,10 +3,12 @@ extends RefCounted
 ## The complete simulation state plus spatial helpers. The simulation never touches nodes or
 ## rendering, so it runs headless (tests, balancing, future lockstep multiplayer peers).
 
-const SAVE_VERSION := 1
+const SAVE_VERSION := 2
 const PLAYER := "player"
 const TICK := 0.1 # seconds of game time per simulation step
 const STORAGE_PER_YARD := 80
+const SEASON_LENGTH := 150.0 # seconds per season; a year has four
+const WINTER := 3
 
 enum { MOUNTAIN = 0, GRASS = 1, WATER = 2, PASS = 3 }
 enum { N_NONE = 0, N_TREE = 1, N_BUSH = 2, N_ROCK = 3 }
@@ -35,7 +37,9 @@ var income := 0.0
 var upkeep := 0.0
 var unlocked_tiers: Array = []
 var upgrade_allowed := {}
-var routes: Array = []
+var caravans: Array = []
+var pass_ver := 0 # bumped when a pass opens or closes, so caravans re-plan their paths
+var last_season := 0
 var expedition = null
 var trader := {"present": false, "timer": 150.0, "prices": {}}
 var rivals: Array = []
@@ -46,6 +50,7 @@ var history: Array = []
 var dirty := 1 # bumped whenever tiles or buildings change (render caches key on it)
 
 # derived, not saved
+var touched := PackedInt32Array() # tiles changed since the view last looked (incremental redraw)
 var coverage := {}
 var coverage_tick := -1
 
@@ -91,8 +96,29 @@ func step() -> void:
 		history.append([roundi(time), roundi(shells), total_population()])
 		if history.size() > 360:
 			history.pop_front()
+	var s := season()
+	if s != last_season:
+		last_season = s
+		pass_ver += 1
+		if s == WINTER:
+			notify({"de": "Der Winter kommt: Gletscherpässe sind gesperrt, Felder und Weiden ruhen.", "en": "Winter arrives: glacier passes close, fields and pastures rest."}, "warn")
+		elif s == 0:
+			notify({"de": "Frühling! Die Gletscherpässe tauen auf.", "en": "Spring! The glacier passes thaw."}, "info")
 	if tick % 600 == 0 and shells < 0:
 		notify({"de": "Die Muschelkasse ist leer! Senke den Unterhalt oder versorge deine Leute besser.", "en": "The shell purse is empty! Lower upkeep or supply your people better."}, "warn")
+
+
+## 0 spring, 1 summer, 2 autumn, 3 winter
+func season() -> int:
+	return int(time / SEASON_LENGTH) % 4
+
+
+func is_winter() -> bool:
+	return season() == WINTER
+
+
+func year() -> int:
+	return int(time / (SEASON_LENGTH * 4.0)) + 1
 
 
 # ---------------------------------------------------------------- tiles
@@ -169,6 +195,20 @@ func pay(cost: Dictionary, store: Dictionary) -> void:
 			store[k] = store.get(k, 0.0) - cost[k]
 
 
+func caravan(id: int):
+	for c in caravans:
+		if c.id == id:
+			return c
+	return null
+
+
+## Hands the changed tiles to the view and forgets them.
+func take_touched() -> PackedInt32Array:
+	var t := touched
+	touched = PackedInt32Array()
+	return t
+
+
 func tier_unlocked(t: String) -> bool:
 	return t in unlocked_tiers
 
@@ -213,7 +253,13 @@ func check_placement(type: String, x: int, y: int, owner := PLAYER) -> Dictionar
 		if vd.owner != null and vd.owner != PLAYER:
 			return _no("Dieses Tal gehört einem anderen Stamm", "This valley belongs to another tribe")
 		if vd.owner == null:
-			pay_from = home_valley().idx
+			pay_from = -1
+			for o in valleys:
+				if o.owner == PLAYER and not Logistics.valley_route(self, o.idx, v, false, true).is_empty():
+					pay_from = o.idx
+					break
+			if pay_from < 0:
+				return _no("Kein offener Pass führt hierher – erst das Hindernis überwinden", "No open pass leads here – overcome the obstacle first")
 	elif vd.owner != owner:
 		if owner == PLAYER and vd.owner == null:
 			return _no("Gründe hier zuerst einen Lagerplatz", "Found a storage yard here first")
@@ -231,6 +277,8 @@ func check_placement(type: String, x: int, y: int, owner := PLAYER) -> Dictionar
 				return _no("Muss auf einem Vorkommen stehen", "Must be placed on a deposit")
 		if req.has("nearWater") and not _has_near(type, x, y, int(req.nearWater), WATER):
 			return _no("Muss am Wasser stehen", "Must be next to water")
+		if req.has("nearPass") and not _has_near(type, x, y, int(req.nearPass), PASS):
+			return _no("Muss am Fuß eines Passes stehen", "Must stand at the foot of a pass")
 		if req.get("nearMountain", false) and not _has_near(type, x, y, 1, MOUNTAIN):
 			return _no("Muss direkt am Berg stehen", "Must touch a mountain")
 	if owner == PLAYER and not can_afford(def.cost, valleys[pay_from].storage):
@@ -279,6 +327,7 @@ func place_building(type: String, x: int, y: int, owner: String) -> Dictionary:
 		var i := idx(p.x, p.y)
 		bmap[i] = id
 		nature[i] = N_NONE
+		touched.append(i)
 	buildings[id] = b
 	if type == "storage" and owner == PLAYER and valleys[v].owner != PLAYER:
 		valleys[v].owner = PLAYER
@@ -292,6 +341,7 @@ func remove_building(id: int) -> void:
 	var b: Dictionary = buildings[id]
 	for p in footprint(b.type, b.x, b.y):
 		bmap[idx(p.x, p.y)] = 0
+		touched.append(idx(p.x, p.y))
 	buildings.erase(id)
 	dirty += 1
 
@@ -359,7 +409,7 @@ func prestige() -> int:
 # ---------------------------------------------------------------- save / load
 
 const SAVED_FIELDS := ["size", "terrain", "valley", "nature", "road", "pass_of", "deposit", "seed", "tick", "time", "valleys", "passes",
-	"buildings", "next_id", "shells", "unlocked_tiers", "upgrade_allowed", "routes", "expedition", "trader", "rivals",
+	"buildings", "next_id", "shells", "unlocked_tiers", "upgrade_allowed", "caravans", "pass_ver", "last_season", "expedition", "trader", "rivals",
 	"notifications", "next_note", "objectives", "history"]
 
 

@@ -16,6 +16,7 @@ uniform vec3 rock : source_color = vec3(0.53, 0.47, 0.41);
 uniform vec3 rock_dark : source_color = vec3(0.36, 0.32, 0.29);
 uniform vec3 snow : source_color = vec3(0.95, 0.95, 0.97);
 uniform vec3 sand : source_color = vec3(0.80, 0.72, 0.52);
+uniform float winter = 0.0; // 0 summer … 1 deep winter: the snow line drops and the valleys frost over
 
 varying vec3 wpos;
 varying vec3 wnorm;
@@ -42,8 +43,10 @@ void fragment() {
 	vec3 stone = mix(rock, rock_dark, smoothstep(0.25, 0.8, mix(n2 * 0.6 + n1 * 0.4, strata, smoothstep(0.3, 0.7, slope))));
 	stone *= 0.9 + 0.2 * smoothstep(0.0, 9.0, wpos.y);
 	col = mix(col, stone, rocky);
-	float snowy = smoothstep(12.0, 13.5, wpos.y + (n1 - 0.5) * 3.0) * (1.0 - smoothstep(0.6, 0.85, slope));
+	float snow_line = mix(9.5, 3.0, winter);
+	float snowy = smoothstep(snow_line, snow_line + 1.5, wpos.y + (n1 - 0.5) * 3.0) * (1.0 - smoothstep(0.6, 0.85, slope));
 	col = mix(col, snow * (0.95 + 0.05 * n3), snowy);
+	col = mix(col, snow * 0.96, winter * 0.5 * smoothstep(0.35, 0.65, n2 * 0.7 + n1 * 0.3));
 
 	// shores, building plots, roads and mountain trails
 	col = mix(col, sand * (0.9 + 0.15 * n3), smoothstep(0.12, 0.4, data.a));

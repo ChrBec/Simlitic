@@ -52,3 +52,19 @@ static func build_near(w: World, v: int, type: String, min_dist := 0.0) -> bool:
 static func run_minutes(w: World, minutes: float) -> void:
 	for i in int(minutes * 600):
 		w.step()
+
+
+## Places a building at the mouth of a pass leaving valley `v` (caravan camps must stand there).
+static func build_near_pass(w: World, v: int, type: String) -> bool:
+	for p in w.passes:
+		if p.a != v and p.b != v:
+			continue
+		for t in p.tiles:
+			var x: int = t % w.size
+			var y: int = t / w.size
+			for r in range(1, 7):
+				for dy in range(-r, r + 1):
+					for dx in range(-r, r + 1):
+						if w.inside(x + dx, y + dy) and w.valley[w.idx(x + dx, y + dy)] == v and w.check_placement(type, x + dx, y + dy).ok:
+							return Commands.apply(w, {"type": "build", "building": type, "x": x + dx, "y": y + dy}).ok
+	return false

@@ -9,7 +9,8 @@ const { createServer } = require('vite');
   const browser = await chromium.launch();
   const page = await browser.newPage();
   page.on('pageerror', (e) => console.error(e));
-  await page.goto('http://localhost:5199/');
+  const only = process.env.ONLY || '';
+  await page.goto('http://localhost:5199/' + (only ? '?only=' + only : ''));
   await page.waitForFunction(() => document.title === 'done', null, { timeout: 60000 });
   const baked = await page.evaluate(() => window.BAKED);
   const root = path.resolve(__dirname, '../../assets');
@@ -20,7 +21,7 @@ const { createServer } = require('vite');
     fs.writeFileSync(file, Buffer.from(item.data.split(',')[1], 'base64'));
     if (item.anchor) anchors[item.path.replace(/\.png$/, '')] = { anchor: item.anchor };
   }
-  fs.writeFileSync(path.join(root, 'sprites.json'), JSON.stringify(anchors, null, 1));
+  if (!only) fs.writeFileSync(path.join(root, 'sprites.json'), JSON.stringify(anchors, null, 1));
   console.log(`baked ${baked.length} files`);
   await browser.close();
   await server.close();

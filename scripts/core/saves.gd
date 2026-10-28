@@ -26,6 +26,9 @@ static func load_world(slot: String) -> World:
 	f.close()
 	if not d is Dictionary or not d.has("world"):
 		return null
+	if int(d.world.get("version", 0)) != World.SAVE_VERSION:
+		push_warning("save %s is from an older version and cannot be loaded" % slot)
+		return null
 	return World.from_dict(d.world)
 
 

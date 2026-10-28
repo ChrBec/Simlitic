@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brt7gaq50em2i"
-path="res://.godot/imported/woolcoat.png-a7ffd6980df552cd1dc038eb12570488.ctex"
+uid="uid://ct88ptk75vre5"
+path="res://.godot/imported/barley.png-90539a99d106363082b1b3f24c2d5acf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/goods/woolcoat.png"
-dest_files=["res://.godot/imported/woolcoat.png-a7ffd6980df552cd1dc038eb12570488.ctex"]
+source_file="res://assets/goods/barley.png"
+dest_files=["res://.godot/imported/barley.png-90539a99d106363082b1b3f24c2d5acf.ctex"]
 
 [params]
 

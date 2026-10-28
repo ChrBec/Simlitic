@@ -1,47 +1,84 @@
 class_name Logistics
-## Everything between valleys: scouts, porter routes, the wandering trader and rival tribes.
+## Everything between valleys: scouts, pass projects, caravans (the "ships" of the mountains),
+## the wandering trader and rival tribes.
 
 const EXPEDITION_COST := {"shells": 150, "meat": 5}
 const EXPEDITION_TIME := 45.0
-const ROUTE_COST := 200
-const PORTER_CAPACITY := 20.0
-const PORTER_SPEED := 2.2 # tiles per second
 const GIFT_COST := 150
+## Upgrading a cleared pass to a plank road lets wheeled carts cross it.
+const PLANK_COST := {"shells": 800, "planks": 15, "coppertools": 4}
+const PLANK_TIME := 60.0
+const PLANK_TIER := "chieftains"
+const STOP_WAIT := 4.0
 const RIVAL_PLAN := ["tent", "fireplace", "tent", "woodcutter", "tent", "berrygatherer", "tent", "tent", "hunter", "tent",
-	"shaman", "tent", "tent", "fisher", "tent", "claypit", "tent", "potter", "tent", "tent"]
+	"shaman", "tent", "tent", "fisher", "tent", "graingatherer", "tent", "grinder", "tent", "tent", "claypit", "tent", "potter"]
 
 
-## BFS over walkable tiles (valley ground and discovered passes) between two storage yards.
-static func find_path(w: World, a: int, b: int) -> Array:
+## Can a caravan (or a founding party) use this pass right now?
+static func pass_open(w: World, p: Dictionary, wagon := false, ignore_season := false) -> bool:
+	if not p.discovered or not p.cleared:
+		return false
+	var ob: Dictionary = Content.OBSTACLE.get(p.obstacle, {})
+	if wagon and (not p.plank or ob.get("no_wagons", false)):
+		return false
+	if not ignore_season and ob.get("winter_closed", false) and w.is_winter():
+		return false
+	return true
+
+
+## Valley-level reachability over usable passes.
+static func valley_route(w: World, from: int, to: int, wagon := false, ignore_season := false) -> Array:
+	var prev := {from: from}
+	var q := [from]
+	while not q.is_empty():
+		var v: int = q.pop_front()
+		if v == to:
+			break
+		for p in w.passes:
+			if p.a != v and p.b != v:
+				continue
+			var o: int = p.b if p.a == v else p.a
+			if prev.has(o) or not pass_open(w, p, wagon, ignore_season):
+				continue
+			prev[o] = v
+			q.append(o)
+	if not prev.has(to):
+		return []
+	var out := [to]
+	while out[0] != from:
+		out.push_front(prev[out[0]])
+	return out
+
+
+## Tile path between two storage yards over valley ground and usable passes (BFS).
+static func find_path(w: World, a: int, b: int, wagon := false) -> Array:
 	var sa = w.storage_of(a)
 	var sb = w.storage_of(b)
 	if sa == null or sb == null:
 		return []
 	var start := w.idx(sa.x + 1, sa.y + 1)
 	var goal := w.idx(sb.x + 1, sb.y + 1)
+	var open_pass := []
+	for p in w.passes:
+		open_pass.append(pass_open(w, p, wagon))
 	var prev := PackedInt32Array()
 	prev.resize(w.size * w.size)
 	prev.fill(-1)
 	prev[start] = start
-	var q: Array[int] = [start]
+	var q := PackedInt32Array([start])
 	var head := 0
+	var n := w.size
 	while head < q.size():
 		var i: int = q[head]
 		head += 1
 		if i == goal:
 			break
-		var x := i % w.size
-		var y := i / w.size
-		for d in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
-			var nx: int = x + d.x
-			var ny: int = y + d.y
-			if not w.inside(nx, ny):
-				continue
-			var j := w.idx(nx, ny)
-			if prev[j] != -1:
+		var x := i % n
+		for j in [i + 1 if x < n - 1 else -1, i - 1 if x > 0 else -1, i + n, i - n]:
+			if j < 0 or j >= n * n or prev[j] != -1:
 				continue
 			var t := w.terrain[j]
-			if t == World.GRASS or (t == World.PASS and w.passes[w.pass_of[j]].discovered):
+			if t == World.GRASS or (t == World.PASS and open_pass[w.pass_of[j]]):
 				prev[j] = i
 				q.append(j)
 	if prev[goal] == -1:
@@ -59,8 +96,9 @@ static func find_path(w: World, a: int, b: int) -> Array:
 static func tick(w: World) -> void:
 	var dt := World.TICK
 	_scouts(w, dt)
-	for r in w.routes:
-		_move_route(w, r, dt)
+	_projects(w, dt)
+	for c in w.caravans:
+		_move_caravan(w, c, dt)
 	_trader(w, dt)
 	for r in w.rivals:
 		r.build_timer -= dt
@@ -75,6 +113,103 @@ static func tick(w: World) -> void:
 		r.population = n * 7
 
 
+static func _projects(w: World, dt: float) -> void:
+	for p in w.passes:
+		if p.project == null:
+			continue
+		p.project.left -= dt
+		if p.project.left > 0.0:
+			continue
+		var kind: String = p.project.kind
+		p.project = null
+		if kind == "plank":
+			p.plank = true
+		else:
+			p.cleared = true
+		w.pass_ver += 1
+		w.dirty += 1
+		var na: Dictionary = Content.valley_def(w.valleys[p.a].def).name
+		var nb: Dictionary = Content.valley_def(w.valleys[p.b].def).name
+		if kind == "plank":
+			w.notify({"de": "Der Bohlenweg zwischen %s und %s ist fertig – jetzt rollen Karren." % [na.de, nb.de], "en": "The plank road between %s and %s is done – carts can roll." % [na.en, nb.en]}, "good")
+		else:
+			w.notify({"de": "Der Pass zwischen %s und %s ist jetzt für Karawanen offen." % [na.de, nb.de], "en": "The pass between %s and %s is now open to caravans." % [na.en, nb.en]}, "good")
+
+
+# ---------------------------------------------------------------- caravans
+
+static func caravan_def(c: Dictionary) -> Dictionary:
+	return Content.CARAVAN[c.type]
+
+
+static func cargo_total(c: Dictionary) -> float:
+	var n := 0.0
+	for g in c.cargo:
+		n += c.cargo[g]
+	return n
+
+
+static func _move_caravan(w: World, c: Dictionary, dt: float) -> void:
+	if c.stops.size() < 2:
+		c.status = "idle"
+		return
+	if c.wait > 0.0:
+		c.wait -= dt
+		return
+	var target: int = c.stops[c.leg].v
+	if c.path.size() < 2 or c.path_ver != w.pass_ver:
+		var here: int = c.at
+		if here == target:
+			_arrive(w, c)
+			return
+		var def := caravan_def(c)
+		c.path = find_path(w, here, target, def.get("wagon", false))
+		c.path_ver = w.pass_ver
+		c.pos = 0.0
+		if c.path.size() < 2:
+			c.status = "winter" if w.is_winter() and not valley_route(w, here, target, def.get("wagon", false), true).is_empty() else "blocked"
+			c.wait = 3.0
+			c.path_ver = -1
+			return
+	c.status = "moving"
+	c.pos += float(caravan_def(c).speed) * dt
+	if c.pos >= c.path.size() - 1:
+		c.at = target
+		c.path = []
+		_arrive(w, c)
+
+
+## At a stop: unload what this stop wants, then fill free slots with what it gives.
+static func _arrive(w: World, c: Dictionary) -> void:
+	var stop: Dictionary = c.stops[c.leg]
+	var v: Dictionary = w.valleys[stop.v]
+	c.leg = (c.leg + 1) % c.stops.size()
+	c.wait = STOP_WAIT
+	c.pos = 0.0
+	if v.owner != World.PLAYER:
+		return
+	var st: Dictionary = v.storage
+	var cap := w.storage_cap(stop.v)
+	for g in stop.unload:
+		if not c.cargo.has(g):
+			continue
+		var put := minf(c.cargo[g], maxf(0.0, cap - st.get(g, 0.0)))
+		st[g] = st.get(g, 0.0) + put
+		c.cargo[g] -= put
+		c.delivered += put
+		if c.cargo[g] <= 0.001:
+			c.cargo.erase(g)
+	var def := caravan_def(c)
+	for g in stop.load:
+		if not c.cargo.has(g) and c.cargo.size() >= int(def.slots):
+			continue
+		var take := minf(float(def.capacity) - c.cargo.get(g, 0.0), floorf(st.get(g, 0.0)))
+		if take <= 0.0:
+			continue
+		st[g] -= take
+		c.cargo[g] = c.cargo.get(g, 0.0) + take
+
+
 static func _scouts(w: World, dt: float) -> void:
 	var ex = w.expedition
 	if ex == null:
@@ -85,6 +220,7 @@ static func _scouts(w: World, dt: float) -> void:
 	w.expedition = null
 	var p: Dictionary = w.passes[ex.pass]
 	p.discovered = true
+	w.pass_ver += 1
 	var other: int = p.b if p.a == ex.from else p.a
 	var v: Dictionary = w.valleys[other]
 	var was_new: bool = not v.discovered
@@ -98,50 +234,6 @@ static func _scouts(w: World, dt: float) -> void:
 				r.contacted = true
 				var def: Dictionary = Content.RIVAL[r.id]
 				w.notify({"de": "%s: „%s“" % [def.name.de, def.greeting.de], "en": "%s: \"%s\"" % [def.name.en, def.greeting.en]}, "warn")
-
-
-static func _move_route(w: World, r: Dictionary, dt: float) -> void:
-	if r.path.size() < 2:
-		r.path = find_path(w, r.a, r.b)
-		r.pos = 0.0
-		r.dir = 1
-		if r.path.size() < 2:
-			return
-	if r.wait > 0.0:
-		r.wait -= dt
-		return
-	r.pos += r.dir * PORTER_SPEED * dt
-	var last: float = r.path.size() - 1
-	if r.dir == 1 and r.pos >= last:
-		r.pos = last
-		_arrive(w, r, r.b, r.cargo_ba)
-		r.dir = -1
-	elif r.dir == -1 and r.pos <= 0.0:
-		r.pos = 0.0
-		_arrive(w, r, r.a, r.cargo_ab)
-		r.dir = 1
-
-
-## Unload everything carried, then load the goods meant for the way back.
-static func _arrive(w: World, r: Dictionary, v: int, to_load: Array) -> void:
-	var st: Dictionary = w.valleys[v].storage
-	var cap := w.storage_cap(v)
-	for g in r.load.keys():
-		var room := maxf(0.0, cap - st.get(g, 0.0))
-		var put := minf(room, r.load[g])
-		st[g] = st.get(g, 0.0) + put
-		r.load[g] -= put
-		if r.load[g] <= 0.001:
-			r.load.erase(g)
-	if not to_load.is_empty():
-		var per := PORTER_CAPACITY / to_load.size()
-		for g in to_load:
-			var take := minf(per - r.load.get(g, 0.0), floorf(st.get(g, 0.0)))
-			if take <= 0.0:
-				continue
-			st[g] -= take
-			r.load[g] = r.load.get(g, 0.0) + take
-	r.wait = 3.0
 
 
 static func _trader(w: World, dt: float) -> void:
@@ -236,6 +328,7 @@ static func _rival_build(w: World, owner: String, v: int) -> void:
 			var t := w.idx(x, y)
 			if w.terrain[t] == World.GRASS and w.bmap[t] == 0 and w.valley[t] == v:
 				w.road[t] = 1
+				w.touched.append(t)
 		if absi(tx - x) > absi(ty - y):
 			x += signi(tx - x)
 		else:

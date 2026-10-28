@@ -1,0 +1,104 @@
+[
+ {
+  "id": "none",
+  "name": {
+   "de": "Trampelpfad",
+   "en": "Trail"
+  },
+  "fix": null,
+  "desc": {
+   "de": "Ein offener Pfad – begehbar, sobald er erkundet ist.",
+   "en": "An open trail – passable once explored."
+  }
+ },
+ {
+  "id": "scree",
+  "name": {
+   "de": "Geröllhang",
+   "en": "Scree Slope"
+  },
+  "fix": {
+   "de": "Steig anlegen",
+   "en": "Cut a Stairway"
+  },
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 300,
+   "tools": 8,
+   "wood": 15
+  },
+  "time": 40,
+  "desc": {
+   "de": "Loses Geröll: Erst ein in den Fels gehauener Steig macht ihn für Lasten begehbar.",
+   "en": "Loose scree: only steps cut into the rock make it passable with loads."
+  }
+ },
+ {
+  "id": "river",
+  "name": {
+   "de": "Wildfluss",
+   "en": "Torrent"
+  },
+  "fix": {
+   "de": "Floßfähre bauen",
+   "en": "Build a Raft Ferry"
+  },
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 400,
+   "wood": 25,
+   "rope": 6
+  },
+  "time": 45,
+  "desc": {
+   "de": "Ein reißender Fluss quert den Pfad. Mit einem Seilfloß können Karawanen übersetzen.",
+   "en": "A raging river crosses the path. A rope-guided raft lets caravans across."
+  }
+ },
+ {
+  "id": "gorge",
+  "name": {
+   "de": "Schlucht",
+   "en": "Gorge"
+  },
+  "fix": {
+   "de": "Seilbrücke spannen",
+   "en": "Span a Rope Bridge"
+  },
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 600,
+   "wood": 20,
+   "rope": 15
+  },
+  "time": 60,
+  "desc": {
+   "de": "Eine tiefe Klamm. Nur eine Seilbrücke führt hinüber.",
+   "en": "A deep chasm. Only a rope bridge leads across."
+  }
+ },
+ {
+  "id": "glacier",
+  "name": {
+   "de": "Gletscherpass",
+   "en": "Glacier Pass"
+  },
+  "fix": {
+   "de": "Steinmänner setzen",
+   "en": "Mark with Cairns"
+  },
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 500,
+   "furs": 10,
+   "tools": 6
+  },
+  "time": 50,
+  "winter_closed": true,
+  "no_wagons": true,
+  "desc": {
+   "de": "Eis und Schnee. Mit Steinmännern markiert, im Winter dennoch gesperrt. Kein Wagen kommt hier hinauf.",
+   "en": "Ice and snow. Even marked with cairns it closes in winter. No cart can climb it."
+  }
+ }
+]

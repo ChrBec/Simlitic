@@ -5,6 +5,7 @@ const STATUS := {
 	"ok": ["Arbeitet", "Working"], "noRoad": ["Kein Pfad zum Lagerplatz!", "No path to the storage yard!"],
 	"noWorkers": ["Zu wenige Arbeitskräfte", "Not enough workers"], "noInput": ["Rohstoffe fehlen", "Missing input goods"],
 	"full": ["Lager voll", "Storage full"], "paused": ["Pausiert", "Paused"], "noNature": ["Zu wenig Natur im Umkreis", "Not enough nature nearby"],
+	"winter": ["Winterruhe – arbeitet langsam", "Winter rest – working slowly"],
 }
 
 
@@ -115,6 +116,8 @@ static func building(h: Hud, b: Dictionary) -> void:
 			h.add(UI.row(UI.label(Content.L("Kapazität je Gut", "Capacity per good")), UI.label(str(w.storage_cap(b.valley)))))
 		if b.type == "scout":
 			h.add(h.act(Content.L("Pfade erkunden …", "Explore paths …"), func(): h.open_panel("valleys")))
+		if b.type == "caravanpost":
+			h.add(h.act(Content.L("Karawanen …", "Caravans …"), func(): h.open_panel("caravans")))
 		if def.upkeep > 0:
 			h.add(UI.row(UI.label(Content.L("Unterhalt", "Upkeep")), UI.label("%d/min" % int(def.upkeep))))
 		if b.type != "storage":
@@ -163,17 +166,28 @@ static func population(h: Hud) -> void:
 		h.add(p)
 
 
+static func _vname(w: World, v: int) -> String:
+	return Content.tx(Content.valley_def(w.valleys[v].def).name)
+
+
+static func _cost_row(cost: Dictionary) -> HBoxContainer:
+	var row := UI.hbox([], 3)
+	for g in cost:
+		row.add_child(UI.icon(Art.tex("ui/shell"), 20) if g == "shells" else UI.good_icon(g, 20))
+		row.add_child(UI.label(str(int(cost[g])), "Muted"))
+	return row
+
+
 static func valleys(h: Hud) -> void:
 	var w := h.game.world
-	h.add(UI.label(Content.L("Täler & Pfade", "Valleys & Paths"), "Title"))
-	h.add(_wrap(Content.L("Jedes Tal ist wie eine Insel: eigene Fruchtbarkeiten, eigenes Lager, eigene Arbeiter.", "Every valley is like an island: its own fertilities, storage and workers."), "Muted"))
+	h.add(UI.label(Content.L("Täler & Pässe", "Valleys & Passes"), "Title"))
+	h.add(_wrap(Content.L("Jedes Tal ist wie eine Insel: eigene Fruchtbarkeiten, eigenes Lager, eigene Arbeiter. Kundschafter erkunden jeden Pfad – Karawanen brauchen aber offene Pässe.", "Every valley is like an island: its own fertilities, storage and workers. Scouts explore any path – but caravans need open passes."), "Muted"))
 	var ex = w.expedition
 	if ex != null:
 		h.add(UI.hbox([UI.label(Content.L("Kundschafter unterwegs …", "Scouts on their way …")), UI.bar(1.0 - ex.time_left / ex.total, false, 140)]))
 	for v in w.valleys:
 		if not v.discovered:
 			continue
-		var name := Content.tx(Content.valley_def(v.def).name)
 		var pop := 0.0
 		for k in v.population:
 			pop += v.population[k]
@@ -183,8 +197,9 @@ static func valleys(h: Hud) -> void:
 		elif v.owner != null:
 			status = Content.tx(Content.RIVAL[v.owner].name)
 		else:
-			status = Content.L("Unbesiedelt – baue hier einen Lagerplatz", "Unsettled – build a storage yard here")
-		var box := UI.vbox([UI.row(UI.label(name, "Heading"), h.act(Content.L("Zeigen", "Show"), func(): h.game.view.center_on(v.cx, v.cy))), _wrap(status, "Muted")])
+			var reach := w.valleys.any(func(o): return o.owner == World.PLAYER and not Logistics.valley_route(w, o.idx, v.idx, false, true).is_empty())
+			status = Content.L("Unbesiedelt – baue hier einen Lagerplatz", "Unsettled – build a storage yard here") if reach else Content.L("Unbesiedelt – noch führt kein offener Pass hierher", "Unsettled – no open pass leads here yet")
+		var box := UI.vbox([UI.row(UI.label(_vname(w, v.idx), "Heading"), h.act(Content.L("Zeigen", "Show"), func(): h.game.view.center_on(v.cx, v.cy))), _wrap(status, "Muted")])
 		var chips := []
 		for f in v.fertilities:
 			chips.append(Content.tx(Content.FERTILITY[f].name))
@@ -194,70 +209,268 @@ static func valleys(h: Hud) -> void:
 			for b in w.buildings.values():
 				if b.type == "scout" and b.valley == v.idx and b.owner == World.PLAYER:
 					has_scout = true
-			var open := false
+			var unexplored := false
 			for p in w.passes:
-				if (p.a != v.idx and p.b != v.idx) or p.discovered:
+				if p.a != v.idx and p.b != v.idx:
 					continue
-				open = true
-				var other: Dictionary = w.valleys[p.b if p.a == v.idx else p.a]
-				var target := Content.tx(Content.valley_def(other.def).name) if other.discovered else Content.L("Unbekannter Pfad", "Unknown path")
-				box.add_child(UI.row(UI.label("⛰ %s (%d %s)" % [target, p.tiles.size(), Content.L("Felder", "tiles")]),
-					h.act(Content.L("Erkunden", "Explore"), func(): h.game.command({"type": "explore", "pass": p.idx, "from": v.idx}), "Small", not has_scout or ex != null)))
-			if open and not has_scout:
-				var hint := Content.L("Baue ein Kundschafterlager, um Pfade zu erkunden (Proviant: 5 Fleisch, 150 Muscheln).", "Build a scout camp to explore paths (provisions: 5 meat, 150 shells).") if w.tier_unlocked("hunters") else Content.L("Kundschafter gibt es ab der Stufe der Jäger.", "Scouts become available with the hunters.")
-				box.add_child(_wrap(hint, "Muted"))
+				var other: int = p.b if p.a == v.idx else p.a
+				if not p.discovered:
+					unexplored = true
+					var target := _vname(w, other) if w.valleys[other].discovered else Content.L("Unbekannter Pfad", "Unknown path")
+					box.add_child(UI.row(UI.label("⛰ %s (%d %s)" % [target, p.core.size(), Content.L("Felder", "tiles")]),
+						h.act(Content.L("Erkunden", "Explore"), func(): h.game.command({"type": "explore", "pass": p.idx, "from": v.idx}), "Small", not has_scout or ex != null)))
+				else:
+					box.add_child(_pass_row(h, p, other))
+			if unexplored and not has_scout:
+				box.add_child(_wrap(Content.L("Baue ein Kundschafterlager, um Pfade zu erkunden (Proviant: 5 Fleisch, 150 Muscheln).", "Build a scout camp to explore paths (provisions: 5 meat, 150 shells)."), "Muted"))
 		h.add(UI.panel([box], "Dark"))
 	var unknown := w.valleys.filter(func(v): return not v.discovered).size()
 	if unknown > 0:
 		h.add(_wrap(Content.L("%d Täler liegen noch im Nebel der Berge.", "%d valleys still lie hidden in the mountains.") % unknown, "Muted"))
 
-	h.add(UI.label(Content.L("Trägerrouten", "Porter routes"), "Heading"))
-	var own := w.valleys.filter(func(v): return v.owner == World.PLAYER and w.storage_of(v.idx) != null)
-	for r in w.routes:
-		var a: Dictionary = w.valleys[r.a]
-		var b: Dictionary = w.valleys[r.b]
-		var an := Content.tx(Content.valley_def(a.def).name)
-		var bn := Content.tx(Content.valley_def(b.def).name)
-		var box := UI.vbox([UI.row(UI.label("%s ⇄ %s" % [an, bn]), h.act("✕", func(): h.game.command({"type": "delete_route", "id": r.id})))])
-		for dir in ["ab", "ba"]:
-			var from: Dictionary = a if dir == "ab" else b
-			var current: Array = r["cargo_" + dir]
-			box.add_child(UI.label("%s → %s" % [an, bn] if dir == "ab" else "%s → %s" % [bn, an], "Muted"))
-			var pick := HFlowContainer.new()
-			for g in Content.goods:
-				if from.storage.get(g.id, 0.0) <= 0.0 and not g.id in current:
-					continue
-				var btn := Button.new()
-				btn.theme_type_variation = "Item"
-				btn.icon = Art.good_icon(g.id)
-				btn.expand_icon = true
-				btn.custom_minimum_size = Vector2(38, 38)
-				btn.tooltip_text = Content.tx(g.name)
-				btn.modulate = Color(1.15, 1.05, 0.7) if g.id in current else Color(1, 1, 1, 0.75)
-				btn.pressed.connect(func():
-					var next := current.duplicate()
-					if g.id in next:
-						next.erase(g.id)
-					else:
-						next.append(g.id)
-					h.game.command({"type": "route_cargo", "id": r.id, "dir": dir, "goods": next})
-					h.render_panel())
-				pick.add_child(btn)
-			if pick.get_child_count() == 0:
-				pick.add_child(UI.label(Content.L("Lager leer", "Storage empty"), "Muted"))
-			box.add_child(pick)
-		h.add(UI.panel([box], "Dark"))
-	if own.size() >= 2:
-		var sa := OptionButton.new()
-		var sb := OptionButton.new()
-		for v in own:
-			sa.add_item(Content.tx(Content.valley_def(v.def).name), v.idx)
-			sb.add_item(Content.tx(Content.valley_def(v.def).name), v.idx)
-		sb.select(1)
-		h.add(UI.hbox([sa, UI.label("⇄"), sb]))
-		h.add(h.act(Content.L("Route anlegen (200 Muscheln)", "Create route (200 shells)"), func(): h.game.command({"type": "create_route", "a": sa.get_selected_id(), "b": sb.get_selected_id()})))
+
+## One discovered pass: its obstacle, the project that overcomes it, and the plank road upgrade.
+static func _pass_row(h: Hud, p: Dictionary, other: int) -> Control:
+	var w := h.game.world
+	var ob: Dictionary = Content.OBSTACLE[p.obstacle]
+	var box := UI.vbox([], 2)
+	var state := ""
+	if p.obstacle == "none":
+		state = Content.L("offener Pfad", "open trail")
+	elif p.cleared:
+		state = "✓ " + Content.tx(ob.fix)
 	else:
-		h.add(_wrap(Content.L("Besiedle ein zweites Tal, um Träger zwischen den Tälern laufen zu lassen.", "Settle a second valley to send porters between valleys."), "Muted"))
+		state = "✗ " + Content.tx(ob.name)
+	if p.plank:
+		state += " · " + Content.L("Bohlenweg", "plank road")
+	if p.cleared and not Logistics.pass_open(w, p):
+		state += " · " + Content.L("im Winter gesperrt", "closed in winter")
+	var head := UI.label("⛰ %s – %s" % [_vname(w, other), state])
+	head.tooltip_text = Content.tx(ob.desc)
+	head.mouse_filter = Control.MOUSE_FILTER_PASS
+	box.add_child(head)
+	if p.project != null:
+		var what := Content.L("Bohlenweg", "Plank road") if p.project.kind == "plank" else Content.tx(ob.fix)
+		box.add_child(UI.hbox([UI.label(what + " …", "Muted"), UI.bar(1.0 - p.project.left / p.project.total, false, 120)]))
+	elif not p.cleared:
+		var locked := not w.tier_unlocked(ob.unlockTier)
+		var btn := h.act(Content.tx(ob.fix), func(): h.game.command({"type": "clear_pass", "pass": p.idx}), "Small", locked)
+		btn.tooltip_text = Content.tx(ob.desc)
+		box.add_child(UI.hbox([btn, _cost_row(ob.cost)]))
+		if locked:
+			box.add_child(UI.label(Content.L("ab Stufe ", "from tier ") + Content.tx(Content.TIER[ob.unlockTier].name), "Muted"))
+	elif not p.plank and not ob.get("no_wagons", false) and w.tier_unlocked(Logistics.PLANK_TIER):
+		var btn := h.act(Content.L("Bohlenweg legen", "Lay plank road"), func(): h.game.command({"type": "plank_pass", "pass": p.idx}))
+		btn.tooltip_text = Content.L("Nur auf Bohlenwegen kommen Ochsenkarren über den Pass.", "Ox carts can only cross on plank roads.")
+		box.add_child(UI.hbox([btn, _cost_row(Logistics.PLANK_COST)]))
+	return box
+
+
+# ---------------------------------------------------------------- caravans
+
+const CARAVAN_STATUS := {
+	"idle": ["Wartet auf eine Route", "Waiting for a route"], "moving": ["Unterwegs", "On the way"],
+	"blocked": ["Kein offener Weg!", "No open way!"], "winter": ["Wartet auf das Tauwetter", "Waiting for the thaw"],
+}
+
+
+static func caravans(h: Hud) -> void:
+	var w := h.game.world
+	h.add(UI.label(Content.L("Karawanen", "Caravans"), "Title"))
+	h.add(_wrap(Content.L("Karawanen sind die Schiffe der Berge: Sie ziehen auf einer festen Route von Tal zu Tal, laden an jedem Halt Waren und liefern sie am nächsten ab. Jede Ware belegt einen Platz.", "Caravans are the ships of the mountains: they follow a fixed route from valley to valley, load goods at each stop and deliver them at the next. Each good takes one slot."), "Muted"))
+	var own := w.valleys.filter(func(v): return v.owner == World.PLAYER)
+	# hire new caravans at caravan camps
+	var posts := []
+	for v in own:
+		for b in w.buildings.values():
+			if b.type == "caravanpost" and b.valley == v.idx and b.owner == World.PLAYER:
+				posts.append(v.idx)
+				break
+	if posts.is_empty():
+		h.add(_status_box(Content.L("Baue einen Rastplatz am Fuß eines Passes, um Karawanen aufzustellen.", "Build a caravan camp at the foot of a pass to hire caravans."), false))
+	for v in posts:
+		var box := UI.vbox([UI.label(Content.L("Rastplatz in ", "Caravan camp in ") + _vname(w, v), "Heading")])
+		for cd in Content.caravans:
+			var locked := not w.tier_unlocked(cd.unlockTier)
+			var btn := h.act(Content.tx(cd.name), func(): h.game.command({"type": "buy_caravan", "valley": v, "caravan": cd.id}), "Small", locked)
+			btn.tooltip_text = "%s\n%d × %d %s · %s %d/min" % [Content.tx(cd.desc), int(cd.slots), int(cd.capacity), Content.L("Plätze", "slots"), Content.L("Unterhalt", "upkeep"), int(cd.upkeep)]
+			var line := UI.hbox([btn, _cost_row(cd.cost)])
+			if locked:
+				line.add_child(UI.label(Content.tx(Content.TIER[cd.unlockTier].name), "Muted"))
+			box.add_child(line)
+		h.add(UI.panel([box], "Dark"))
+	for c in w.caravans:
+		h.add(_caravan_box(h, c, own))
+
+
+static func _caravan_box(h: Hud, c: Dictionary, own: Array) -> Control:
+	var w := h.game.world
+	var def: Dictionary = Content.CARAVAN[c.type]
+	var st: Array = CARAVAN_STATUS.get(c.status, [c.status, c.status])
+	var box := UI.vbox([UI.row(UI.label("%s #%d" % [Content.tx(def.name), c.id], "Heading"), h.act("✕", func(): h.game.command({"type": "delete_caravan", "id": c.id})))])
+	var status := Content.L(st[0], st[1])
+	if c.status == "moving" and not c.stops.is_empty():
+		status += " → " + _vname(w, c.stops[c.leg].v)
+	box.add_child(_status_box(status, c.status != "blocked"))
+	var cargo := UI.hbox([UI.label(Content.L("Ladung:", "Cargo:"))], 3)
+	for g in c.cargo:
+		cargo.add_child(UI.good_icon(g, 22))
+		cargo.add_child(UI.label(str(floori(c.cargo[g]))))
+	cargo.add_child(UI.label("  (%d × %d)" % [int(def.slots), int(def.capacity)], "Muted"))
+	box.add_child(cargo)
+	box.add_child(UI.label(Content.L("Geliefert: %d Waren", "Delivered: %d goods") % floori(c.delivered), "Muted"))
+	# route editor
+	for i in c.stops.size():
+		var stop: Dictionary = c.stops[i]
+		var sbox := UI.vbox([UI.row(UI.label("%d. %s" % [i + 1, _vname(w, stop.v)]), h.act("✕", func():
+			var next := _copy_stops(c)
+			next.remove_at(i)
+			h.game.command({"type": "caravan_stops", "id": c.id, "stops": next})))], 2)
+		for mode in ["load", "unload"]:
+			var line := UI.hbox([UI.label(Content.L("Laden:", "Load:") if mode == "load" else Content.L("Abladen:", "Unload:"), "Muted")], 3)
+			for g in stop[mode]:
+				var gb := UI.good_icon(g, 28)
+				gb.mouse_filter = Control.MOUSE_FILTER_STOP
+				gb.tooltip_text = Content.tx(Content.GOOD[g].name) + Content.L(" – klicken zum Entfernen", " – click to remove")
+				gb.gui_input.connect(func(e):
+					if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+						var next := _copy_stops(c)
+						next[i][mode].erase(g)
+						h.game.command({"type": "caravan_stops", "id": c.id, "stops": next})
+						h.render_panel())
+				line.add_child(gb)
+			var pick := OptionButton.new()
+			pick.fit_to_longest_item = false
+			pick.theme_type_variation = "Small"
+			pick.custom_minimum_size = Vector2(46, 30)
+			pick.tooltip_text = Content.L("Ware hinzufügen", "Add a good")
+			pick.add_item("+", 0)
+			var k := 1
+			var choices := []
+			for g in Content.goods:
+				if g.id in stop[mode]:
+					continue
+				var have := 0.0
+				for v in own:
+					have += v.storage.get(g.id, 0.0)
+				if have <= 0.0 and Economy.good_balance(w).get(g.id, {}).get("prod", 0.0) <= 0.0:
+					continue
+				pick.add_icon_item(Art.good_icon(g.id), Content.tx(g.name), k)
+				choices.append(g.id)
+				k += 1
+			pick.item_selected.connect(func(idx):
+				if idx <= 0:
+					return
+				var next := _copy_stops(c)
+				next[i][mode].append(choices[idx - 1])
+				h.game.command({"type": "caravan_stops", "id": c.id, "stops": next})
+				h.render_panel())
+			line.add_child(pick)
+			sbox.add_child(line)
+		box.add_child(UI.panel([sbox]))
+	var add := OptionButton.new()
+	add.fit_to_longest_item = false
+	add.theme_type_variation = "Small"
+	add.add_item(Content.L("+ Halt hinzufügen", "+ Add stop"), -1)
+	for v in own:
+		add.add_item(_vname(w, v.idx), v.idx)
+	add.item_selected.connect(func(idx):
+		var vid := add.get_item_id(idx)
+		if vid < 0:
+			return
+		var next := _copy_stops(c)
+		next.append({"v": vid, "load": [], "unload": []})
+		h.game.command({"type": "caravan_stops", "id": c.id, "stops": next})
+		h.render_panel())
+	box.add_child(add)
+	return UI.panel([box], "Dark")
+
+
+static func _copy_stops(c: Dictionary) -> Array:
+	var out := []
+	for st in c.stops:
+		out.append({"v": st.v, "load": st.load.duplicate(), "unload": st.unload.duplicate()})
+	return out
+
+
+# ---------------------------------------------------------------- production chains
+
+static var chain_tier := ""
+
+
+## Anno-style chain planner: how many of each building feed 100 residents of a tier.
+static func chains(h: Hud) -> void:
+	var w := h.game.world
+	h.add(UI.label(Content.L("Produktionsketten", "Production Chains"), "Title"))
+	if chain_tier == "" or not w.tier_unlocked(chain_tier):
+		chain_tier = w.unlocked_tiers[-1]
+	var tabs := HFlowContainer.new()
+	for t in Content.tiers:
+		if w.tier_unlocked(t.id):
+			tabs.add_child(h.act(Content.tx(t.name), func(): chain_tier = t.id, "Active" if t.id == chain_tier else "Small"))
+	h.add(tabs)
+	var tier: Dictionary = Content.TIER[chain_tier]
+	h.add(_wrap(Content.tx(tier.get("history", {})), "Muted"))
+	h.add(UI.label(Content.L("Bedarf für 100 Bewohner", "Demand of 100 residents"), "Heading"))
+	for n in tier.needs:
+		if not n.has("consumption"):
+			var sv: String = Content.service_ids.get(n.id, "")
+			if sv != "":
+				h.add(UI.hbox([UI.icon(Art.building_icon(sv), 24), UI.label(Content.tx(Content.BUILDING[sv].name)), UI.label(Content.L("Einzugsbereich", "service radius"), "Muted")]))
+			continue
+		var demand := float(n.consumption) * 100.0
+		var box := UI.vbox([UI.hbox([UI.good_icon(n.id, 26), UI.label(Content.need_name(n.id) + (Content.L(" (Luxus)", " (luxury)") if n.kind == "luxury" else ""), "Heading"), UI.label("%.1f/min" % demand, "Muted")])], 1)
+		_chain_lines(w, box, n.id, demand, 0, {})
+		h.add(UI.panel([box], "Dark"))
+	h.add(UI.label(Content.L("Warenbilanz (alle Täler)", "Goods balance (all valleys)"), "Heading"))
+	var bal := Economy.good_balance(w)
+	for g in Content.goods:
+		var stock := 0.0
+		for v in w.valleys:
+			if v.owner == World.PLAYER:
+				stock += v.storage.get(g.id, 0.0)
+		var bb: Dictionary = bal.get(g.id, {"prod": 0.0, "cons": 0.0})
+		if stock < 0.5 and bb.prod <= 0.0 and bb.cons <= 0.0:
+			continue
+		var diff: float = bb.prod - bb.cons
+		var val := UI.label("%+.1f/min" % diff)
+		val.add_theme_color_override("font_color", UI.GOOD if diff >= -0.01 else UI.BAD)
+		h.add(UI.row(UI.hbox([UI.good_icon(g.id, 22), UI.label(Content.tx(g.name)), UI.label(str(floori(stock)), "Muted")]), val))
+
+
+static func _producer(good: String) -> Dictionary:
+	for b in Content.buildings:
+		if b.get("outputs", {}).has(good):
+			return b
+	return {}
+
+
+static func _chain_lines(w: World, box: VBoxContainer, good: String, demand: float, depth: int, seen: Dictionary) -> void:
+	var b := _producer(good)
+	if b.is_empty() or seen.has(b.id) or depth > 5:
+		return
+	var rate: float = float(b.outputs[good]) * 60.0 / float(b.cycle)
+	var count := demand / rate
+	var text := "%s%.1f × %s" % ["    ".repeat(depth), count, Content.tx(b.name)]
+	var req: Dictionary = b.get("requires", {})
+	var where := ""
+	if req.has("fertility"):
+		where = Content.tx(Content.FERTILITY[req.fertility].name)
+	elif req.has("deposit"):
+		where = "⛏ " + Content.tx(Content.GOOD.get({"copper": "copperore"}.get(req.deposit, req.deposit), {"name": req.deposit}).name)
+	var line := UI.hbox([UI.icon(Art.building_icon(b.id), 22), UI.label(text)], 4)
+	if where != "":
+		var places := []
+		for v in w.valleys:
+			if v.discovered and ((req.has("fertility") and req.fertility in v.fertilities) or (req.has("deposit") and req.deposit in Content.valley_def(v.def).deposits)):
+				places.append(_vname(w, v.idx))
+		var wl := UI.label("(%s%s)" % [where, ": " + ", ".join(places) if not places.is_empty() else Content.L(" – noch unbekannt", " – not found yet")], "Muted")
+		line.add_child(wl)
+	box.add_child(line)
+	var s2 := seen.duplicate()
+	s2[b.id] = true
+	for g in b.get("inputs", {}):
+		_chain_lines(w, box, g, count * float(b.inputs[g]) * 60.0 / float(b.cycle), depth + 1, s2)
 
 
 static func trade(h: Hud) -> void:

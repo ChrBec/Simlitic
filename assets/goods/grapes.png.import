@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c8oj3o81k2hkf"
-path="res://.godot/imported/mead.png-90f0cc3738d58bd44370ee9e790a76b3.ctex"
+uid="uid://ho6daomleltv"
+path="res://.godot/imported/grapes.png-ebb81dfa95cb2e7f53871931dd5372a9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/goods/mead.png"
-dest_files=["res://.godot/imported/mead.png-90f0cc3738d58bd44370ee9e790a76b3.ctex"]
+source_file="res://assets/goods/grapes.png"
+dest_files=["res://.godot/imported/grapes.png-ebb81dfa95cb2e7f53871931dd5372a9.ctex"]
 
 [params]
 

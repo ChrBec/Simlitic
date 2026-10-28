@@ -8,12 +8,17 @@ var buildings: Array = []
 var fertilities: Array = []
 var valleys: Array = []
 var rivals: Array = []
+var passes: Array = []
+var obstacles: Array = []
+var caravans: Array = []
 
 var GOOD := {}
 var TIER := {}
 var BUILDING := {}
 var FERTILITY := {}
 var RIVAL := {}
+var OBSTACLE := {}
+var CARAVAN := {}
 var service_ids := {}
 
 var lang := "de"
@@ -26,11 +31,16 @@ func _init() -> void:
 	fertilities = _load("fertilities")
 	valleys = _load("valleys")
 	rivals = _load("rivals")
+	passes = _load("passes")
+	obstacles = _load("obstacles")
+	caravans = _load("caravans")
 	GOOD = _index(goods)
 	TIER = _index(tiers)
 	BUILDING = _index(buildings)
 	FERTILITY = _index(fertilities)
 	RIVAL = _index(rivals)
+	OBSTACLE = _index(obstacles)
+	CARAVAN = _index(caravans)
 	for b in buildings:
 		if b.has("service"):
 			service_ids[b.service.id] = b.id

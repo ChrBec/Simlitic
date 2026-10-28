@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Renders a screenshot of the running game (needs xvfb-run). Usage:
-#   GODOT=/path/to/godot tools/shot.sh out.png [--new-game|--demo] [--panel=population|valleys|trade|building]
+#   GODOT=/path/to/godot tools/shot.sh out.png [--new-game|--demo] [--panel=population|chains|valleys|caravans|trade|building]
+#   [--zoom=0.35..2.2] [--yaw=deg] [--focus=<valley id>] [--pass=<obstacle id>] [--winter] [--menu=…] [--tool=<building>]
 set -e
 OUT=$(realpath -m "$1"); shift
 cd "$(dirname "$0")/.."

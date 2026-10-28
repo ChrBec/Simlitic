@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cijlyk5ed1oqq"
-path="res://.godot/imported/cart.png-25c64972170ef19585f052fe86da91dc.ctex"
+uid="uid://5hiim2rou2l5"
+path="res://.godot/imported/emmer.png-9e961e6caaac3e26d315d9b88d374950.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/goods/cart.png"
-dest_files=["res://.godot/imported/cart.png-25c64972170ef19585f052fe86da91dc.ctex"]
+source_file="res://assets/goods/emmer.png"
+dest_files=["res://.godot/imported/emmer.png-9e961e6caaac3e26d315d9b88d374950.ctex"]
 
 [params]
 

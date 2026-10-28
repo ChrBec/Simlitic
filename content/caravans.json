@@ -1,0 +1,66 @@
+[
+ {
+  "id": "porters",
+  "name": {
+   "de": "Trägertrupp",
+   "en": "Porter Team"
+  },
+  "unlockTier": "sedentary",
+  "slots": 2,
+  "capacity": 10,
+  "speed": 2.0,
+  "upkeep": 8,
+  "cost": {
+   "shells": 250,
+   "hides": 4,
+   "wood": 6
+  },
+  "desc": {
+   "de": "Menschen mit Kiepen und Tragegestellen. Langsam, aber sie kommen überall hin.",
+   "en": "People with back baskets and frames. Slow, but they go anywhere."
+  }
+ },
+ {
+  "id": "donkeys",
+  "name": {
+   "de": "Eselkarawane",
+   "en": "Donkey Train"
+  },
+  "unlockTier": "villagers",
+  "slots": 3,
+  "capacity": 20,
+  "speed": 2.6,
+  "upkeep": 15,
+  "cost": {
+   "shells": 600,
+   "rope": 6,
+   "linen": 4
+  },
+  "desc": {
+   "de": "Gezähmte Esel tragen mehr und schneller – um 5000 v. Chr. eine Neuheit.",
+   "en": "Tamed donkeys carry more, faster – a novelty around 5000 BC."
+  }
+ },
+ {
+  "id": "oxcart",
+  "name": {
+   "de": "Ochsenkarren",
+   "en": "Ox Cart"
+  },
+  "unlockTier": "chieftains",
+  "slots": 4,
+  "capacity": 40,
+  "speed": 1.7,
+  "upkeep": 25,
+  "cost": {
+   "shells": 1200,
+   "wheels": 4,
+   "planks": 6
+  },
+  "wagon": true,
+  "desc": {
+   "de": "Das Rad! Riesige Ladung, aber nur über ausgebaute Bohlenwege.",
+   "en": "The wheel! Huge loads, but only over built plank roads."
+  }
+ }
+]

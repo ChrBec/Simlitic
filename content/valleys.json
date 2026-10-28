@@ -1,16 +1,239 @@
 [
-  { "id": "main",    "name": { "de": "Tal der Ersten",     "en": "Valley of the First" }, "size": 1.35, "home": true,
-    "fertilities": ["berries", "hazel", "deer", "fish", "clay"], "deposits": [], "water": "lake" },
-  { "id": "flint",   "name": { "de": "Feuersteinschlucht", "en": "Flint Gorge" },         "size": 0.8,
-    "fertilities": ["deer", "herbs", "berries"], "deposits": ["flint", "flint", "flint"], "water": "stream" },
-  { "id": "bees",    "name": { "de": "Bienental",          "en": "Bee Valley" },          "size": 1.0,
-    "fertilities": ["honey", "wildgrain", "berries", "fish"], "deposits": ["copper", "copper"], "water": "lake" },
-  { "id": "flax",    "name": { "de": "Flachsaue",          "en": "Flax Meadow" },         "size": 1.0,
-    "fertilities": ["flax", "clay", "fish", "hazel"], "deposits": ["tin", "tin"], "water": "stream" },
-  { "id": "deer",    "name": { "de": "Hirschgrund",        "en": "Stag Hollow" },         "size": 0.9,
-    "fertilities": ["deer", "hazel", "herbs", "wildgrain"], "deposits": ["flint", "copper"], "water": "none" },
-  { "id": "mist",    "name": { "de": "Nebelkessel",        "en": "Mist Cauldron" },       "size": 0.85,
-    "fertilities": ["herbs", "honey", "flax"], "deposits": ["tin", "copper"], "water": "lake" },
-  { "id": "rival",   "name": { "de": "Graufels",           "en": "Greyrock" },            "size": 1.0, "rival": "aruk",
-    "fertilities": ["berries", "deer", "fish", "clay"], "deposits": ["flint"], "water": "lake" }
+ {
+  "id": "main",
+  "name": {
+   "de": "Tal der Ersten",
+   "en": "Valley of the First"
+  },
+  "size": 1.55,
+  "home": true,
+  "ring": 0,
+  "angle": 0,
+  "fertilities": [
+   "berries",
+   "hazel",
+   "deer",
+   "fish",
+   "clay",
+   "wildgrain"
+  ],
+  "deposits": [],
+  "water": "lake"
+ },
+ {
+  "id": "flint",
+  "name": {
+   "de": "Feuersteinschlucht",
+   "en": "Flint Gorge"
+  },
+  "size": 1.0,
+  "ring": 1,
+  "angle": 0,
+  "fertilities": [
+   "deer",
+   "herbs",
+   "berries"
+  ],
+  "deposits": [
+   "flint",
+   "flint",
+   "flint"
+  ],
+  "water": "stream"
+ },
+ {
+  "id": "bees",
+  "name": {
+   "de": "Bienental",
+   "en": "Bee Valley"
+  },
+  "size": 1.1,
+  "ring": 1,
+  "angle": 60,
+  "fertilities": [
+   "honey",
+   "wildgrain",
+   "berries",
+   "fish"
+  ],
+  "deposits": [
+   "copper"
+  ],
+  "water": "lake"
+ },
+ {
+  "id": "flax",
+  "name": {
+   "de": "Flachsaue",
+   "en": "Flax Meadow"
+  },
+  "size": 1.15,
+  "ring": 1,
+  "angle": 120,
+  "fertilities": [
+   "flax",
+   "clay",
+   "fish",
+   "hazel"
+  ],
+  "deposits": [],
+  "water": "stream"
+ },
+ {
+  "id": "aurochs",
+  "name": {
+   "de": "Auerochsenweide",
+   "en": "Aurochs Pasture"
+  },
+  "size": 1.2,
+  "ring": 1,
+  "angle": 180,
+  "fertilities": [
+   "aurochs",
+   "wildgrain",
+   "deer",
+   "clay"
+  ],
+  "deposits": [
+   "copper",
+   "copper"
+  ],
+  "water": "stream"
+ },
+ {
+  "id": "rival",
+  "name": {
+   "de": "Graufels",
+   "en": "Greyrock"
+  },
+  "size": 1.05,
+  "ring": 1,
+  "angle": 240,
+  "rival": "aruk",
+  "fertilities": [
+   "berries",
+   "deer",
+   "fish",
+   "clay"
+  ],
+  "deposits": [
+   "flint"
+  ],
+  "water": "lake"
+ },
+ {
+  "id": "mouflon",
+  "name": {
+   "de": "Mufflonhänge",
+   "en": "Mouflon Slopes"
+  },
+  "size": 1.05,
+  "ring": 1,
+  "angle": 300,
+  "fertilities": [
+   "mouflon",
+   "herbs",
+   "hazel"
+  ],
+  "deposits": [
+   "copper",
+   "copper"
+  ],
+  "water": "none"
+ },
+ {
+  "id": "obsidian",
+  "name": {
+   "de": "Feuerberg",
+   "en": "Fire Mountain"
+  },
+  "size": 0.95,
+  "ring": 2,
+  "angle": 330,
+  "fertilities": [
+   "herbs",
+   "mouflon"
+  ],
+  "deposits": [
+   "obsidian",
+   "obsidian"
+  ],
+  "water": "none"
+ },
+ {
+  "id": "vine",
+  "name": {
+   "de": "Rebenhang",
+   "en": "Vine Slope"
+  },
+  "size": 1.0,
+  "ring": 2,
+  "angle": 90,
+  "fertilities": [
+   "grapes",
+   "honey",
+   "clay"
+  ],
+  "deposits": [],
+  "water": "stream"
+ },
+ {
+  "id": "mira",
+  "name": {
+   "de": "Weidenbach",
+   "en": "Willow Brook"
+  },
+  "size": 1.05,
+  "ring": 2,
+  "angle": 150,
+  "rival": "mira",
+  "fertilities": [
+   "fish",
+   "flax",
+   "aurochs"
+  ],
+  "deposits": [],
+  "water": "lake"
+ },
+ {
+  "id": "tin",
+  "name": {
+   "de": "Zinnklamm",
+   "en": "Tin Ravine"
+  },
+  "size": 0.95,
+  "ring": 2,
+  "angle": 210,
+  "fertilities": [
+   "mouflon"
+  ],
+  "deposits": [
+   "tin",
+   "tin",
+   "tin",
+   "copper"
+  ],
+  "water": "none"
+ },
+ {
+  "id": "mist",
+  "name": {
+   "de": "Nebelkessel",
+   "en": "Mist Cauldron"
+  },
+  "size": 1.0,
+  "ring": 2,
+  "angle": 270,
+  "fertilities": [
+   "herbs",
+   "honey",
+   "flax",
+   "wildgrain",
+   "grapes"
+  ],
+  "deposits": [
+   "tin"
+  ],
+  "water": "lake"
+ }
 ]

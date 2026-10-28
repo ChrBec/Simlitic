@@ -27,5 +27,6 @@ const FIRE_CORE := Color("ffe08a")
 ## Every valley gets its own hue.
 const VALLEY_TINT := {
 	"main": Color("86a052"), "flint": Color("9a9a60"), "bees": Color("8aa84e"), "flax": Color("7ea468"),
-	"deer": Color("6f9448"), "mist": Color("6f9a72"), "rival": Color("8a9a5a"),
+	"aurochs": Color("8c9c4a"), "mist": Color("6f9a72"), "rival": Color("8a9a5a"), "mouflon": Color("a0a066"),
+	"obsidian": Color("858a64"), "vine": Color("96a24c"), "mira": Color("78a05a"), "tin": Color("8e9478"),
 }

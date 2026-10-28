@@ -75,6 +75,9 @@ static func service_coverage(w: World) -> Dictionary:
 	return out
 
 
+const SEASONAL_STYLES := ["field", "pasture"]
+
+
 static func tick(w: World) -> void:
 	var dt := World.TICK
 	if w.tick % 5 == 0:
@@ -116,7 +119,9 @@ static func tick(w: World) -> void:
 			inc += _live(w, b, v, dt)
 
 	w.income = inc
-	w.upkeep = upk + w.routes.size() * 10.0
+	for c in w.caravans:
+		upk += float(Content.CARAVAN[c.type].upkeep)
+	w.upkeep = upk
 	w.shells += (w.income - w.upkeep) * dt / 60.0
 	if w.tick % 20 == 0:
 		_upgrades(w)
@@ -142,7 +147,9 @@ static func _produce(w: World, b: Dictionary, def: Dictionary, v: Dictionary, dt
 			var kind := World.N_TREE if req.nature.kind == "tree" else World.N_BUSH
 			b.nature = minf(1.0, float(w.nature_around(b, kind, int(req.nature.radius))) / float(req.nature.min))
 		nat_factor = b.nature
-	var prod := wf_ratio * nat_factor
+	# fields and pastures rest in winter – stock up in autumn
+	var season_factor := 0.3 if w.is_winter() and def.style in SEASONAL_STYLES else 1.0
+	var prod := wf_ratio * nat_factor * season_factor
 	b.productivity = prod
 	if not b.working:
 		var cap := w.storage_cap(b.valley)
@@ -159,7 +166,7 @@ static func _produce(w: World, b: Dictionary, def: Dictionary, v: Dictionary, dt
 			w.pay(inputs, v.storage)
 		b.working = true
 		b.progress = 0.0
-	b.status = "noWorkers" if wf_ratio < 0.99 else ("noNature" if nat_factor < 0.99 else "ok")
+	b.status = "noWorkers" if wf_ratio < 0.99 else ("noNature" if nat_factor < 0.99 else ("winter" if season_factor < 1.0 else "ok"))
 	b.progress += dt * prod / float(def.cycle)
 	if b.progress >= 1.0:
 		var cap := w.storage_cap(b.valley)

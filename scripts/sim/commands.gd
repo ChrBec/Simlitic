@@ -4,7 +4,8 @@ class_name Commands
 ##
 ## {type: "build", building, x, y} | {type: "path", tiles: [Vector2i]} | {type: "demolish", x, y}
 ## {type: "pause", id, paused} | {type: "allow_upgrade", tier, allowed} | {type: "explore", pass, from}
-## {type: "create_route", a, b} | {type: "route_cargo", id, dir: "ab"|"ba", goods} | {type: "delete_route", id}
+## {type: "clear_pass", pass} | {type: "plank_pass", pass}
+## {type: "buy_caravan", valley, caravan} | {type: "caravan_stops", id, stops: [{v, load, unload}]} | {type: "delete_caravan", id}
 ## {type: "trade", partner: "trader"|rival id, good, amount (>0 buy, <0 sell)} | {type: "gift", rival}
 
 
@@ -32,6 +33,7 @@ static func apply(w: World, c: Dictionary) -> Dictionary:
 				w.shells -= cost
 				w.road[i] = 1
 				w.nature[i] = World.N_NONE
+				w.touched.append(i)
 				built += 1
 			if built == 0:
 				return _fail("Hier kann kein Pfad entstehen", "No path can be laid here")
@@ -49,32 +51,39 @@ static func apply(w: World, c: Dictionary) -> Dictionary:
 			return {"ok": true}
 		"explore":
 			return _explore(w, c)
-		"create_route":
-			if c.a == c.b:
-				return _fail("Zwei verschiedene Täler wählen", "Choose two different valleys")
-			if w.valleys[c.a].owner != World.PLAYER or w.valleys[c.b].owner != World.PLAYER:
-				return _fail("Beide Täler müssen dir gehören", "Both valleys must be yours")
-			if w.shells < Logistics.ROUTE_COST:
-				return _fail("Nicht genug Muscheln", "Not enough shells")
-			var path := Logistics.find_path(w, c.a, c.b)
-			if path.size() < 2:
-				return _fail("Kein bekannter Weg zwischen den Tälern", "No known path between the valleys")
-			w.shells -= Logistics.ROUTE_COST
-			w.routes.append({"id": w.next_id, "a": c.a, "b": c.b, "cargo_ab": [], "cargo_ba": [], "path": path, "pos": 0.0, "dir": 1, "load": {}, "wait": 2.0})
-			w.next_id += 1
+		"clear_pass", "plank_pass":
+			return _pass_project(w, c)
+		"buy_caravan":
+			return _buy_caravan(w, c)
+		"caravan_stops":
+			var car = w.caravan(c.id)
+			if car == null:
+				return _fail("Unbekannte Karawane", "Unknown caravan")
+			var stops := []
+			for st in c.stops:
+				var v := int(st.v)
+				if v < 0 or v >= w.valleys.size() or w.valleys[v].owner != World.PLAYER:
+					return _fail("Halte nur in eigenen Tälern", "Stops must be your own valleys")
+				var load := []
+				var unload := []
+				for g in st.get("load", []):
+					if Content.GOOD.has(g) and not g in load and load.size() < int(Content.CARAVAN[car.type].slots):
+						load.append(g)
+				for g in st.get("unload", []):
+					if Content.GOOD.has(g) and not g in unload:
+						unload.append(g)
+				stops.append({"v": v, "load": load, "unload": unload})
+			if stops.size() > 6:
+				return _fail("Höchstens 6 Halte", "At most 6 stops")
+			car.stops = stops
+			car.leg = 0 if stops.is_empty() else clampi(car.leg, 0, stops.size() - 1)
+			car.path = []
 			return {"ok": true}
-		"route_cargo":
-			for r in w.routes:
-				if r.id == c.id:
-					var goods := []
-					for g in c.goods:
-						if Content.GOOD.has(g) and goods.size() < 4:
-							goods.append(g)
-					r["cargo_" + c.dir] = goods
-					return {"ok": true}
-			return _fail("Unbekannte Route", "Unknown route")
-		"delete_route":
-			w.routes = w.routes.filter(func(r): return r.id != c.id)
+		"delete_caravan":
+			var car = w.caravan(c.id)
+			if car == null:
+				return _fail("Unbekannte Karawane", "Unknown caravan")
+			w.caravans.erase(car)
 			return {"ok": true}
 		"trade":
 			return _trade(w, c)
@@ -129,6 +138,7 @@ static func _demolish(w: World, x: int, y: int) -> Dictionary:
 		return {"ok": true}
 	if w.road[i] and w.valley[i] >= 0 and w.valleys[w.valley[i]].owner == World.PLAYER:
 		w.road[i] = 0
+		w.touched.append(i)
 		w.dirty += 1
 		return {"ok": true}
 	return _fail("Nichts zum Abreißen", "Nothing to demolish")
@@ -201,3 +211,73 @@ static func _trade(w: World, c: Dictionary) -> Dictionary:
 		st[c.good] -= qty
 		w.shells += price * qty
 	return {"ok": true}
+
+
+static func _pass_project(w: World, c: Dictionary) -> Dictionary:
+	if c.pass < 0 or c.pass >= w.passes.size():
+		return _fail("Unbekannter Pass", "Unknown pass")
+	var p: Dictionary = w.passes[c.pass]
+	if not p.discovered:
+		return _fail("Erst erkunden", "Explore it first")
+	if p.project != null:
+		return _fail("Daran wird schon gearbeitet", "Work is already under way")
+	var from := -1
+	for v in [p.a, p.b]:
+		if w.valleys[v].owner == World.PLAYER:
+			from = v
+			break
+	if from < 0:
+		return _fail("Ein angrenzendes Tal muss dir gehören", "You must own a valley at one end")
+	var ob: Dictionary = Content.OBSTACLE[p.obstacle]
+	var cost: Dictionary
+	var tier: String
+	var time: float
+	if c.type == "clear_pass":
+		if p.cleared:
+			return _fail("Der Pass ist schon offen", "The pass is already open")
+		cost = ob.cost
+		tier = ob.unlockTier
+		time = float(ob.time)
+	else:
+		if not p.cleared:
+			return _fail("Erst das Hindernis überwinden", "Overcome the obstacle first")
+		if p.plank:
+			return _fail("Hier liegt schon ein Bohlenweg", "There already is a plank road")
+		if ob.get("no_wagons", false):
+			return _fail("Über das Eis kommt kein Wagen", "No cart can cross the ice")
+		cost = Logistics.PLANK_COST
+		tier = Logistics.PLANK_TIER
+		time = Logistics.PLANK_TIME
+	if not w.tier_unlocked(tier):
+		var tn: Dictionary = Content.TIER[tier].name
+		return _fail("Benötigt Stufe " + tn.de, "Requires " + tn.en)
+	if not w.can_afford(cost, w.valleys[from].storage):
+		return _fail("Nicht genug Rohstoffe im angrenzenden Tal", "Not enough resources in the adjacent valley")
+	w.pay(cost, w.valleys[from].storage)
+	p.project = {"kind": "plank" if c.type == "plank_pass" else "clear", "left": time, "total": time}
+	return {"ok": true}
+
+
+static func _buy_caravan(w: World, c: Dictionary) -> Dictionary:
+	if not Content.CARAVAN.has(c.caravan):
+		return _fail("Unbekannt", "Unknown")
+	var def: Dictionary = Content.CARAVAN[c.caravan]
+	if not w.tier_unlocked(def.unlockTier):
+		var tn: Dictionary = Content.TIER[def.unlockTier].name
+		return _fail("Benötigt Stufe " + tn.de, "Requires " + tn.en)
+	var v := int(c.valley)
+	if v < 0 or v >= w.valleys.size() or w.valleys[v].owner != World.PLAYER:
+		return _fail("Nur in eigenen Tälern", "Only in your own valleys")
+	var has_post := false
+	for b in w.buildings.values():
+		if b.type == "caravanpost" and b.valley == v and b.owner == World.PLAYER:
+			has_post = true
+	if not has_post:
+		return _fail("Benötigt einen Rastplatz in diesem Tal", "Needs a caravan camp in this valley")
+	if not w.can_afford(def.cost, w.valleys[v].storage):
+		return _fail("Nicht genug Rohstoffe", "Not enough resources")
+	w.pay(def.cost, w.valleys[v].storage)
+	w.caravans.append({"id": w.next_id, "type": c.caravan, "at": v, "stops": [], "leg": 0, "path": [], "path_ver": -1,
+		"pos": 0.0, "cargo": {}, "wait": 0.0, "status": "idle", "delivered": 0.0})
+	w.next_id += 1
+	return {"ok": true, "id": w.next_id - 1}

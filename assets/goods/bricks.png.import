@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://canabfiw6wivs"
-path="res://.godot/imported/bronzetools.png-eaf8a99836fa68127358a02cc8aea962.ctex"
+uid="uid://d2203o5qorwda"
+path="res://.godot/imported/bricks.png-14330906e98d05ee166f47e98655bed8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/goods/bronzetools.png"
-dest_files=["res://.godot/imported/bronzetools.png-eaf8a99836fa68127358a02cc8aea962.ctex"]
+source_file="res://assets/goods/bricks.png"
+dest_files=["res://.godot/imported/bricks.png-14330906e98d05ee166f47e98655bed8.ctex"]
 
 [params]
 

@@ -3,7 +3,7 @@ extends CanvasLayer
 ## In-game HUD: top bar, build bar, objectives, notifications, storage and the right-hand panels.
 
 var game: Game
-var panel := "" # "", "building", "population", "valleys", "trade"
+var panel := "" # "", "building", "population", "chains", "valleys", "caravans", "trade"
 var root := Control.new()
 var top := PanelContainer.new()
 var top_row := HBoxContainer.new()
@@ -142,9 +142,11 @@ func render_top() -> void:
 		tp.tooltip_text = Content.tx(t.name)
 		top_row.add_child(tp)
 	top_row.add_child(UI.spacer())
-	var year := floori(w.time / 480.0) + 1
-	var season: String = [Content.L("Frühling", "Spring"), Content.L("Sommer", "Summer"), Content.L("Herbst", "Autumn"), Content.L("Winter", "Winter")][floori(fmod(w.time, 480.0) / 120.0)]
-	top_row.add_child(UI.label("%s %d · %s" % [Content.L("Jahr", "Year"), year, season], "LeatherLabel"))
+	var season: String = [Content.L("Frühling", "Spring"), Content.L("Sommer", "Summer"), Content.L("Herbst", "Autumn"), "❄ " + Content.L("Winter", "Winter")][w.season()]
+	var cal := UI.label("%s %d · %s" % [Content.L("Jahr", "Year"), w.year(), season], "LeatherLabel")
+	cal.tooltip_text = Content.L("Im Winter ruhen Felder und Weiden, Gletscherpässe sind gesperrt.", "In winter fields and pastures rest and glacier passes close.")
+	cal.mouse_filter = Control.MOUSE_FILTER_PASS
+	top_row.add_child(cal)
 	for sp in [0, 1, 2, 4]:
 		var label: String = {0: "II", 1: ">", 2: ">>", 4: ">>>"}[sp]
 		var active: bool = game.paused if sp == 0 else (not game.paused and game.speed == sp)
@@ -158,7 +160,7 @@ func render_top() -> void:
 		b.custom_minimum_size = Vector2(44, 34)
 		b.tooltip_text = Content.L("Pause (Leertaste)", "Pause (Space)") if sp == 0 else "%s %dx" % [Content.L("Tempo", "Speed"), sp]
 		top_row.add_child(b)
-	for entry in [["population", Content.L("Volk", "People"), "B"], ["valleys", Content.L("Täler", "Valleys"), "M"], ["trade", Content.L("Handel", "Trade"), "T"]]:
+	for entry in [["population", Content.L("Volk", "People"), "B"], ["chains", Content.L("Ketten", "Chains"), "C"], ["valleys", Content.L("Täler", "Valleys"), "M"], ["caravans", Content.L("Karawanen", "Caravans"), "K"], ["trade", Content.L("Handel", "Trade"), "T"]]:
 		var b := UI.button(entry[1], func(): toggle_panel(entry[0]), "Active" if panel == entry[0] else "Small")
 		b.tooltip_text = "%s (%s)" % [entry[1], entry[2]]
 		top_row.add_child(b)
@@ -334,7 +336,8 @@ func _render_storage() -> void:
 		if w.valley[i] == v.idx:
 			deps[w.deposit[i]] = true
 	for d in deps:
-		chips.add_child(_chip("⛏ " + {"flint": Content.L("Feuerstein", "Flint"), "copper": Content.L("Kupfer", "Copper"), "tin": Content.L("Zinn", "Tin")}.get(d, d), Color("8a8a8a")))
+		var good: String = {"copper": "copperore"}.get(d, d)
+		chips.add_child(_chip("⛏ " + (Content.tx(Content.GOOD[good].name) if Content.GOOD.has(good) else d), Color("8a8a8a")))
 	box.add_child(chips)
 	if v.owner == World.PLAYER:
 		var grid := GridContainer.new()
@@ -410,6 +413,10 @@ func render_panel() -> void:
 			HudPanels.valleys(self)
 		"trade":
 			HudPanels.trade(self)
+		"caravans":
+			HudPanels.caravans(self)
+		"chains":
+			HudPanels.chains(self)
 
 
 func add(c: Control) -> void:
@@ -452,6 +459,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			toggle_panel("population")
 		KEY_T:
 			toggle_panel("trade")
+		KEY_K:
+			toggle_panel("caravans")
+		KEY_C:
+			toggle_panel("chains")
 		KEY_H:
 			var v := game.world.home_valley()
 			game.view.center_on(v.cx, v.cy)

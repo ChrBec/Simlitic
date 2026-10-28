@@ -28,7 +28,10 @@ func expect(cond: bool, msg: String) -> void:
 
 func test_map_generation() -> void:
 	var w := World.create(1234)
-	expect(w.valleys.size() == 7, "seven valleys")
+	expect(w.valleys.size() == Content.valleys.size(), "all valleys placed")
+	expect(w.passes.size() == Content.passes.size(), "all passes carved")
+	for p in w.passes:
+		expect(p.tiles.size() > 3, "pass %d crosses mountains" % p.idx)
 	expect(w.passes.size() > 5, "passes exist")
 	var home := w.home_valley()
 	expect(home.owner == World.PLAYER, "home is owned")
@@ -38,7 +41,7 @@ func test_map_generation() -> void:
 		for i in w.valley.size():
 			if w.valley[i] == v.idx and w.terrain[i] == World.GRASS:
 				n += 1
-		expect(n > 150, "valley %s has room (%d tiles)" % [v.def, n])
+		expect(n > 350, "valley %s has room (%d tiles)" % [v.def, n])
 	expect("flint" in w.deposit.values(), "flint deposit placed")
 	expect("tin" in w.deposit.values(), "tin deposit placed")
 
@@ -52,30 +55,32 @@ func test_deterministic() -> void:
 	expect(a.checksum() == b.checksum(), "same seed, same simulation")
 
 
-func test_village_grows_and_unlocks_hunters() -> void:
+func test_village_grows_and_settles_down() -> void:
 	var w := World.create(42)
 	var home: int = w.home_valley().idx
 	Bot.lay_roads(w, home)
-	for i in 4:
+	for i in 6:
 		expect(Bot.build_near(w, home, "tent"), "tent %d" % i)
 	expect(Bot.build_near(w, home, "fireplace"), "fireplace")
 	expect(Bot.build_near(w, home, "berrygatherer", 4), "berry gatherer")
 	expect(Bot.build_near(w, home, "woodcutter", 4), "woodcutter")
+	expect(Bot.build_near(w, home, "hunter", 4), "hunter")
 	Bot.run_minutes(w, 2)
-	for i in 8:
+	for i in 12:
 		Bot.build_near(w, home, "tent")
 	Bot.build_near(w, home, "berrygatherer", 4)
+	Bot.build_near(w, home, "hunter", 4)
 	Bot.build_near(w, home, "fireplace")
 	Bot.run_minutes(w, 6)
 	var pop := w.player_population()
-	expect(pop.gatherers >= 40, "40+ gatherers (got %d)" % pop.gatherers)
-	expect(w.tier_unlocked("hunters"), "hunters unlocked")
+	expect(pop.foragers >= 60, "60+ foragers (got %d)" % pop.foragers)
+	expect(w.tier_unlocked("sedentary"), "sedentary unlocked")
 	expect(w.shells > 0, "still solvent (%d)" % w.shells)
 	expect(w.valleys[home].storage.get("wood", 0) > 10, "woodcutter produces")
 	# upgrades once hides arrive
 	expect(Bot.build_near(w, home, "trapper", 4), "trapper")
 	Bot.run_minutes(w, 3)
-	expect(w.player_population().hunters > 0, "a tent became a bark hut")
+	expect(w.player_population().sedentary > 0, "a tent became a pit house")
 
 
 func test_rejects_foreign_valley() -> void:
@@ -86,38 +91,123 @@ func test_rejects_foreign_valley() -> void:
 			expect(not r.ok, "cannot build in %s" % v.def)
 
 
-func test_explore_settle_and_route() -> void:
+func _found(w: World, v: Dictionary) -> bool:
+	for r in 10:
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				if Commands.apply(w, {"type": "build", "building": "storage", "x": roundi(v.cx) + dx, "y": roundi(v.cy) + dy}).ok:
+					return true
+	return false
+
+
+func _valley(w: World, id: String) -> Dictionary:
+	for v in w.valleys:
+		if v.def == id:
+			return v
+	return {}
+
+
+func _pass_between(w: World, a: int, b: int) -> Dictionary:
+	for p in w.passes:
+		if (p.a == a and p.b == b) or (p.a == b and p.b == a):
+			return p
+	return {}
+
+
+func test_explore_settle_and_caravan() -> void:
 	var w := World.create(5, "normal")
 	w.shells = 50000
 	var home := w.home_valley()
-	w.unlocked_tiers.append("hunters")
+	w.unlocked_tiers.append("sedentary")
 	home.storage.meat = 10.0
 	home.storage.wood = 80.0
+	home.storage.hides = 10.0
 	Bot.lay_roads(w, home.idx)
 	expect(Bot.build_near(w, home.idx, "scout"), "scout camp")
-	var pass_idx := -1
-	for p in w.passes:
-		if p.a == home.idx or p.b == home.idx:
-			pass_idx = p.idx
-			break
-	expect(Commands.apply(w, {"type": "explore", "pass": pass_idx, "from": home.idx}).ok, "expedition starts")
+	var flint := _valley(w, "flint")
+	var p := _pass_between(w, home.idx, flint.idx)
+	expect(Commands.apply(w, {"type": "explore", "pass": p.idx, "from": home.idx}).ok, "expedition starts")
 	Bot.run_minutes(w, 1)
-	var p: Dictionary = w.passes[pass_idx]
-	var other: Dictionary = w.valleys[p.b if p.a == home.idx else p.a]
-	expect(other.discovered, "valley discovered")
-	var founded := false
-	for r in 8:
-		for dy in range(-r, r + 1):
-			for dx in range(-r, r + 1):
-				if not founded:
-					founded = Commands.apply(w, {"type": "build", "building": "storage", "x": roundi(other.cx) + dx, "y": roundi(other.cy) + dy}).ok
-	expect(founded and other.owner == World.PLAYER, "second valley founded")
-	expect(Commands.apply(w, {"type": "create_route", "a": other.idx, "b": home.idx}).ok, "route created")
-	other.storage.wood = 40.0
-	Commands.apply(w, {"type": "route_cargo", "id": w.routes[0].id, "dir": "ab", "goods": ["wood"]})
+	expect(flint.discovered, "valley discovered")
+	expect(_found(w, flint) and flint.owner == World.PLAYER, "flint gorge founded over the open trail")
+	# a scree pass blocks founding until a stairway is cut
+	var flax := _valley(w, "flax")
+	var scree := _pass_between(w, home.idx, flax.idx)
+	expect(scree.obstacle == "scree", "home–flax is a scree slope")
+	home.storage.meat = 10.0
+	expect(Commands.apply(w, {"type": "explore", "pass": scree.idx, "from": home.idx}).ok, "second expedition")
+	Bot.run_minutes(w, 1)
+	expect(not _found(w, flax), "cannot found across an uncleared obstacle")
+	home.storage.tools = 10.0
+	expect(Commands.apply(w, {"type": "clear_pass", "pass": scree.idx}).ok, "stairway project starts")
+	Bot.run_minutes(w, 1)
+	expect(scree.cleared, "stairway finished")
+	expect(_found(w, flax), "flax valley founded after clearing")
+	# caravan between home and the flint gorge
+	expect(Bot.build_near_pass(w, home.idx, "caravanpost"), "caravan camp at a pass")
+	home.storage.wood = 60.0
+	home.storage.hides = 10.0
+	var r := Commands.apply(w, {"type": "buy_caravan", "valley": home.idx, "caravan": "porters"})
+	expect(r.ok, "porter team hired (%s)" % r.get("reason", {}).get("en", ""))
+	if not r.ok:
+		return
+	flint.storage.wood = 40.0
+	Commands.apply(w, {"type": "caravan_stops", "id": r.id, "stops": [{"v": flint.idx, "load": ["wood"], "unload": []}, {"v": home.idx, "load": [], "unload": ["wood"]}]})
 	var before: float = home.storage.get("wood", 0.0)
-	Bot.run_minutes(w, 2)
+	Bot.run_minutes(w, 3)
 	expect(home.storage.get("wood", 0.0) > before, "porters delivered wood")
+	expect(not Commands.apply(w, {"type": "buy_caravan", "valley": home.idx, "caravan": "oxcart"}).ok, "ox carts need the chieftains")
+
+
+func test_glacier_closes_in_winter() -> void:
+	var w := World.create(3)
+	var g := {}
+	for p in w.passes:
+		if p.obstacle == "glacier":
+			g = p
+	g.discovered = true
+	g.cleared = true
+	w.time = 0.0
+	expect(Logistics.pass_open(w, g), "open in spring")
+	w.time = World.SEASON_LENGTH * 3 + 1
+	expect(not Logistics.pass_open(w, g), "closed in winter")
+	expect(not Logistics.pass_open(w, g, true), "never for carts")
+
+
+func test_content_is_consistent() -> void:
+	var producible := {}
+	for b in Content.buildings:
+		for g in b.get("outputs", {}):
+			producible[g] = true
+	for b in Content.buildings:
+		for g in b.get("inputs", {}):
+			expect(producible.has(g), "%s input %s is produced somewhere" % [b.id, g])
+		var req: Dictionary = b.get("requires", {})
+		if req.has("fertility"):
+			expect(Content.FERTILITY.has(req.fertility), "%s fertility %s exists" % [b.id, req.fertility])
+			expect(Content.valleys.any(func(v): return req.fertility in v.fertilities), "some valley has %s" % req.fertility)
+		if req.has("deposit"):
+			expect(Content.valleys.any(func(v): return req.deposit in v.deposits), "some valley has deposit %s" % req.deposit)
+		expect(Content.TIER.has(b.unlockTier), "%s tier exists" % b.id)
+		if b.has("workforce"):
+			expect(Content.tier_index(b.workforce.tier) <= Content.tier_index(b.unlockTier), "%s workers exist when it unlocks" % b.id)
+	for t in Content.tiers:
+		expect(Content.BUILDING.has(t.house), "house %s exists" % t.house)
+		for n in t.needs:
+			expect(producible.has(n.id) or Content.is_service(n.id), "%s need %s can be met" % [t.id, n.id])
+		for g in t.get("upgradeCost", {}):
+			expect(producible.has(g), "upgrade cost %s is producible" % g)
+	for o in Content.obstacles:
+		for g in o.get("cost", {}):
+			expect(g == "shells" or producible.has(g), "obstacle cost %s producible" % g)
+	for c in Content.caravans:
+		for g in c.cost:
+			expect(g == "shells" or producible.has(g), "caravan cost %s producible" % g)
+	for b in Content.buildings:
+		for g in b.cost:
+			expect(g == "shells" or producible.has(g), "%s cost %s producible" % [b.id, g])
+	for g in Content.goods:
+		expect(producible.has(g.id), "good %s is produced" % g.id)
 
 
 func test_save_roundtrip() -> void:

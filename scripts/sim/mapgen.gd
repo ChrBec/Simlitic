@@ -1,15 +1,10 @@
 class_name MapGen
 ## Procedural map: valleys carved out of a mountain massif, connected by passes.
 
-const SIZE := 112
-const RING := 35.0
-const BASE_RADIUS := 12.5
-const RING_ORDER := ["flint", "bees", "mist", "rival", "deer", "flax"]
-## Pass graph: home connects to four valleys; the rest (incl. the rival) are reached through neighbours.
-const EDGES := [
-	["main", "flint"], ["main", "mist"], ["main", "deer"], ["main", "flax"],
-	["flint", "bees"], ["bees", "mist"], ["mist", "rival"], ["rival", "deer"], ["deer", "flax"], ["flax", "flint"],
-]
+const SIZE := 252
+## Distance of each ring of valleys from the map centre.
+const RINGS := [0.0, 62.0, 98.0]
+const BASE_RADIUS := 16.5
 
 
 ## Fills the tile arrays of `w` and returns valley centres + passes.
@@ -26,15 +21,12 @@ static func generate(w: World, seed: int) -> void:
 
 	var rot := SimNoise.hash2(1, 2, seed) * TAU
 	var centers := []
-	for def in Content.valleys:
-		var c := {}
-		if def.get("home", false):
-			c = {"cx": SIZE / 2.0 + (SimNoise.hash2(3, 3, seed) - 0.5) * 4.0, "cy": SIZE / 2.0 + (SimNoise.hash2(4, 4, seed) - 0.5) * 4.0}
-		else:
-			var slot := RING_ORDER.find(def.id)
-			var a := rot + float(slot) / RING_ORDER.size() * TAU + (SimNoise.hash2(slot, 9, seed) - 0.5) * 0.35
-			var dist := RING + (SimNoise.hash2(slot, 11, seed) - 0.5) * 6.0
-			c = {"cx": SIZE / 2.0 + cos(a) * dist, "cy": SIZE / 2.0 + sin(a) * dist}
+	for i in Content.valleys.size():
+		var def: Dictionary = Content.valleys[i]
+		var ring := int(def.get("ring", 1))
+		var a := rot + deg_to_rad(float(def.get("angle", 0))) + (SimNoise.hash2(i, 9, seed) - 0.5) * 0.18
+		var dist: float = RINGS[ring] + (SimNoise.hash2(i, 11, seed) - 0.5) * 6.0
+		var c := {"cx": SIZE / 2.0 + cos(a) * dist, "cy": SIZE / 2.0 + sin(a) * dist}
 		c.r = BASE_RADIUS * float(def.size)
 		c.def = def
 		centers.append(c)
@@ -47,7 +39,11 @@ static func generate(w: World, seed: int) -> void:
 			var nz := (SimNoise.fbm(x * 0.09, y * 0.09, seed + 17) - 0.5) * 0.7
 			for i in centers.size():
 				var c: Dictionary = centers[i]
-				var d: float = Vector2(x - c.cx, y - c.cy).length() / c.r + nz
+				var ddx: float = x - c.cx
+				var ddy: float = y - c.cy
+				if absf(ddx) > c.r * 1.4 or absf(ddy) > c.r * 1.4:
+					continue
+				var d: float = sqrt(ddx * ddx + ddy * ddy) / c.r + nz
 				if d < 1.0 and d < best_d:
 					best_d = d
 					best = i
@@ -107,7 +103,7 @@ static func generate(w: World, seed: int) -> void:
 			var c: Dictionary = centers[w.valley[idx]]
 			if Vector2(x - c.cx, y - c.cy).length() < 4.5:
 				continue
-			if SimNoise.fbm(x * 0.11, y * 0.11, seed + 51) > 0.53:
+			if SimNoise.fbm(x * 0.09, y * 0.09, seed + 51) > 0.53:
 				w.nature[idx] = World.N_TREE
 			elif "berries" in c.def.fertilities and SimNoise.fbm(x * 0.2, y * 0.2, seed + 61) > 0.63:
 				w.nature[idx] = World.N_BUSH
@@ -158,19 +154,25 @@ static func generate(w: World, seed: int) -> void:
 			"storage": {}, "workforce": {}, "population": {},
 		})
 
-	# Passes through the mountains.
+	# Passes through the mountains; each may be blocked by an obstacle that must be overcome.
 	w.passes = []
-	for e in EDGES:
-		var a := _find(centers, e[0])
-		var b := _find(centers, e[1])
+	for e in Content.passes:
+		var a := _find(centers, e.a)
+		var b := _find(centers, e.b)
 		if a < 0 or b < 0:
 			continue
-		var tiles := _carve(w, centers[a], centers[b], seed + w.passes.size() * 13)
+		var core := []
+		var tiles := _carve(w, centers[a], centers[b], seed + w.passes.size() * 13, core)
 		for t in tiles:
 			w.terrain[t] = World.PASS
 			w.pass_of[t] = w.passes.size()
 			w.nature[t] = World.N_NONE
-		w.passes.append({"idx": w.passes.size(), "a": a, "b": b, "tiles": tiles, "discovered": false})
+		var obstacle: String = e.get("obstacle", "none")
+		w.passes.append({
+			"idx": w.passes.size(), "a": a, "b": b, "tiles": tiles, "discovered": false,
+			"obstacle": obstacle, "cleared": obstacle == "none", "plank": false, "project": null,
+			"mid": core[core.size() / 2] if core.size() > 0 else -1, "core": core,
+		})
 
 
 static func _find(centers: Array, id: String) -> int:
@@ -181,7 +183,7 @@ static func _find(centers: Array, id: String) -> int:
 
 
 ## Walks from centre A to centre B with a gentle wobble; returns the mountain tiles crossed (4-connected).
-static func _carve(w: World, a: Dictionary, b: Dictionary, seed: int) -> Array:
+static func _carve(w: World, a: Dictionary, b: Dictionary, seed: int, core: Array) -> Array:
 	var out := []
 	var seen := {}
 	var dx: float = b.cx - a.cx
@@ -206,4 +208,10 @@ static func _carve(w: World, a: Dictionary, b: Dictionary, seed: int) -> Array:
 			if w.terrain[i] == World.MOUNTAIN and not seen.has(i):
 				seen[i] = true
 				out.append(i)
+				core.append(i)
+				# widen the trail to a small gorge so it reads from the camera
+				for j in [i + 1, i - 1, i + w.size, i - w.size]:
+					if j >= 0 and j < w.size * w.size and w.terrain[j] == World.MOUNTAIN and not seen.has(j):
+						seen[j] = true
+						out.append(j)
 	return out

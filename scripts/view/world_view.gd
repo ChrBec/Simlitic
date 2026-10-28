@@ -5,7 +5,7 @@ extends Node3D
 
 const MIN_ZOOM := 0.35
 const MAX_ZOOM := 2.2
-const FAR := 95.0
+const FAR := 130.0
 const NEAR := 8.0
 
 var game # Game
@@ -22,11 +22,16 @@ var interactive := true
 var show_markers := true # warning markers over buildings (off for the menu backdrop)
 
 var _seen_dirty := -1
-var _nature := {} # mesh id -> MultiMeshInstance3D
+var _nature := {} # "chunk:mesh id" -> MultiMeshInstance3D
+var _winter := 0.0
+var _sig := "" # discovery state the reveal map was computed for
+const NATURE_CHUNK := 32
+const NATURE_IDS := ["nature/conifer", "nature/broadleaf", "nature/bush", "nature/hazel", "nature/rock"]
 var _deposits: Array[Node3D] = []
 var _buildings := {} # building id -> {node, type}
 var _walkers: Array = []
-var _porters := {} # route id -> Array[MeshInstance3D]
+var _caravans := {} # caravan id -> Array[Node3D]
+var _pass_marks := {} # pass idx -> {node, key}
 var _scouts: Array[MeshInstance3D] = []
 var _panning := false
 var _rotating := false
@@ -77,7 +82,7 @@ func _setup_environment() -> void:
 	sun.shadow_enabled = true
 	sun.shadow_opacity = 0.85
 	sun.shadow_blur = 1.5
-	sun.directional_shadow_max_distance = 140.0
+	sun.directional_shadow_max_distance = 180.0
 	sun.rotation = Vector3(deg_to_rad(-48.0), deg_to_rad(-20.0), 0.0)
 	add_child(sun)
 
@@ -149,7 +154,9 @@ func _process(delta: float) -> void:
 	if world.dirty != _seen_dirty:
 		sync()
 	_update_walkers(delta)
-	_update_porters(delta)
+	_update_caravans(delta)
+	_winter = move_toward(_winter, 1.0 if world.is_winter() else 0.0, delta * 0.25)
+	terrain.mat.set_shader_parameter("winter", _winter)
 	overlay.redraw()
 	if interactive:
 		_keyboard(delta)
@@ -240,11 +247,34 @@ func _start_pan(mb: InputEventMouseButton) -> void:
 
 func sync() -> void:
 	_seen_dirty = world.dirty
-	reveal = _compute_reveal()
-	terrain.refresh(reveal)
-	_sync_nature()
+	var touched := world.take_touched()
+	var sig := _discovery_sig()
+	if sig != _sig:
+		_sig = sig
+		reveal = _compute_reveal()
+		terrain.refresh(reveal)
+		_sync_nature()
+	elif not touched.is_empty():
+		terrain.refresh_tiles(touched, reveal)
+		var chunks := {}
+		for i in touched:
+			chunks[Vector2i(i % world.size / NATURE_CHUNK, i / world.size / NATURE_CHUNK)] = true
+		for c in chunks:
+			_sync_nature_chunk(c)
+		_sync_deposits()
 	_sync_buildings()
+	_sync_passes()
 	_spawn_walkers()
+
+
+## Changes whenever something that affects the mist or the pass trails changes.
+func _discovery_sig() -> String:
+	var s := ""
+	for v in world.valleys:
+		s += "1" if v.discovered else "0"
+	for p in world.passes:
+		s += ("1" if p.discovered else "0") + ("1" if p.cleared else "0") + ("1" if p.plank else "0")
+	return s
 
 
 func _compute_reveal() -> PackedFloat32Array:
@@ -286,48 +316,65 @@ func _compute_reveal() -> PackedFloat32Array:
 
 
 func _sync_nature() -> void:
+	var n := ceili(float(world.size) / NATURE_CHUNK)
+	for cy in n:
+		for cx in n:
+			_sync_nature_chunk(Vector2i(cx, cy))
+	_sync_deposits()
+
+
+## Trees, bushes and rocks are batched per 32×32 chunk so a new building only rebuilds its chunk.
+func _sync_nature_chunk(c: Vector2i) -> void:
 	var w := world
 	var s := w.seed
-	var lists := {"nature/conifer": [], "nature/broadleaf": [], "nature/bush": [], "nature/hazel": [], "nature/rock": []}
-	for i in w.size * w.size:
-		if reveal[i] < 0.35:
-			continue
-		var x := i % w.size
-		var y := i / w.size
-		var h := SimNoise.hash2(x, y, s + 101)
-		var h2 := SimNoise.hash2(x, y, s + 202)
-		var free := w.bmap[i] == 0 and not w.road[i]
-		match w.nature[i] if free else World.N_NONE:
-			World.N_TREE:
-				var pine := SimNoise.fbm(x * 0.1, y * 0.1, s + 61) > 0.52
-				lists["nature/conifer" if pine else "nature/broadleaf"].append(_xf(x + 0.3 + h * 0.4, y + 0.3 + h2 * 0.4, 0.85 + h2 * 0.5, h))
-				if h > 0.45:
-					var pine2 := pine if h2 < 0.7 else not pine
-					lists["nature/conifer" if pine2 else "nature/broadleaf"].append(_xf(x + 0.15 + h2 * 0.3, y + 0.6 + h * 0.3, 0.7 + h * 0.4, h2))
-			World.N_BUSH:
-				lists["nature/bush" if h2 < 0.6 else "nature/hazel"].append(_xf(x + 0.5, y + 0.5, 0.9 + h * 0.4, h2))
-			World.N_ROCK:
-				lists["nature/rock"].append(_xf(x + 0.5, y + 0.5, 0.9 + h * 0.6, h2))
-		# pines on the lower mountain slopes
-		if w.terrain[i] == World.MOUNTAIN and terrain.depth[i] <= 3 and h > 0.5:
-			lists["nature/conifer"].append(_xf(x + 0.2 + h2 * 0.6, y + 0.2 + h * 0.6, 0.9 + h2 * 0.5, h))
+	var lists := {}
+	for id in NATURE_IDS:
+		lists[id] = []
+	for y in range(c.y * NATURE_CHUNK, mini(w.size, (c.y + 1) * NATURE_CHUNK)):
+		for x in range(c.x * NATURE_CHUNK, mini(w.size, (c.x + 1) * NATURE_CHUNK)):
+			var i := y * w.size + x
+			if reveal[i] < 0.35:
+				continue
+			var nat := w.nature[i]
+			var mountain_pine := w.terrain[i] == World.MOUNTAIN and terrain.depth[i] <= 3
+			if nat == World.N_NONE and not mountain_pine:
+				continue
+			var h := SimNoise.hash2(x, y, s + 101)
+			var h2 := SimNoise.hash2(x, y, s + 202)
+			var free := w.bmap[i] == 0 and not w.road[i]
+			match nat if free else World.N_NONE:
+				World.N_TREE:
+					var pine := SimNoise.fbm(x * 0.1, y * 0.1, s + 61) > 0.52
+					lists["nature/conifer" if pine else "nature/broadleaf"].append(_xf(x + 0.3 + h * 0.4, y + 0.3 + h2 * 0.4, 0.85 + h2 * 0.5, h))
+					if h > 0.45:
+						var pine2 := pine if h2 < 0.7 else not pine
+						lists["nature/conifer" if pine2 else "nature/broadleaf"].append(_xf(x + 0.15 + h2 * 0.3, y + 0.6 + h * 0.3, 0.7 + h * 0.4, h2))
+				World.N_BUSH:
+					lists["nature/bush" if h2 < 0.6 else "nature/hazel"].append(_xf(x + 0.5, y + 0.5, 0.9 + h * 0.4, h2))
+				World.N_ROCK:
+					lists["nature/rock"].append(_xf(x + 0.5, y + 0.5, 0.9 + h * 0.6, h2))
+			# pines on the lower mountain slopes
+			if mountain_pine and h > 0.5:
+				lists["nature/conifer"].append(_xf(x + 0.2 + h2 * 0.6, y + 0.2 + h * 0.6, 0.9 + h2 * 0.5, h))
 	for id in lists:
-		var mmi: MultiMeshInstance3D = _nature.get(id)
+		var key := "%d,%d:%s" % [c.x, c.y, id]
+		var list: Array = lists[id]
+		var mmi: MultiMeshInstance3D = _nature.get(key)
 		if mmi == null:
+			if list.is_empty():
+				continue
 			mmi = MultiMeshInstance3D.new()
 			mmi.multimesh = MultiMesh.new()
 			mmi.multimesh.transform_format = MultiMesh.TRANSFORM_3D
 			mmi.multimesh.use_colors = true
 			mmi.multimesh.mesh = Models.mesh(id)
 			add_child(mmi)
-			_nature[id] = mmi
+			_nature[key] = mmi
 		var mm := mmi.multimesh
-		var list: Array = lists[id]
 		mm.instance_count = list.size()
 		for k in list.size():
 			mm.set_instance_transform(k, list[k].xf)
 			mm.set_instance_color(k, list[k].col)
-	_sync_deposits()
 
 
 func _xf(fx: float, fz: float, scale: float, h: float) -> Dictionary:
@@ -403,6 +450,15 @@ func _person(id: String) -> MeshInstance3D:
 	return mi
 
 
+func _model(id: String) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.mesh = Models.mesh(id)
+	mi.scale = Vector3.ONE * 1.35
+	mi.set_meta("model", true)
+	add_child(mi)
+	return mi
+
+
 func _spawn_walkers() -> void:
 	var w := world
 	var roads := {} # owner -> Array[int]
@@ -467,32 +523,78 @@ func _place(n: Node3D, f: Vector2, dir: Vector2, phase: float) -> void:
 	n.visible = r > 0.3
 
 
-func _update_porters(_delta: float) -> void:
+## Obstacles on discovered passes, and the stairways, ferries, bridges or cairns that overcome them.
+func _sync_passes() -> void:
+	var w := world
+	for p in w.passes:
+		var key := ""
+		if p.discovered and p.obstacle != "none" and p.mid >= 0:
+			key = p.obstacle + ("_fixed" if p.cleared else "")
+		if p.plank:
+			key = "plank"
+		var have = _pass_marks.get(p.idx)
+		if have != null and have.key == key:
+			continue
+		if have != null:
+			have.node.queue_free()
+			_pass_marks.erase(p.idx)
+		if key == "":
+			continue
+		var mi := MeshInstance3D.new()
+		mi.mesh = Models.mesh("pass/" + key)
+		mi.scale = Vector3.ONE * 1.7
+		var x: int = p.mid % w.size
+		var y: int = p.mid / w.size
+		mi.position = Vector3(x + 0.5, terrain.height_at(x + 0.5, y + 0.5), y + 0.5)
+		# turn the feature across the trail
+		var i0: int = p.core[maxi(0, p.core.find(p.mid) - 2)]
+		var i1: int = p.core[mini(p.core.size() - 1, p.core.find(p.mid) + 2)]
+		var d := Vector2(i1 % w.size - i0 % w.size, i1 / w.size - i0 / w.size)
+		if d != Vector2.ZERO:
+			mi.rotation.y = atan2(-d.y, d.x)
+		add_child(mi)
+		_pass_marks[p.idx] = {"node": mi, "key": key}
+
+
+## Caravans walk their tile path: porters in a file, donkeys with a driver, or an ox cart.
+func _update_caravans(_delta: float) -> void:
 	var w := world
 	var live := {}
-	for r in w.routes:
-		live[r.id] = true
-		if not _porters.has(r.id):
-			var list: Array[MeshInstance3D] = []
-			for k in 3:
-				list.append(_person("people/porter"))
-			_porters[r.id] = list
-		if r.path.size() < 2:
-			continue
+	for c in w.caravans:
+		live[c.id] = true
+		if not _caravans.has(c.id):
+			var list: Array = []
+			match c.type:
+				"donkeys":
+					list = [_person("people/porter"), _model("caravan/donkey"), _model("caravan/donkey"), _model("caravan/donkey")]
+				"oxcart":
+					list = [_model("caravan/oxcart"), _person("people/porter")]
+				_:
+					list = [_person("people/porter"), _person("people/porter"), _person("people/porter")]
+			_caravans[c.id] = list
+		var path: Array = c.path
+		var moving: bool = path.size() >= 2 and c.wait <= 0.0
 		var k := 0
-		for s in _porters[r.id]:
-			var pos := clampf(r.pos - r.dir * k * 0.8, 0.0, r.path.size() - 1)
+		for node in _caravans[c.id]:
+			node.visible = moving
+			if not moving:
+				continue
+			var gap := 1.1 if c.type == "oxcart" else 0.7
+			var pos := clampf(c.pos - k * gap, 0.0, path.size() - 1)
 			var i0 := floori(pos)
-			var i1 := mini(r.path.size() - 1, i0 + 1)
-			var a := Vector2(r.path[i0] % w.size, r.path[i0] / w.size) + Vector2(0.5, 0.5)
-			var b := Vector2(r.path[i1] % w.size, r.path[i1] / w.size) + Vector2(0.5, 0.5)
-			_place(s, a.lerp(b, pos - i0), (b - a).normalized() * signf(r.dir), pos)
+			var i1 := mini(path.size() - 1, i0 + 1)
+			var a := Vector2(path[i0] % w.size, path[i0] / w.size) + Vector2(0.5, 0.5)
+			var b := Vector2(path[i1] % w.size, path[i1] / w.size) + Vector2(0.5, 0.5)
+			var dir := (b - a).normalized()
+			_place(node, a.lerp(b, pos - i0), dir, pos)
+			if node.has_meta("model") and dir != Vector2.ZERO:
+				node.rotation.y = atan2(-dir.y, dir.x) # caravan models face +X
 			k += 1
-	for id in _porters.keys():
+	for id in _caravans.keys():
 		if not live.has(id):
-			for s in _porters[id]:
-				s.queue_free()
-			_porters.erase(id)
+			for n in _caravans[id]:
+				n.queue_free()
+			_caravans.erase(id)
 	# scouts walking a pass
 	var ex = w.expedition
 	if ex == null:
@@ -504,7 +606,7 @@ func _update_porters(_delta: float) -> void:
 		for k in 2:
 			_scouts.append(_person("people/scout"))
 	var p: Dictionary = w.passes[ex.pass]
-	var tiles: Array = p.tiles.duplicate()
+	var tiles: Array = p.core.duplicate()
 	if p.a != ex.from:
 		tiles.reverse()
 	var prog: float = 1.0 - ex.time_left / ex.total

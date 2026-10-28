@@ -1,11 +1,12 @@
 {
   "name": "simlitic",
   "productName": "SimLitic",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Build tooling for SimLitic (the game itself is a Godot 4 project). Bakes the painted placeholder art.",
   "scripts": {
-    "bake": "node tools/artgen/bake.cjs"
+    "bake": "node tools/artgen/bake.cjs",
+    "bake:goods": "ONLY=goods node tools/artgen/bake.cjs"
   },
   "devDependencies": {
     "typescript": "5.8.3",

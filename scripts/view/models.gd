@@ -1,7 +1,7 @@
 class_name Models
 ## Stylised low-poly 3D models, built in code from simple primitives with painted vertex colours.
 ## Every model can be replaced by a file: res://assets/models/<id>.glb (or .tscn/.res), e.g.
-## assets/models/buildings/tent.glb, assets/models/nature/conifer.glb, assets/models/people/hunters.glb.
+## assets/models/buildings/tent.glb, assets/models/nature/conifer.glb, assets/models/people/foragers.glb.
 ## Mods can drop the same paths into user://mods/models/. Units: 1 tile = 1 metre-ish unit,
 ## models stand on y = 0 and are centred on their footprint.
 
@@ -100,6 +100,10 @@ static func _build(id: String) -> Mesh:
 			_nature(k, parts[1])
 		"people":
 			_person(k, parts[1])
+		"caravan":
+			_caravan(k, parts[1])
+		"pass":
+			_pass_feature(k, parts[1])
 		"misc":
 			if parts[1] == "warning":
 				# floating exclamation mark over buildings that lack something
@@ -383,8 +387,8 @@ static func _nature(k: Kit, kind: String) -> void:
 # ---------------------------------------------------------------- people
 
 const TIER_CLOTH := {
-	"gatherers": Color("a87a4a"), "hunters": Color("7a5a3a"), "settlers": Color("b8955c"),
-	"artisans": Color("8a4a3a"), "farmers": Color("c8b48a"), "porter": Color("6a5a4a"), "scout": Color("3a6a8a"),
+	"foragers": Color("a87a4a"), "sedentary": Color("7a5a3a"), "farmers": Color("b8955c"),
+	"villagers": Color("c8b48a"), "chieftains": Color("8a3a32"), "porter": Color("6a5a4a"), "scout": Color("3a6a8a"),
 }
 
 static func _person(k: Kit, who: String) -> void:
@@ -396,6 +400,92 @@ static func _person(k: Kit, who: String) -> void:
 		k.cylinder(Vector3(0, 0.18, -0.09), 0.08, 0.1, 0.24, 6, THATCH_DARK)
 	if who == "scout":
 		k.cylinder(Vector3(0.09, 0.0, 0.0), 0.012, 0.012, 0.55, 4, WOOD_DARK)
+
+
+# ---------------------------------------------------------------- caravans & passes
+
+## Caravan models face +X (direction of travel).
+static func _caravan(k: Kit, kind: String) -> void:
+	match kind:
+		"donkey":
+			var c := Color("8a8070")
+			k.blob(Vector3(0, 0.3, 0), Vector3(0.24, 0.13, 0.12), c, 2)
+			k.blob(Vector3(0.27, 0.4, 0), Vector3(0.1, 0.07, 0.06), c.darkened(0.15), 1)
+			k.box(Vector3(0.26, 0.5, 0.03), Vector3(0.03, 0.1, 0.02), c.darkened(0.3))
+			k.box(Vector3(0.26, 0.5, -0.03), Vector3(0.03, 0.1, 0.02), c.darkened(0.3))
+			for o in [Vector3(0.14, 0, 0.07), Vector3(0.14, 0, -0.07), Vector3(-0.14, 0, 0.07), Vector3(-0.14, 0, -0.07)]:
+				k.cylinder(o, 0.025, 0.02, 0.2, 4, c.darkened(0.5))
+			k.cylinder(Vector3(0, 0.3, 0.16), 0.08, 0.09, 0.18, 6, THATCH_DARK)
+			k.cylinder(Vector3(0, 0.3, -0.16), 0.08, 0.09, 0.18, 6, THATCH_DARK)
+		"oxcart":
+			var ox := Color("6a4a32")
+			for zz in [0.12, -0.12]:
+				k.blob(Vector3(0.45, 0.3, zz), Vector3(0.24, 0.15, 0.1), ox, 2)
+				k.blob(Vector3(0.7, 0.36, zz), Vector3(0.08, 0.08, 0.07), ox.darkened(0.2), 1)
+				for o in [Vector3(0.6, 0, zz), Vector3(0.3, 0, zz)]:
+					k.cylinder(o, 0.03, 0.025, 0.2, 4, ox.darkened(0.5))
+			k.box(Vector3(0.2, 0.35, 0), Vector3(0.6, 0.03, 0.03), WOOD_DARK)
+			k.box(Vector3(-0.25, 0.32, 0), Vector3(0.6, 0.06, 0.4), WOOD)
+			k.box(Vector3(-0.25, 0.42, 0), Vector3(0.5, 0.18, 0.34), THATCH)
+			for zz in [0.24, -0.24]:
+				k.cylinder(Vector3(-0.25, 0.17, zz), 0.17, 0.17, 0.05, 10, WOOD_DARK, Vector3.ZERO, Vector3(1, 0, 0))
+
+
+## Obstacles on a pass (before) and the works that overcome them (after).
+static func _pass_feature(k: Kit, kind: String) -> void:
+	var r := k.rng
+	match kind:
+		"scree":
+			for i in 14:
+				var a := r.randf() * TAU
+				var d := r.randf() * 1.2
+				k.rock(Vector3(cos(a) * d, 0, sin(a) * d), Vector3.ONE * (0.15 + r.randf() * 0.3), STONE.lerp(STONE_DARK, r.randf()))
+		"scree_fixed":
+			for i in 5:
+				k.box(Vector3(-0.8 + i * 0.4, 0.06 + i * 0.05, 0), Vector3(0.38, 0.12 + i * 0.1, 0.9), STONE.lerp(STONE_DARK, 0.2 * (i % 2)))
+			for zz in [0.55, -0.55]:
+				for i in 3:
+					k.cylinder(Vector3(-0.6 + i * 0.6, 0, zz), 0.03, 0.03, 0.6, 4, WOOD_DARK)
+		"river":
+			k.box(Vector3(0, 0.05, 0), Vector3(0.9, 0.06, 2.6), Color("4d86a0"))
+			for i in 6:
+				k.rock(Vector3(r.randf_range(-0.6, 0.6), 0, r.randf_range(-1.2, 1.2)), Vector3.ONE * (0.12 + r.randf() * 0.12), STONE_DARK)
+			k.box(Vector3(0, 0.09, 0), Vector3(0.3, 0.02, 2.4), Color("dfe9ec"))
+		"river_fixed":
+			k.box(Vector3(0, 0.05, 0), Vector3(0.9, 0.06, 2.6), Color("4d86a0"))
+			for i in 5:
+				k.cylinder(Vector3(-0.32 + i * 0.16, 0.12, 0.0), 0.07, 0.07, 0.8, 6, WOOD, Vector3.ZERO, Vector3(0, 0, 1))
+			for zz in [1.3, -1.3]:
+				k.cylinder(Vector3(0.5, 0, zz), 0.04, 0.04, 0.9, 4, WOOD_DARK)
+			k.box(Vector3(0.5, 0.8, 0), Vector3(0.015, 0.015, 2.6), Color("c9b48a"))
+		"gorge":
+			k.box(Vector3(0, 0.01, 0), Vector3(0.8, 0.04, 2.6), Color("1e1a18"))
+			for i in 8:
+				k.rock(Vector3(r.randf_range(-0.9, 0.9), 0, r.randf_range(-1.3, 1.3)), Vector3.ONE * (0.12 + r.randf() * 0.2), STONE_DARK)
+		"gorge_fixed":
+			k.box(Vector3(0, 0.01, 0), Vector3(0.8, 0.04, 2.6), Color("1e1a18"))
+			for i in 9:
+				k.box(Vector3(-0.8 + i * 0.2, 0.32 - sin(PI * i / 8.0) * 0.12, 0), Vector3(0.16, 0.03, 0.5), WOOD.lightened(0.08 * (i % 2)))
+			for xx in [-0.95, 0.95]:
+				for zz in [0.3, -0.3]:
+					k.cylinder(Vector3(xx, 0, zz), 0.04, 0.035, 0.75, 4, WOOD_DARK)
+			for zz in [0.28, -0.28]:
+				k.box(Vector3(0, 0.6, zz), Vector3(1.9, 0.015, 0.015), Color("c9b48a"))
+		"glacier":
+			for i in 9:
+				var a := r.randf() * TAU
+				var d := r.randf() * 1.1
+				k.rock(Vector3(cos(a) * d, 0, sin(a) * d), Vector3(0.3, 0.25 + r.randf() * 0.3, 0.3), Color("dfeaf2").lerp(Color("a8c4d8"), r.randf()))
+		"glacier_fixed":
+			for p in [Vector3(-0.8, 0, 0.3), Vector3(0.0, 0, -0.3), Vector3(0.8, 0, 0.25)]:
+				var y := 0.0
+				for i in 4:
+					var sz := 0.24 - i * 0.04
+					k.rock(p + Vector3(0, y, 0), Vector3(sz, sz * 0.7, sz), STONE.lerp(STONE_DARK, 0.3 * (i % 2)))
+					y += sz * 0.9
+		"plank":
+			for i in 10:
+				k.box(Vector3(-1.0 + i * 0.22, 0.04, 0), Vector3(0.18, 0.05, 0.75), WOOD.lightened(0.06 * (i % 3)))
 
 
 # ---------------------------------------------------------------- mesh kit

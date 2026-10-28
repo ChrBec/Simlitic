@@ -8,7 +8,7 @@ const CHUNK := 16
 const MARGIN := 24 # mountains continue beyond the playable map
 const WATER_LEVEL := -0.32
 const UPSAMPLE := 4 # paint textures are upsampled this much from one texel per tile
-const PEAK_SCALE := 1.55
+const PEAK_SCALE := 1.2
 
 var world: World
 var size := 0
@@ -23,10 +23,23 @@ var mat := ShaderMaterial.new()
 var water_mat := ShaderMaterial.new()
 
 
+var _pass_rise := {} # pass tile -> extra height towards the saddle
+var pass_dist := PackedInt32Array() # mountain tiles: distance to the nearest pass (passes cross low saddles)
+
+
 func setup(w: World) -> void:
 	world = w
 	size = w.size
 	depth = _mountain_depth()
+	pass_dist = _pass_distance()
+	for p in w.passes:
+		var n: int = p.core.size()
+		for k in n:
+			var rise := sin(PI * (k + 0.5) / n) * minf(2.4, n * 0.08)
+			var c: int = p.core[k]
+			for t in [c, c + 1, c - 1, c + size, c - size]:
+				if w.pass_of[clampi(t, 0, size * size - 1)] == p.idx:
+					_pass_rise[t] = maxf(_pass_rise.get(t, 0.0), rise)
 	_build_heights()
 	tint_img = Image.create(size * UPSAMPLE, size * UPSAMPLE, false, Image.FORMAT_RGBA8)
 	data_img = Image.create(size * UPSAMPLE, size * UPSAMPLE, false, Image.FORMAT_RGBA8)
@@ -73,6 +86,30 @@ func _mountain_depth() -> PackedInt32Array:
 	return d
 
 
+func _pass_distance() -> PackedInt32Array:
+	var w := world
+	var d := PackedInt32Array()
+	d.resize(size * size)
+	d.fill(99)
+	var q: Array[int] = []
+	for i in size * size:
+		if w.terrain[i] == World.PASS:
+			d[i] = 0
+			q.append(i)
+	var head := 0
+	while head < q.size():
+		var i: int = q[head]
+		head += 1
+		if d[i] >= 9:
+			continue
+		var x := i % size
+		for j in [i + 1 if x < size - 1 else -1, i - 1 if x > 0 else -1, i + size, i - size]:
+			if j >= 0 and j < size * size and w.terrain[j] == World.MOUNTAIN and d[j] > d[i] + 1:
+				d[j] = d[i] + 1
+				q.append(j)
+	return d
+
+
 ## Target height of a tile; tiles outside the map continue the edge mountains.
 func _tile_height(x: int, y: int) -> float:
 	var s := world.seed
@@ -85,14 +122,17 @@ func _tile_height(x: int, y: int) -> float:
 		World.WATER:
 			return -1.0
 		World.PASS:
-			return 0.35 + SimNoise.fbm(x * 0.2, y * 0.2, s + 3) * 0.4
+			# trails climb to a saddle half-way between the valleys
+			return 0.35 + _pass_rise.get(i, 0.0) + SimNoise.fbm(x * 0.2, y * 0.2, s + 3) * 0.4
 		World.GRASS:
 			return SimNoise.fbm(x * 0.09, y * 0.09, s + 21) * 0.32
 	var d := float(depth[i] + outside) if world.terrain[i] == World.MOUNTAIN else float(1 + outside)
 	var n := SimNoise.fbm(x * 0.07, y * 0.07, s + 31)
 	var ridge := 1.0 - absf(SimNoise.fbm(x * 0.13, y * 0.13, s + 47) * 2.0 - 1.0)
 	var h := pow(d, 0.92) * (0.75 + 0.55 * n) + ridge * minf(d, 4.0) * 0.55
-	return minf(h * PEAK_SCALE, 22.0 + n * 4.0)
+	if outside == 0:
+		h *= lerpf(0.5, 1.0, clampf(pass_dist[i] / 9.0, 0.0, 1.0))
+	return minf(h * PEAK_SCALE, 14.0 + n * 3.0)
 
 
 func _build_heights() -> void:
@@ -225,34 +265,57 @@ func _build_water() -> void:
 # ---------------------------------------------------------------- per-tile paint
 
 ## Rewrites the tint and flag textures (cheap: one texel per tile).
+var _tint_bytes := PackedByteArray()
+var _data_bytes := PackedByteArray()
+
+
+## Full repaint of the per-tile textures (after discovery or pass changes).
 func refresh(reveal: PackedFloat32Array) -> void:
-	var w := world
-	var tint := PackedByteArray()
-	var data := PackedByteArray()
-	tint.resize(size * size * 4)
-	data.resize(size * size * 4)
+	_tint_bytes.resize(size * size * 4)
+	_data_bytes.resize(size * size * 4)
 	for i in size * size:
-		var x := i % size
-		var y := i / size
-		var c := _tint(i, x, y)
-		var o := i * 4
-		tint[o] = c.r8
-		tint[o + 1] = c.g8
-		tint[o + 2] = c.b8
-		var plot: bool = w.bmap[i] != 0 and Content.BUILDING[w.buildings[w.bmap[i]].type].style != "field"
-		tint[o + 3] = 255 if plot else 0
-		data[o] = 255 if w.road[i] else 0
-		var tr := 0
-		if w.terrain[i] == World.PASS:
-			tr = 255 if w.passes[w.pass_of[i]].discovered else 150
-		data[o + 1] = tr
-		# the mountains' silhouettes stay visible through the mist; valleys stay hidden
-		var rv := reveal[i] if w.terrain[i] != World.MOUNTAIN else maxf(reveal[i], 0.85)
-		data[o + 2] = int(clampf(rv, 0.0, 1.0) * 255.0)
-		data[o + 3] = 255 if w.terrain[i] == World.WATER else 0
+		_paint_tile(i, reveal)
+	_upload()
+
+
+## Repaints only the given tiles (buildings and paths placed or removed).
+func refresh_tiles(tiles: PackedInt32Array, reveal: PackedFloat32Array) -> void:
+	if _tint_bytes.is_empty():
+		refresh(reveal)
+		return
+	for i in tiles:
+		if i >= 0 and i < size * size:
+			_paint_tile(i, reveal)
+	_upload()
+
+
+func _paint_tile(i: int, reveal: PackedFloat32Array) -> void:
+	var w := world
+	var c := _tint(i, i % size, i / size)
+	var o := i * 4
+	_tint_bytes[o] = c.r8
+	_tint_bytes[o + 1] = c.g8
+	_tint_bytes[o + 2] = c.b8
+	var plot: bool = w.bmap[i] != 0 and Content.BUILDING[w.buildings[w.bmap[i]].type].style != "field"
+	_tint_bytes[o + 3] = 255 if plot else 0
+	var road: bool = w.road[i] != 0
+	var tr := 0
+	if w.terrain[i] == World.PASS:
+		var p: Dictionary = w.passes[w.pass_of[i]]
+		tr = 255 if p.discovered else 150
+		road = road or p.plank
+	_data_bytes[o] = 255 if road else 0
+	_data_bytes[o + 1] = tr
+	# the mountains' silhouettes stay visible through the mist; valleys stay hidden
+	var rv := reveal[i] if w.terrain[i] != World.MOUNTAIN else maxf(reveal[i], 0.85)
+	_data_bytes[o + 2] = int(clampf(rv, 0.0, 1.0) * 255.0)
+	_data_bytes[o + 3] = 255 if w.terrain[i] == World.WATER else 0
+
+
+func _upload() -> void:
 	# cubic upsampling turns the tile grid into soft, rounded shapes
-	tint_img.set_data(size, size, false, Image.FORMAT_RGBA8, tint)
-	data_img.set_data(size, size, false, Image.FORMAT_RGBA8, data)
+	tint_img.set_data(size, size, false, Image.FORMAT_RGBA8, _tint_bytes)
+	data_img.set_data(size, size, false, Image.FORMAT_RGBA8, _data_bytes)
 	tint_img.resize(size * UPSAMPLE, size * UPSAMPLE, Image.INTERPOLATE_CUBIC)
 	data_img.resize(size * UPSAMPLE, size * UPSAMPLE, Image.INTERPOLATE_CUBIC)
 	tint_tex.update(tint_img)

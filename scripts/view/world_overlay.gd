@@ -1,6 +1,6 @@
 class_name WorldOverlay
 extends Node3D
-## Build previews, selection, service radii and porter routes, drawn as flat shapes hugging the terrain.
+## Build previews, selection, service radii and caravan paths, drawn as flat shapes hugging the terrain.
 
 const LIFT := 0.05
 
@@ -54,7 +54,7 @@ func _draw_all() -> void:
 	var w: World = view.world
 	# a dummy invisible triangle keeps the surface valid when nothing else is drawn
 	_tri(Vector3.ZERO, Vector3.ZERO, Vector3.ZERO, Color(0, 0, 0, 0))
-	for r in w.routes:
+	for r in w.caravans:
 		for k in range(0, r.path.size() - 1, 2):
 			var a: int = r.path[k]
 			var b: int = r.path[k + 1]

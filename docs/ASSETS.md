@@ -11,8 +11,10 @@ Das Spiel sucht für jede Modell-ID zuerst eine Datei und baut nur, wenn keine d
 | `buildings/<gebäude-id>` | `assets/models/buildings/tent.glb` | Gebäude, je Eintrag in `content/buildings.json` |
 | `nature/conifer`, `nature/broadleaf` | `assets/models/nature/conifer.glb` | Nadel- und Laubbäume (tausendfach instanziert) |
 | `nature/bush`, `nature/hazel`, `nature/rock` | | Beerensträucher, Haselsträucher, Felsen |
-| `nature/deposit_flint`, `_copper`, `_tin` | | Lagerstätten (2×2 Felder) |
-| `people/<stufen-id>`, `people/porter`, `people/scout` | `assets/models/people/hunters.glb` | Bewohner, Träger, Kundschafter |
+| `nature/deposit_flint`, `_copper`, `_tin`, `_obsidian` | | Lagerstätten (2×2 Felder) |
+| `people/<stufen-id>`, `people/porter`, `people/scout` | `assets/models/people/foragers.glb` | Bewohner, Träger, Kundschafter |
+| `caravan/donkey`, `caravan/oxcart` | `assets/models/caravan/oxcart.glb` | Esel und Ochsenkarren (schauen nach +X) |
+| `pass/<hindernis>`, `pass/<hindernis>_fixed`, `pass/plank` | `assets/models/pass/gorge_fixed.glb` | Hindernisse auf Pässen (scree, river, gorge, glacier) und ihre Lösung |
 | `misc/warning` | | Warnzeichen über Gebäuden |
 
 Erlaubte Formate: `.glb`, `.gltf`, `.tscn`, `.scn`. Für Bäume, Büsche, Felsen und Menschen wird das erste Mesh der Datei verwendet; Gebäude dürfen ganze Szenen sein (mit Animationen, Lichtern usw.).

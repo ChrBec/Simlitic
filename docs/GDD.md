@@ -62,14 +62,37 @@ Fruchtbarkeiten sind ein Kernkonzept: Sie sind **zeitgebunden**.
 
 **Überjagung/Übersammlung:** Wild- und Beerenfruchtbarkeiten haben eine Regenerationsrate. Wer zu viele Jäger in ein Tal setzt, senkt den Wildbestand (sichtbar: weniger Tiere). Das zwingt Sammler-Stämme zum Expandieren – und ist historisch einer der Treiber der Sesshaftwerdung.
 
-### 2.3 Berge und Pfade (Pendant zu Ozean, Schiffen und Seewegen)
+### 2.3 Berge, Pässe und Karawanen (Pendant zu Ozean, Schiffen und Seewegen)
 
-- Täler sind über **Pfade** verbunden. Ein Pfad ist zunächst im **Nebel**.
-- **Kundschafter** (Pendant zu Expeditionen) erkunden Pfade. Eine Erkundung dauert, hat Ereignisse mit Entscheidungen (Lawine, Höhle, fremder Stamm) und Risiken.
-- Pfade haben **Stufen**: Trampelpfad → befestigter Pfad (Steinstufen) → Saumpfad für Packtiere → Karrenweg (benötigt Rad). Jede Stufe erhöht Tragkraft und Geschwindigkeit.
-- **Pässe** können im Winter zuschneien (Jahreszeiten, Kap. 9).
-- **Trägerzüge** (Pendant zu Schiffen): Gruppen aus Trägern, später Packtiere (Ziegen, Esel, Ochsen) und Karren. Sie folgen **Handelspfaden** (Pendant zu Handelsrouten) zwischen den Lagerplätzen zweier Täler.
-- **Haupttal-Prinzip:** Das Haupttal ist dicht bebaut und beherbergt die höchsten Stufen. Neben-Täler sind Rohstoff- und Nahrungsprovinzen. Das erzeugt die typische Anno-Logistik.
+Die Karte ist ein Ring aus 12 Tälern um das Startgebiet (Haupttal in der Mitte, sechs Täler im inneren Ring, fünf im äußeren). 21 Pässe verbinden die Täler; jeder Pass ist ein Sattel, der sich zwischen zwei Gipfeln hinaufzieht.
+
+**Erkunden.** Jeder Pass liegt zunächst im Nebel. Ein Kundschafterlager schickt Kundschafter (Proviant: Fleisch und Muscheln) los; sie kommen über jeden Pass und decken das Tal dahinter auf.
+
+**Hindernisse.** Viele Pässe sind für Lasten nicht begehbar, bis man ein Bauprojekt abgeschlossen hat. Erst dann können Karawanen ihn nutzen und erst dann kann man dahinter ein Tal gründen.
+
+| Hindernis | Lösung | Ab Stufe | Kosten |
+|---|---|---|---|
+| Trampelpfad | – | sofort | – |
+| Geröllhang | Steig anlegen | Sesshafte Sammler | Werkzeug, Holz |
+| Wildfluss | Floßfähre | Dorfgemeinschaft | Seile, Holz |
+| Schlucht | Seilbrücke | Dorfgemeinschaft | viele Seile, Holz |
+| Gletscherpass | Steinmänner setzen | Erste Bauern | Fellkleidung, Werkzeug. Im Winter gesperrt, nie für Wagen |
+
+Jeder offene Pass kann ab den Kupferzeitlichen Sippen zum **Bohlenweg** ausgebaut werden (Bretter + Kupferwerkzeug). Nur über Bohlenwege fahren Ochsenkarren.
+
+**Karawanen** sind die Schiffe der Berge. Man stellt sie an einem **Rastplatz** auf, der am Fuß eines Passes stehen muss.
+
+| Karawane | Ab Stufe | Plätze × Menge | Tempo | Besonderheit |
+|---|---|---|---|---|
+| Trägertrupp | Sesshafte Sammler | 2 × 10 | langsam | geht über jeden offenen Pass |
+| Eselkarawane | Dorfgemeinschaft | 3 × 20 | schneller | Esel um 5000 v. Chr. domestiziert |
+| Ochsenkarren | Kupferzeitliche Sippen | 4 × 40 | langsam | braucht Bohlenwege auf der ganzen Strecke |
+
+Jede Karawane fährt eine **Route** mit bis zu 6 Halten (eigene Täler). An jedem Halt gibt es eine Liste „Laden“ und eine Liste „Abladen“. Jede geladene Ware belegt einen Platz. Wird ein Pass gesperrt (Winter), wartet die Karawane oder sucht einen anderen Weg.
+
+**Jahreszeiten.** Ein Jahr hat vier Jahreszeiten zu je 2,5 Minuten. Im Winter liegt Schnee in den Tälern, Felder und Weiden arbeiten nur mit 30 % und Gletscherpässe sind zu. Im Herbst lohnt es sich also, Vorräte anzulegen.
+
+**Haupttal-Prinzip.** Das Haupttal hat die meisten Fruchtbarkeiten, aber **keinen Feuerstein, kein Kupfer, keinen Flachs, keine Schafe und keine Trauben**. Schon die Sesshaften brauchen deshalb ein zweites Tal (die Feuersteinschlucht hinter dem einzigen offenen Pass) und eine Trägerroute. Ab da wächst die typische Anno-Logistik von selbst.
 
 ### 2.4 Weitere „Welten“ (Pendant zur Neuen Welt, Arktis, Enbesa)
 
@@ -85,19 +108,19 @@ Jede Region ist eine eigene Karte (Session). Wechsel über Fernpfade mit langen 
 
 ---
 
-## 3. Bevölkerungsstufen
+## 3. Bevölkerungsstufen – die Neolithische Revolution, wie sie wirklich ablief
 
-Jede Stufe hat **Wohnhaus**, **Arbeitskraft**, **Grundbedürfnisse** (Aufstieg + Bevölkerung) und **Luxusbedürfnisse** (Muscheleinnahmen + Zufriedenheit). Pendant zu Bauern → Arbeiter → Handwerker → Ingenieure → Investoren.
+Die Stufen folgen der Forschung zur Neolithisierung im Fruchtbaren Halbmond und in Europa. Der wichtigste Punkt: **Die Menschen wurden sesshaft, bevor sie Ackerbau betrieben** (Natufien). Getreide wurde jahrhundertelang wild geerntet, bevor es domestiziert wurde. Töpferei kam erst nach dem Ackerbau, Milch, Wolle und Wagen noch später („Revolution der Sekundärprodukte“), dann Kupfer und schließlich Bronze.
 
-| # | Stufe | Werkzeugzeit | Wohnhaus | Grundbedürfnisse | Luxus | Schaltet frei |
+| # | Stufe | Zeit (ca.) | Haus | Grundbedürfnisse | Luxus | Neues Spielprinzip |
 |---|---|---|---|---|---|---|
-| 1 | **Sammler** | Altsteinzeit (Geröllgeräte) | Fellzelt | Beeren, Feuerstelle (Dienst) | Muschelketten | Holzfäller, Beerensammler, Feuerstelle, Lagerplatz, Trampelpfad |
-| 2 | **Jäger** | Mittelsteinzeit (Mikrolithen, Bogen) | Rindenhütte | Fleisch, Fellkleidung, Schamanenplatz (Dienst) | Federschmuck, Höhlenmalerei (Dienst) | Jäger, Gerber, Feuersteinschläger, Kundschafter |
-| 3 | **Siedler** | Frühneolithikum (geschliffene Beile) | Lehm-Flechtwerkhaus | Fisch, Steinwerkzeug, Tongefäße | Beerenwein, Ritualtanz (Dienst) | Fischer, Lehmgrube, Töpferei, Brennofen, Handelspfade |
-| 4 | **Handwerker** | Neolithikum (Kupfer) | Langhaus | Sammelkorn-Brei, Leinengewand, Heilkräuter | Met, Kupferschmuck, Steinkreis-Fest | Weber, Flachsfeld, Kräutersammler, Kupferschmelze, Imker |
-| 5 | **Bauern** | Kupfer-/frühe Bronzezeit | Gehöft | Brot, Wollmantel, Milch & Käse, Bronzewerkzeug | Bier, Ochsenkarren, Großes Monument | **Ackerbau, Viehzucht, Rad, Pflug**, Karrenwege |
+| 1 | **Wildbeuter** | 13 000 v. Chr. (Spätpaläolithikum) | Fellzelt | Beeren, Fleisch, Feuerstelle | Haselnüsse | Sammeln und Jagen im Wald; Pfade; Kundschafter |
+| 2 | **Sesshafte Sammler** | 12 000 v. Chr. (Natufien) | Grubenhaus | Fisch, Wildgetreide-Brei, Fellkleidung, Schamane | Honig, Ahnenstätte | Mahlsteine für Wildgetreide; Feuerstein aus einem anderen Tal; Werkzeug; erste Karawanen und Steige |
+| 3 | **Erste Bauern** | 9 000 v. Chr. (PPN, Göbekli Tepe) | Lehmziegelhaus | Brot, Fleisch, Fellkleidung, Kultplatz (T-Pfeiler) | Heilkräuter, Tanzplatz | Emmer wird gesät: Feld → Mühle → Backofen. Stroh + Lehm → Lehmziegel. Ziegen werden gehalten |
+| 4 | **Dorfgemeinschaft** | 7 000 v. Chr. (Keramisches Neolithikum, Bandkeramik) | Langhaus | Brot, Keramik, Leinen, Kultplatz, Dorfplatz | Bier, Obsidianschmuck | Töpferofen; Flachs → Leinen und Seile; Seile öffnen Flüsse und Schluchten; Esel |
+| 5 | **Kupferzeitliche Sippen** | 4 500 v. Chr. (Chalkolithikum) | Gehöft | Brot, Käse, Wollstoff, Kupferwerkzeug, Dorfplatz | Wein, Bronzeschmuck, Dolmen | Kupfererz + Holzkohle → Kupfer; Milch, Wolle; Rad, Bretter, Ochsenkarren, Bohlenwege. Ziel: **Bronze** (Kupfer + Zinn aus fernen Tälern) – das Ende der Steinzeit |
 
-**Werkzeugzeiten** sind die sichtbare „Epochen“-Leiter. Jeder Stufenaufstieg zeigt eine gemalte Epochen-Karte („Die Zeit der Jäger beginnt“) und einen Tutorial-Hinweis zu den neuen Mechaniken.
+Die nächste Stufe wird freigeschaltet, sobald genug Bewohner der vorigen Stufe leben (60 / 100 / 150 / 200). Häuser steigen dann von selbst auf, wenn Grundbedürfnisse gedeckt sind und das Baumaterial im Lager liegt (Holz + Häute, Werkzeug, Lehmziegel, Keramik).
 
 ### 3.1 Bedürfnis-Mechanik (wie Anno)
 
@@ -131,41 +154,38 @@ Historisch belegt: Muscheln und Schneckenhäuser wurden über hunderte Kilometer
 
 Ansehen wächst mit Gesamtbevölkerung und Naturwundern. Es limitiert: Anzahl Handelspfade, Kundschafter, besiedelte Täler, Gestaltungselemente (Totems, Steinsetzungen) und diplomatische Optionen.
 
-### 4.3 Produktionsketten (Auszug)
+### 4.3 Produktionsketten
+
+42 Waren, 58 Gebäude. Im Spiel zeigt das Fenster **Ketten (C)** für jede Stufe, wie viele Betriebe 100 Bewohner versorgen und in welchen Tälern die nötige Fruchtbarkeit liegt.
 
 ```
-Sammler:   Beerensträucher ─▶ Beerensammler ─▶ Beeren
-           Wald ─▶ Holzfäller ─▶ Holz
-Jäger:     Rehwild ─▶ Jäger ─▶ Fleisch + Häute ─▶ Gerber ─▶ Fellkleidung
-           Feuerstein-Vorkommen ─▶ Feuersteinbruch ─▶ Feuerstein ┐
-           Holz ───────────────────────────────────────────────┴▶ Werkzeugmacher ─▶ Steinwerkzeug
-Siedler:   Fischgründe ─▶ Fischer ─▶ Fisch
-           Lehmboden ─▶ Lehmgrube ─▶ Lehm ─▶ Töpfer (+Holz) ─▶ Tongefäße
-           Beeren ─▶ Gärgrube ─▶ Beerenwein
-Handwerker: Wildgetreide ─▶ Kornsammler ─▶ Korn ─▶ Breiküche (+Tongefäße) ─▶ Brei
-           Flachs ─▶ Flachsfeld ─▶ Flachs ─▶ Weber ─▶ Leinengewand
-           Kupfererz + Holzkohle ─▶ Kupferschmelze ─▶ Kupfer ─▶ Schmuckmacher
-Bauern:    Acker ─▶ Getreidefeld ─▶ Getreide ─▶ Mahlstein ─▶ Mehl ─▶ Backofen ─▶ Brot
-           Weide ─▶ Schafhof ─▶ Wolle ─▶ Weber ─▶ Wollmantel
-           Weide ─▶ Kuhhof ─▶ Milch ─▶ Käserei ─▶ Käse
-           Kupfer + Zinn ─▶ Bronzegießer ─▶ Bronzewerkzeug
-           Getreide ─▶ Brauer ─▶ Bier
-           Holz + Bronzewerkzeug ─▶ Stellmacher ─▶ Räder ─▶ Karren
+Wildbeuter:  Wald → Holzfäller → Holz · Sträucher → Beerensammler → Beeren · Rotwild → Jäger → Fleisch
+             Wald → Fallensteller → Häute · Haselsträucher → Nusssammler → Haselnüsse
+Sesshafte:   Fischgründe → Fischerplatz → Fisch · Wildgetreide → Ernte → Mahlplatz → Brei
+             Häute → Gerberei → Fellkleidung · Feuerstein (Vorkommen) + Holz → Werkzeugmacher → Werkzeug
+             Wildbienen → Zeidlerei → Honig
+Bauern:      Emmerfeld → Emmer + Stroh · Emmer → Mühle → Mehl → Backofen (+Holz) → Brot
+             Lehm + Stroh → Ziegelei → Lehmziegel · Mufflons → Ziegenhof → Fleisch + Häute · Kräuter
+Dorf:        Lehm + Holz → Töpferofen → Keramik · Flachsfeld → Flachs → Webstuhl → Leinen / Seilerei → Seile
+             Gerstenfeld → Mälzerei → Malz → Brauerei (+Keramik) → Bier · Obsidian → Schmuckmacher
+Kupferzeit:  Kupfererz + Holzkohle → Schmelze → Kupfer → Kupferschmied (+Holz) → Kupferwerkzeug
+             Auerochsen → Rinderhof → Milch → Käserei (+Keramik) → Käse · Mufflons → Schafhof → Wolle → Wollstoff
+             Trauben → Kelter (+Keramik) → Wein · Holz → Zimmerei → Bretter → Wagner → Räder
+             Kupfer + Zinn → Bronzegießer → Bronzeschmuck
 ```
 
-Alle Ketten, Zeiten, Kosten und Bedarfe sind **datengetrieben** (`content/*.json`) und ohne Code änderbar.
+Alle Ketten, Zeiten, Kosten und Bedarfe sind **datengetrieben** (`content/*.json`, erzeugt von `tools/content/generate.py`) und ohne Code änderbar.
 
 ### 4.4 Logistik
 
-- **Lagerplatz** (Pendant zu Kontor/Lagerhaus) definiert das Einzugsgebiet. Betriebe müssen über Pfade an einen Lagerplatz angebunden sein.
-- **Träger** laufen sichtbar zwischen Betrieben und Lagerplatz; lange Wege senken die Effizienz.
-- **Talweites Lager** (wie Anno): Alle angebundenen Lager eines Tals teilen sich einen Bestand.
+- **Lagerplatz** (Pendant zu Kontor) – Betriebe und Häuser müssen über Pfade an einen Lagerplatz angebunden sein.
+- **Talweites Lager** (wie Anno): Jedes Tal hat einen Bestand; Arbeitskraft ist talweit.
+- **Karawanen** bewegen Waren zwischen Tälern (siehe 2.3).
 
 ### 4.5 Handel
 
-- **Wandernde Händler** (Pendant zu Archibald Blake/Händlern): kaufen und verkaufen mit Preisen, die von Angebot und Nachfrage abhängen.
-- **Handelspfade** zwischen eigenen Tälern: Gut, Menge, Laden/Entladen pro Station.
-- **Handel mit NPC-Stämmen:** Verträge (Handelsabkommen, Bündnis), Tributforderungen.
+- **Händler vom Fluss** kommt regelmäßig mit wechselnden Preisen.
+- **Rivalisierende Stämme** (Graufels, Weidenbach) handeln, wenn die Beziehung gut ist; Geschenke verbessern sie.
 
 ---
 
@@ -343,8 +363,8 @@ tools/artgen/       Generator für die gemalten Platzhalter-Grafiken
 
 | Phase | Inhalt | Ergebnis |
 |---|---|---|
-| **1 – Prototyp** *(dieser Stand)* | GDD, Technik, spielbarer Vertical Slice: 1 Region, 3 Täler, Stufen 1–5 als Daten, Produktionsketten, Bedürfnisse, Aufstieg, Pfade, Kundschafter, Trägerrouten, NPC-Händler, Rivale, Menüs, Einstellungen, Speichern | Als Desktop-Build (Godot) spielbar |
-| **2 – Kernspiel** | Träger-Simulation, Jahreszeiten, Vorfälle, Erzähler, Quests, Balancing aller 5 Stufen, Tutorial-Kampagne | Alpha |
+| **1 – Prototyp** | GDD, Technik, spielbarer Vertical Slice, Menüs, Einstellungen, Speichern | erledigt |
+| **2 – Kernspiel** *(dieser Stand)* | Historisch begründete 5 Stufen, 42 Waren, 58 Gebäude, 12 Täler, 21 Pässe mit Hindernissen, Karawanen mit Routen, Jahreszeiten, Kettenplaner, Ziele bis zur Bronze. Offen: Vorfälle, Erzähler, Feinbalancing der späten Stufen | Alpha |
 | **3 – Inhalt & Kunst** | Professionelle gemalte Assets (Künstler), Musik, Flusstiefland-Region, Naturwunder, Religion, Monumente | Beta, Steam „Demnächst“-Seite |
 | **4 – Multiplayer & Steam** | Steam-Networking-Lockstep, Lobbys, Achievements, Cloud-Saves, Steam Deck | Early Access |
 | **5 – Release** | Gletscherpässe, Steppe, Diplomatie/Konflikt-Feinschliff, Lokalisierung, Performance | 1.0 |
