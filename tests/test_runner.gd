@@ -133,3 +133,47 @@ func test_save_roundtrip() -> void:
 		w.step()
 		copy.step()
 	expect(copy.checksum() == w.checksum(), "save/load stays in sync")
+
+
+func test_models_and_3d_picking() -> void:
+	for def in Content.buildings:
+		if def.style != "path":
+			var m := Models.mesh("buildings/" + def.id)
+			expect(m.get_surface_count() > 0, "model for " + def.id)
+	var w := World.create(5)
+	var g := Game.new()
+	add_child(g)
+	g.start(w, false)
+	var home := w.home_valley()
+	var misses := 0
+	for k in 25:
+		var t := Vector2i(home.cx - 5 + k % 5 * 2, home.cy - 5 + k / 5 * 2)
+		var sp: Vector2 = g.view.tile_to_screen(t.x + 0.5, t.y + 0.5)
+		if g.view.screen_to_tile(sp) != t:
+			misses += 1
+	expect(misses == 0, "mouse picking hits the tile under the cursor (%d misses)" % misses)
+	g.free()
+
+
+func test_model_override_from_mod_folder() -> void:
+	# export a model as .glb into the mod folder and check the game picks it up instead of the placeholder
+	DirAccess.make_dir_recursive_absolute("user://mods/models/people")
+	var path := "user://mods/models/people/porter.glb"
+	var mi := MeshInstance3D.new()
+	mi.name = "Porter"
+	var k := Models.Kit.new(1)
+	k.box(Vector3(0, 0.5, 0), Vector3.ONE, Color.RED)
+	mi.mesh = k.commit(Models.material())
+	var root := Node3D.new()
+	root.add_child(mi)
+	mi.owner = root
+	var doc := GLTFDocument.new()
+	var state := GLTFState.new()
+	doc.append_from_scene(root, state)
+	expect(doc.write_to_filesystem(state, path) == OK, "write test glb")
+	root.free()
+	Models._mesh_cache.erase("people/porter")
+	var m := Models.mesh("people/porter")
+	expect(m != null and m.get_aabb().size.y > 0.9, "mod .glb replaces the placeholder model")
+	DirAccess.remove_absolute(path)
+	Models._mesh_cache.erase("people/porter")

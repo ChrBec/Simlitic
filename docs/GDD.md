@@ -273,12 +273,13 @@ Im Prototyp ist die Befehlsarchitektur bereits umgesetzt (alle Eingaben laufen �
 - **Stil:** Stilisiert, handgemalt, warm. Vorbilder: Gouache-Illustrationen, Kinderbuch-Malerei, prähistorische Höhlenmalerei als Akzent (UI-Symbole im Ocker-/Kohle-Stil).
 - **Palette:** Ocker, gebrannte Siena, Moosgrün, Schiefer-Blaugrau, Knochenweiß, Holzkohle. Wenig gesättigte Grundtöne, satte Akzente bei Feuer, Beeren und Wasser.
 - **Formen:** Leicht unregelmäßige Konturen, sichtbare Pinselstriche, Papierstruktur. Keine perfekten geometrischen Formen.
-- **Kamera:** Isometrische 2.5D-Ansicht (im Prototyp 2D-iso; Ziel: gemalte Sprites in mehreren Zoomstufen).
+- **Darstellung:** Echtes 3D. Stilisierte Low-Poly-Modelle mit gemalten, leicht unregelmäßigen Farben (Vorbilder: *Dorfromantik*, *Townscaper*, *Anno 1800* in der Totalen). Berge aus einem Höhenmodell, Gelände und Wasser per Shader „gemalt“ (Pinselstriche, Fels an steilen Hängen, Schneekuppen). Unerkundetes Land liegt im Nebel.
+- **Kamera:** Wie Anno: schräge Perspektive, Schwenken, Zoomen (beim Hineinzoomen flacher), Drehen.
 - **UI:** Wie auf gegerbtes Leder und Rindenpapier gemalt. Symbole als Ocker-Piktogramme. Schrift: handschriftliche Display-Schrift (Amatic SC) + gut lesbare Fließtext-Schrift (Kalam).
 
 ### 11.2 Austauschbare Assets
 
-Jedes Bild hat eine **Asset-ID**, die zugleich sein Pfad ist: `buildings/tent` → `res://assets/buildings/tent.png`, `goods/berries`, `nature/tree_3`, `ui/button` … Wer eine PNG-Datei mit gleichem Namen ersetzt, tauscht die Grafik aus, ohne Code anzufassen. Ankerpunkte (wo ein Sprite „auf dem Boden steht“) stehen in `assets/sprites.json`. Spieler und Modder können zusätzlich Dateien unter `user://mods/assets/` und `user://mods/content/` ablegen; diese haben Vorrang. Klänge folgen demselben Prinzip (`res://assets/audio/<id>.ogg`). Details: `docs/ASSETS.md`.
+Jedes Modell hat eine **ID**, die zugleich sein Pfad ist: `buildings/tent` → `res://assets/models/buildings/tent.glb`, `nature/conifer`, `people/hunters` … Liegt dort eine Datei, ersetzt sie den im Code gebauten Platzhalter – ohne Code anzufassen. Waren-Symbole und UI-Skins sind PNG-Dateien unter `assets/`. Spieler und Modder können zusätzlich Dateien unter `user://mods/models/`, `user://mods/assets/` und `user://mods/content/` ablegen; diese haben Vorrang. Klänge folgen demselben Prinzip (`res://assets/audio/<id>.ogg`). Details: `docs/ASSETS.md`.
 
 ### 11.3 Audio
 
@@ -307,21 +308,21 @@ Ruhige Musik mit Trommeln, Knochenflöte, Obertongesang; Musik wechselt nach Bev
 
 | Option | Pro | Contra |
 |---|---|---|
-| **Godot 4 (GDScript), GodotSteam** *(gewählt)* | Kostenlos und ohne Umsatzbeteiligung, schlanker 2D-Renderer mit Y-Sortierung und Partikeln, Exporte für Windows/Linux/macOS/Steam Deck, Steam-Overlay, Achievements, Cloud und Networking über GodotSteam, später 3D möglich | GodotSteam muss als vorkompiliertes Plugin oder Editor-Build eingebunden werden |
+| **Godot 4 (GDScript), GodotSteam** *(gewählt)* | Kostenlos und ohne Umsatzbeteiligung, 3D-Renderer mit Schatten, MultiMesh für große Wälder, glTF-Import aus Blender, Exporte für Windows/Linux/macOS/Steam Deck, Steam-Overlay, Achievements, Cloud und Networking über GodotSteam | GodotSteam muss als vorkompiliertes Plugin oder Editor-Build eingebunden werden |
 | TypeScript + Electron | Sehr schnelle Iteration im Browser | Große Builds, Performance bei großen Siedlungen, Steam-Deck-Integration umständlicher |
 | Unity / Unreal | Branchenstandard für 3D | Lizenzkosten/Komplexität, für ein kleines Team schwer |
 
-**Begründung:** Für ein gemaltes 2.5D-Aufbauspiel (Ästhetik wie *Pharaoh: A New Era* oder *Dorfromantik*) reicht ein 2D-Renderer. Die Simulation (`scripts/sim`) kennt keine Grafik, läuft in festen Schritten (10 pro Sekunde) und ist deterministisch – Grundlage für Lockstep-Multiplayer und automatisierte Tests. Renderer: GL Compatibility, damit das Spiel auch auf schwacher Hardware und dem Steam Deck läuft.
+**Begründung:** Godot bringt alles für ein stilisiertes 3D-Aufbauspiel mit und kostet nichts. Die Simulation (`scripts/sim`) kennt keine Grafik, läuft in festen Schritten (10 pro Sekunde) und ist deterministisch – Grundlage für Lockstep-Multiplayer und automatisierte Tests. Renderer: GL Compatibility, damit das Spiel auch auf schwacher Hardware und dem Steam Deck läuft; ein späterer Wechsel auf Forward+ (Umgebungsverdeckung, Volumennebel) ist eine Einstellung in `project.godot`.
 
 ### 13.2 Architektur
 
 ```
 project.godot       Godot-Projekt (Autoloads: Content, Settings, Sfx)
 content/            Spielinhalte als JSON (Güter, Gebäude, Stufen, Fruchtbarkeiten, Täler, Rivalen)
-assets/             Austauschbare PNGs, Schriften, Klänge, sprites.json (Anker)
+assets/             Austauschbare Modelle (models/*.glb), Symbole, UI-Skins, Schriften, Klänge
 scripts/core/       Inhalte laden, Einstellungen, Audio, Spielstände
 scripts/sim/        Deterministische Simulation: Karte, Wirtschaft, Logistik, Befehle, Ziele
-scripts/view/       Isometrische Welt: gemalter Boden, Sprites, Nebel, Overlays, Kamera
+scripts/view/       3D-Welt: Gelände, Wasser, Modelle, Nebel, Overlays, Kamera, Symbol-Renderer
 scripts/ui/         Theme, HUD, Panels
 scripts/main.gd     Menüs, Spielsitzungen
 tests/              Headless-Simulationstests

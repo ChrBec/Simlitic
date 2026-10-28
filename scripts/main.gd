@@ -16,6 +16,7 @@ func _ready() -> void:
 	ThemeDB.fallback_font = UI.font_body
 	get_tree().root.theme = theme
 	get_tree().set_auto_accept_quit(true)
+	await IconBaker.bake(self)
 	_build_finish_layer()
 	menu_layer.layer = 20
 	add_child(menu_layer)
@@ -35,6 +36,11 @@ func _ready() -> void:
 			if a.substr(8) == "building":
 				game.selected = game.world.buildings.keys()[3]
 			game.hud.open_panel(a.substr(8))
+		if a.begins_with("--zoom=") and game:
+			game.view.set_zoom(a.substr(7).to_float())
+		if a.begins_with("--yaw=") and game:
+			game.view.yaw = deg_to_rad(a.substr(6).to_float())
+			game.view.set_zoom(game.view.zoom)
 		if a.begins_with("--menu="):
 			match a.substr(7):
 				"new": show_new_game()
@@ -56,20 +62,11 @@ func _screenshot_and_quit(path: String) -> void:
 	get_tree().quit()
 
 
-## Paper grain + vignette over the world: the "painted on parchment" finish.
+## Soft vignette over the world.
 func _build_finish_layer() -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 5
 	add_child(layer)
-	var paper := TextureRect.new()
-	paper.texture = Art.tex("ui/paper")
-	paper.stretch_mode = TextureRect.STRETCH_TILE
-	paper.set_anchors_preset(Control.PRESET_FULL_RECT)
-	paper.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var mat := CanvasItemMaterial.new()
-	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_MUL
-	paper.material = mat
-	layer.add_child(paper)
 	var vignette := TextureRect.new()
 	var grad := GradientTexture2D.new()
 	grad.fill = GradientTexture2D.FILL_RADIAL
@@ -92,7 +89,8 @@ func _process(delta: float) -> void:
 	if backdrop and backdrop.view:
 		# slow drift over the living village behind the main menu
 		var home := backdrop.world.home_valley()
-		backdrop.view.camera.position = Art.iso(home.cx + sin(_t * 0.05) * 6.0, home.cy + cos(_t * 0.04) * 5.0)
+		backdrop.view.yaw = deg_to_rad(45.0) + sin(_t * 0.03) * 0.5
+		backdrop.view.center_on(home.cx + sin(_t * 0.05) * 5.0, home.cy + cos(_t * 0.04) * 4.0)
 
 
 # ---------------------------------------------------------------- sessions
@@ -105,6 +103,7 @@ func _make_backdrop() -> void:
 	add_child(backdrop)
 	backdrop.start(w, false)
 	backdrop.view.interactive = false
+	backdrop.view.show_markers = false
 	backdrop.view.set_zoom(1.15)
 
 

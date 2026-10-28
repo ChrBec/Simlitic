@@ -62,5 +62,8 @@ static func good_icon(id: String) -> Texture2D:
 	return tex("goods/" + id)
 
 
+## Rendered from the 3D model when available (see IconBaker), else the painted PNG.
 static func building_icon(id: String) -> Texture2D:
+	if IconBaker.icons.has(id):
+		return IconBaker.icons[id]
 	return tex("buildings/" + id)
