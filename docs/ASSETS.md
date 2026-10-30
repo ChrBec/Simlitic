@@ -1,5 +1,7 @@
 # Modelle, Grafiken und Klänge austauschen
 
+Die vollständige Liste mit Vorgaben und Performance-Budgets: https://claude.ai/artifact/DZPJiabKUz91GTYuz5ZBLU
+
 Die Welt von SimLitic ist 3D. Alle Modelle sind derzeit stilisierte Low-Poly-Platzhalter, die im Code aus einfachen Formen gebaut werden (`scripts/view/models.gd`). Jedes Modell kann einzeln durch eine Datei ersetzt werden – ohne Code anzufassen.
 
 ## 3D-Modelle
@@ -11,11 +13,14 @@ Das Spiel sucht für jede Modell-ID zuerst eine Datei und baut nur, wenn keine d
 | `buildings/<gebäude-id>` | `assets/models/buildings/tent.glb` | Gebäude, je Eintrag in `content/buildings.json` |
 | `nature/conifer`, `nature/broadleaf` | `assets/models/nature/conifer.glb` | Nadel- und Laubbäume (tausendfach instanziert) |
 | `nature/bush`, `nature/hazel`, `nature/rock` | | Beerensträucher, Haselsträucher, Felsen |
-| `nature/deposit_flint`, `_copper`, `_tin`, `_obsidian` | | Lagerstätten (2×2 Felder) |
+| `nature/stump`, `nature/flowers`, `nature/grass` | | Baumstümpfe, Blumen- und Grasbüschel |
+| `nature/deposit_flint`, `_copper`, `_tin` | | Lagerstätten (2×2 Felder) |
 | `people/<stufen-id>`, `people/porter`, `people/scout` | `assets/models/people/foragers.glb` | Bewohner, Träger, Kundschafter |
+| `chars/<charakter-id>` | `assets/models/chars/ama.glb` | Die elf Charaktere aus `content/characters.json` |
+| `find/fenn` | | Fenn, der verlorene Hund |
 | `caravan/donkey`, `caravan/oxcart` | `assets/models/caravan/oxcart.glb` | Esel und Ochsenkarren (schauen nach +X) |
 | `pass/<hindernis>`, `pass/<hindernis>_fixed`, `pass/plank` | `assets/models/pass/gorge_fixed.glb` | Hindernisse auf Pässen (scree, river, gorge, glacier) und ihre Lösung |
-| `misc/warning` | | Warnzeichen über Gebäuden |
+| `misc/warning`, `misc/quest`, `misc/choose`, `misc/ready` | | Schwebende Markierungen über Gebäuden und Charakteren |
 
 Erlaubte Formate: `.glb`, `.gltf`, `.tscn`, `.scn`. Für Bäume, Büsche, Felsen und Menschen wird das erste Mesh der Datei verwendet; Gebäude dürfen ganze Szenen sein (mit Animationen, Lichtern usw.).
 
@@ -33,7 +38,7 @@ Gelände und Wasser werden von Shadern gemalt (`scripts/view/shaders/`). Die Far
 
 ## 2D-Bilder
 
-Waren-Symbole (`assets/goods/<gut-id>.png`), die UI-Skins (`assets/ui/`) und die Rauch-Textur (`assets/brush/dab.png`) sind PNG-Dateien: gleiche Datei ersetzen, fertig. `assets/buildings/*.png` dienen nur noch als Ersatz-Symbole, falls das Rendern der Modelle nicht möglich ist. Die Ordner `assets/nature/` und `assets/people/` stammen aus der früheren 2D-Fassung und werden nicht mehr verwendet.
+Waren-Symbole (`assets/goods/<gut-id>.png`), gemalte Porträts der Charaktere (`assets/portraits/<charakter-id>.png`, sonst wird das Gesicht aus dem 3D-Modell gerendert), die UI-Skins (`assets/ui/`) und die Rauch-Textur (`assets/brush/dab.png`) sind PNG-Dateien: gleiche Datei ersetzen, fertig. `assets/buildings/*.png` dienen nur noch als Ersatz-Symbole, falls das Rendern der Modelle nicht möglich ist. Die Ordner `assets/nature/` und `assets/people/` stammen aus der früheren 2D-Fassung und werden nicht mehr verwendet.
 
 ## UI-Skins
 

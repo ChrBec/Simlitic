@@ -69,6 +69,8 @@ static func building_icon(id: String) -> Texture2D:
 	return tex("buildings/" + id)
 
 
-## A character's face, rendered from their 3D figure (see IconBaker).
+## A character's face: a painted portrait (assets/portraits/<id>.png) if there is one,
+## otherwise rendered from their 3D figure (see IconBaker).
 static func portrait(id: String) -> Texture2D:
-	return IconBaker.portraits.get(id, null)
+	var painted := tex("portraits/" + id)
+	return painted if painted else IconBaker.portraits.get(id, null)
