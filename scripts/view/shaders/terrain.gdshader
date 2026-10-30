@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode diffuse_lambert_wrap, specular_schlick_ggx;
+render_mode specular_disabled;
 
 // Painted ground: per-tile colours and flags come from two small textures (one texel per tile),
 // everything else (brush streaks, rock on steep slopes, snow, paths, mist) is painted here.
@@ -8,15 +8,18 @@ render_mode diffuse_lambert_wrap, specular_schlick_ggx;
 uniform sampler2D tint_tex : source_color, filter_linear, repeat_disable;
 uniform sampler2D data_tex : filter_linear, repeat_disable;
 uniform float map_size = 112.0;
-uniform vec3 mist_color : source_color = vec3(0.84, 0.83, 0.80);
-uniform vec3 path_color : source_color = vec3(0.72, 0.58, 0.38);
-uniform vec3 path_dark : source_color = vec3(0.46, 0.36, 0.24);
-uniform vec3 earth : source_color = vec3(0.60, 0.48, 0.32);
-uniform vec3 rock : source_color = vec3(0.53, 0.47, 0.41);
-uniform vec3 rock_dark : source_color = vec3(0.36, 0.32, 0.29);
-uniform vec3 snow : source_color = vec3(0.95, 0.95, 0.97);
-uniform vec3 sand : source_color = vec3(0.80, 0.72, 0.52);
+uniform vec3 mist_color : source_color = vec3(0.85, 0.81, 0.86);
+uniform vec3 path_color : source_color = vec3(0.89, 0.72, 0.47);
+uniform vec3 path_dark : source_color = vec3(0.66, 0.48, 0.28);
+uniform vec3 earth : source_color = vec3(0.86, 0.62, 0.34);
+uniform vec3 rock : source_color = vec3(0.62, 0.58, 0.68);
+uniform vec3 rock_dark : source_color = vec3(0.44, 0.40, 0.52);
+uniform vec3 snow : source_color = vec3(0.96, 0.96, 0.99);
+uniform vec3 sand : source_color = vec3(0.91, 0.84, 0.66);
 uniform float winter = 0.0; // 0 summer … 1 deep winter: the snow line drops and the valleys frost over
+uniform float autumn = 0.0; // meadows turn golden
+uniform float spring = 0.0; // meadows turn fresh
+uniform float light_scale = 0.45;
 
 varying vec3 wpos;
 varying vec3 wnorm;
@@ -34,6 +37,9 @@ void fragment() {
 	float n2 = vnoise(vec2(wpos.x * 1.6 + wpos.z * 0.8, wpos.z * 3.2 - wpos.x * 0.5));
 	float n3 = vnoise(wpos.xz * 7.0);
 	vec3 col = tint.rgb * (0.86 + 0.26 * n1) * (0.95 + 0.1 * n2);
+	float low = 1.0 - smoothstep(0.8, 2.5, wpos.y);
+	col = mix(col, col * vec3(1.16, 0.98, 0.7), autumn * 0.3 * low * smoothstep(0.35, 0.6, n1 + n2 * 0.3));
+	col = mix(col, col * vec3(0.96, 1.08, 0.9), spring * 0.5 * low);
 
 	// steep faces show rock, high ground gets snow
 	float slope = 1.0 - wnorm.y;
@@ -50,7 +56,7 @@ void fragment() {
 
 	// shores, building plots, roads and mountain trails
 	col = mix(col, sand * (0.9 + 0.15 * n3), smoothstep(0.12, 0.4, data.a));
-	col = mix(col, earth * (0.88 + 0.2 * n2), smoothstep(0.35, 0.6, tint.a) * 0.8);
+	col = mix(col, earth * (0.86 + 0.24 * n2), smoothstep(0.18, 0.75, tint.a + (n2 - 0.5) * 0.3) * 0.88);
 	float rd = data.r + (n1 - 0.5) * 0.22;
 	col = mix(col, path_dark, smoothstep(0.40, 0.48, rd) * 0.55);
 	col = mix(col, path_color * (0.9 + 0.18 * n3), smoothstep(0.50, 0.56, rd));
@@ -59,6 +65,15 @@ void fragment() {
 	col = mix(col, path_color * (0.85 + 0.2 * n3), trail);
 
 	ALBEDO = apply_mist(col, mist_color, data.b, wpos.xz, TIME);
-	ROUGHNESS = 0.95;
-	SPECULAR = 0.15;
+	ROUGHNESS = 1.0;
+}
+
+void light() {
+	// soft painted bands: lit meadows, shaded slopes, without a smooth airbrushed gradient
+	float ndl = dot(NORMAL, LIGHT);
+	float lit = 0.08 + smoothstep(-0.12, 0.2, ndl) * 0.22 + smoothstep(0.35, 0.65, ndl) * 0.12;
+	if (!LIGHT_IS_DIRECTIONAL) {
+		lit = clamp(ndl, 0.0, 1.0) * 0.35;
+	}
+	DIFFUSE_LIGHT += lit * ATTENUATION * LIGHT_COLOR / PI * light_scale;
 }

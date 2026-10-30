@@ -5,6 +5,7 @@ class_name IconBaker
 const SIZE := 192
 
 static var icons := {}
+static var portraits := {}
 
 
 static func bake(host: Node) -> void:
@@ -23,6 +24,17 @@ static func bake(host: Node) -> void:
 		host.add_child(vp)
 		_stage(vp, def)
 		ports[def.id] = vp
+	var faces := {}
+	for c in Content.characters:
+		var vp := SubViewport.new()
+		vp.size = Vector2i(SIZE, SIZE)
+		vp.transparent_bg = true
+		vp.own_world_3d = true
+		vp.msaa_3d = Viewport.MSAA_4X
+		vp.render_target_update_mode = SubViewport.UPDATE_ONCE
+		host.add_child(vp)
+		_stage_face(vp, c.id)
+		faces[c.id] = vp
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	for id in ports:
@@ -31,6 +43,27 @@ static func bake(host: Node) -> void:
 			img.generate_mipmaps()
 			icons[id] = ImageTexture.create_from_image(img)
 		ports[id].queue_free()
+	for id in faces:
+		var img: Image = faces[id].get_texture().get_image()
+		if img and not img.is_empty():
+			img.generate_mipmaps()
+			portraits[id] = ImageTexture.create_from_image(img)
+		faces[id].queue_free()
+
+
+## Head-and-shoulders portrait of a character, lit like the world.
+static func _stage_face(vp: SubViewport, id: String) -> void:
+	var mi := MeshInstance3D.new()
+	mi.mesh = Models.mesh("chars/" + id)
+	vp.add_child(mi)
+	var cam := Camera3D.new()
+	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
+	cam.size = 0.42
+	var look := Vector3(0, 0.47, 0)
+	cam.position = look + Vector3(0.35, 0.12, 1.2)
+	vp.add_child(cam)
+	cam.look_at(look, Vector3.UP)
+	_light(vp)
 
 
 static func _stage(vp: SubViewport, def: Dictionary) -> void:
@@ -47,6 +80,10 @@ static func _stage(vp: SubViewport, def: Dictionary) -> void:
 	cam.position = look - Vector3(sin(yaw), 0, cos(yaw)) * 20.0 * cos(pitch) + Vector3.UP * 20.0 * sin(pitch)
 	vp.add_child(cam)
 	cam.look_at(look, Vector3.UP)
+	_light(vp)
+
+
+static func _light(vp: SubViewport) -> void:
 	var sun := DirectionalLight3D.new()
 	sun.light_color = Color("ffe9c8")
 	sun.light_energy = 1.1
@@ -55,8 +92,8 @@ static func _stage(vp: SubViewport, def: Dictionary) -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_CLEAR_COLOR
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("c9cdd6")
-	env.ambient_light_energy = 0.7
+	env.ambient_light_color = Color("c4b8d8")
+	env.ambient_light_energy = 0.75
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	var we := WorldEnvironment.new()
 	we.environment = env

@@ -1,0 +1,88 @@
+[
+ {
+  "id": "herdfest",
+  "name": {
+   "de": "Herdfest",
+   "en": "Hearth Feast"
+  },
+  "season": -1,
+  "cost": {
+   "meat": 20,
+   "berries": 20,
+   "wood": 10
+  },
+  "effect": {
+   "mood": 15
+  },
+  "prestige": 5,
+  "desc": {
+   "de": "Ein Abend für alle am Talherz. Stimmung +15 eine Jahreszeit lang.",
+   "en": "An evening for everyone at the Valley Heart. Mood +15 for a season."
+  }
+ },
+ {
+  "id": "solstice",
+  "name": {
+   "de": "Wintersonnwende",
+   "en": "Winter Solstice"
+  },
+  "season": 3,
+  "cost": {
+   "wood": 30,
+   "meat": 20,
+   "nuts": 10
+  },
+  "effect": {
+   "mood": 15,
+   "freeze": -0.5
+  },
+  "prestige": 5,
+  "spirit": true,
+  "desc": {
+   "de": "Alle Feuer brennen in der längsten Nacht. Stimmung +15, Kälte halbiert – und du wählst einen Schutzgeist für ein Jahr.",
+   "en": "Every fire burns in the longest night. Mood +15, cold halved – and you choose a guardian spirit for a year."
+  }
+ },
+ {
+  "id": "harvestfest",
+  "name": {
+   "de": "Erntefest",
+   "en": "Harvest Feast"
+  },
+  "season": 2,
+  "cost": {
+   "porridge": 30,
+   "honey": 10
+  },
+  "effect": {
+   "mood": 15,
+   "imm": 0.25
+  },
+  "prestige": 8,
+  "desc": {
+   "de": "Dank für das wilde Korn. Stimmung +15, Zuzug +25 %.",
+   "en": "Thanks for the wild grain. Mood +15, immigration +25%."
+  }
+ },
+ {
+  "id": "springfest",
+  "name": {
+   "de": "Frühlingsfest",
+   "en": "Spring Feast"
+  },
+  "season": 0,
+  "cost": {
+   "bread": 20,
+   "herbs": 10
+  },
+  "effect": {
+   "mood": 10,
+   "imm": 0.5
+  },
+  "prestige": 8,
+  "desc": {
+   "de": "Saat und Neubeginn. Stimmung +10, Geburten +50 %.",
+   "en": "Seed and new beginnings. Mood +10, births +50%."
+  }
+ }
+]

@@ -1,0 +1,122 @@
+[
+ {
+  "id": "share",
+  "name": {
+   "de": "Teilen am Herd",
+   "en": "Sharing at the Hearth"
+  },
+  "desc": {
+   "de": "Vorräte verderben 25 % langsamer, Einnahmen −10 %.",
+   "en": "Stores spoil 25% slower, income −10%."
+  },
+  "effect": {
+   "spoil": -0.25,
+   "income": -0.1
+  }
+ },
+ {
+  "id": "huntrest",
+  "name": {
+   "de": "Jagdruhe im Frühling",
+   "en": "Spring Hunting Truce"
+  },
+  "desc": {
+   "de": "Wild wächst doppelt so schnell nach, aber Jäger ruhen im Frühling.",
+   "en": "Game regrows twice as fast, but hunters rest in spring."
+  },
+  "effect": {
+   "regrow": 1.0,
+   "spring_hunt": -1.0
+  }
+ },
+ {
+  "id": "guests",
+  "name": {
+   "de": "Gastrecht",
+   "en": "Right of Guests"
+  },
+  "desc": {
+   "de": "Zuzug +30 %, Nahrungsverbrauch +10 %.",
+   "en": "Immigration +30%, food use +10%."
+  },
+  "effect": {
+   "imm": 0.3,
+   "food_use": 0.1
+  }
+ },
+ {
+  "id": "ancestors",
+  "name": {
+   "de": "Ahnenehre",
+   "en": "Honouring the Ancestors"
+  },
+  "desc": {
+   "de": "Stimmung +8, Unterhalt +15 %.",
+   "en": "Mood +8, upkeep +15%."
+  },
+  "effect": {
+   "mood": 8,
+   "upkeep": 0.15
+  }
+ },
+ {
+  "id": "harvest",
+  "name": {
+   "de": "Gemeinsame Ernte",
+   "en": "Common Harvest"
+  },
+  "desc": {
+   "de": "Sammler +15 %, Stimmung −5.",
+   "en": "Gatherers +15%, mood −5."
+  },
+  "effect": {
+   "gather": 0.15,
+   "mood": -5
+  }
+ },
+ {
+  "id": "calendar",
+  "name": {
+   "de": "Festkalender",
+   "en": "Feast Calendar"
+  },
+  "desc": {
+   "de": "Feste kosten 30 % weniger, Produktion −5 %.",
+   "en": "Festivals cost 30% less, production −5%."
+  },
+  "effect": {
+   "fest_cost": -0.3,
+   "all": -0.05
+  }
+ },
+ {
+  "id": "tradepeace",
+  "name": {
+   "de": "Tauschfrieden",
+   "en": "Barter Peace"
+  },
+  "desc": {
+   "de": "Händler zahlen 15 % mehr, Einnahmen −5 %.",
+   "en": "Traders pay 15% more, income −5%."
+  },
+  "effect": {
+   "price": 0.15,
+   "income": -0.05
+  }
+ },
+ {
+  "id": "kinlaw",
+  "name": {
+   "de": "Sippenrecht",
+   "en": "Clan Law"
+  },
+  "desc": {
+   "de": "Einnahmen +15 %, Zuzug −20 %.",
+   "en": "Income +15%, immigration −20%."
+  },
+  "effect": {
+   "income": 0.15,
+   "imm": -0.2
+  }
+ }
+]

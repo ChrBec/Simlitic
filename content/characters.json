@@ -1,0 +1,301 @@
+[
+ {
+  "id": "ama",
+  "name": {
+   "de": "Ama",
+   "en": "Ama"
+  },
+  "title": {
+   "de": "die Älteste",
+   "en": "the Elder"
+  },
+  "cloth": "#9a3a2c",
+  "hair": "#e6dfd2",
+  "skin": "#a8724a",
+  "extra": [
+   "staff",
+   "cloak"
+  ],
+  "home": "hearth",
+  "arrive": {
+   "type": "start"
+  },
+  "greeting": {
+   "de": "Kinder, seht euch dieses Tal an! Wasser, Wild, Beeren an jedem Hang. Hier rasten wir – vielleicht für länger.",
+   "en": "Children, look at this valley! Water, game, berries on every slope. We rest here – perhaps for longer."
+  }
+ },
+ {
+  "id": "borr",
+  "name": {
+   "de": "Borr",
+   "en": "Borr"
+  },
+  "title": {
+   "de": "der Jäger",
+   "en": "the Hunter"
+  },
+  "cloth": "#6b4a2e",
+  "hair": "#3a2a1e",
+  "skin": "#9a643e",
+  "extra": [
+   "spear",
+   "dog"
+  ],
+  "home": "hunter",
+  "arrive": {
+   "type": "pop",
+   "n": 12
+  },
+  "greeting": {
+   "de": "Ich bin Borr, und der Zottel hier ist Fenn. Frische Hirschspuren am Waldrand – wer jagen kann, wird hier satt.",
+   "en": "I'm Borr, and this shaggy one is Fenn. Fresh deer tracks at the forest edge – whoever can hunt will eat well here."
+  }
+ },
+ {
+  "id": "sela",
+  "name": {
+   "de": "Sela",
+   "en": "Sela"
+  },
+  "title": {
+   "de": "die Sammlerin",
+   "en": "the Gatherer"
+  },
+  "cloth": "#5f7a3a",
+  "hair": "#5a3a22",
+  "skin": "#b07a50",
+  "extra": [
+   "basket"
+  ],
+  "home": "berrygatherer",
+  "arrive": {
+   "type": "pop",
+   "n": 30
+  },
+  "greeting": {
+   "de": "Ich bin Sela. Ich kenne jede Pflanze dieser Hänge – und jede, die man besser nicht isst.",
+   "en": "I'm Sela. I know every plant on these slopes – and every one you'd better not eat."
+  }
+ },
+ {
+  "id": "nuri",
+  "name": {
+   "de": "Nuri",
+   "en": "Nuri"
+  },
+  "title": {
+   "de": "die Kundschafterin",
+   "en": "the Scout"
+  },
+  "cloth": "#3a6a8a",
+  "hair": "#2a1e18",
+  "skin": "#8a5a3a",
+  "extra": [
+   "feather",
+   "spear"
+  ],
+  "home": "scout",
+  "arrive": {
+   "type": "pop",
+   "n": 45
+  },
+  "greeting": {
+   "de": "Nuri. Ich war auf jedem Grat, den man von hier sieht. Dahinter liegen noch viel mehr Täler.",
+   "en": "Nuri. I've been on every ridge you can see from here. Beyond them lie many more valleys."
+  }
+ },
+ {
+  "id": "oro",
+  "name": {
+   "de": "Oro",
+   "en": "Oro"
+  },
+  "title": {
+   "de": "der Steinschläger",
+   "en": "the Knapper"
+  },
+  "cloth": "#5b6168",
+  "hair": "#8a7a6a",
+  "skin": "#a06a44",
+  "extra": [
+   "axe"
+  ],
+  "home": "toolmaker",
+  "arrive": {
+   "type": "houses",
+   "tier": "sedentary",
+   "n": 1
+  },
+  "greeting": {
+   "de": "Oro. Ich habe gehört, ihr baut feste Häuser. Feste Häuser brauchen scharfe Klingen.",
+   "en": "Oro. I heard you build solid houses. Solid houses need sharp blades."
+  }
+ },
+ {
+  "id": "ilun",
+  "name": {
+   "de": "Ilun",
+   "en": "Ilun"
+  },
+  "title": {
+   "de": "die Seherin",
+   "en": "the Seer"
+  },
+  "cloth": "#5a3a6a",
+  "hair": "#1e1a1e",
+  "skin": "#9a6a48",
+  "extra": [
+   "antlers"
+  ],
+  "home": "shaman",
+  "arrive": {
+   "type": "pop",
+   "tier": "sedentary",
+   "n": 40
+  },
+  "greeting": {
+   "de": "Ilun. Ich habe euer Feuer im Traum gesehen. Die Geister dieses Tals sind neugierig auf euch.",
+   "en": "Ilun. I saw your fire in a dream. The spirits of this valley are curious about you."
+  }
+ },
+ {
+  "id": "tamo",
+  "name": {
+   "de": "Tamo",
+   "en": "Tamo"
+  },
+  "title": {
+   "de": "der Händler",
+   "en": "the Trader"
+  },
+  "cloth": "#a8743a",
+  "hair": "#2a1e18",
+  "skin": "#7a4a2e",
+  "extra": [
+   "pack",
+   "shells"
+  ],
+  "home": "caravanpost",
+  "arrive": {
+   "type": "pop",
+   "tier": "sedentary",
+   "n": 80
+  },
+  "greeting": {
+   "de": "Tamo, von der Küste! Muscheln, Bernstein, Geschichten – was braucht ihr?",
+   "en": "Tamo, from the coast! Shells, amber, stories – what do you need?"
+  }
+ },
+ {
+  "id": "enna",
+  "name": {
+   "de": "Enna",
+   "en": "Enna"
+  },
+  "title": {
+   "de": "die Hirtin",
+   "en": "the Herder"
+  },
+  "cloth": "#d8c8a8",
+  "hair": "#6a4a2a",
+  "skin": "#b07a50",
+  "extra": [
+   "staff",
+   "goat"
+  ],
+  "home": "goatfarm",
+  "arrive": {
+   "type": "pop",
+   "tier": "farmers",
+   "n": 40
+  },
+  "greeting": {
+   "de": "Enna. Meine Ziegen fressen euch nicht die Felder weg – versprochen. Fast.",
+   "en": "Enna. My goats won't eat your fields – promise. Almost."
+  }
+ },
+ {
+  "id": "hesa",
+  "name": {
+   "de": "Hesa",
+   "en": "Hesa"
+  },
+  "title": {
+   "de": "die Töpferin",
+   "en": "the Potter"
+  },
+  "cloth": "#c0703e",
+  "hair": "#3a2418",
+  "skin": "#a8724a",
+  "extra": [
+   "pot"
+  ],
+  "home": "potter",
+  "arrive": {
+   "type": "pop",
+   "tier": "farmers",
+   "n": 150
+  },
+  "greeting": {
+   "de": "Hesa. Euer Lehm ist gut. Mit Feuer wird daraus etwas, das nicht mehr zerfällt.",
+   "en": "Hesa. Your clay is good. With fire it becomes something that never falls apart again."
+  }
+ },
+ {
+  "id": "garan",
+  "name": {
+   "de": "Garan",
+   "en": "Garan"
+  },
+  "title": {
+   "de": "der Baumeister",
+   "en": "the Builder"
+  },
+  "cloth": "#a8643a",
+  "hair": "#4a3020",
+  "skin": "#9a643e",
+  "extra": [
+   "axe",
+   "cloak"
+  ],
+  "home": "square",
+  "arrive": {
+   "type": "houses",
+   "tier": "villagers",
+   "n": 1
+  },
+  "greeting": {
+   "de": "Garan. Ein Langhaus! Endlich jemand, der in Balken denkt. Euer Dorf braucht eine Mitte.",
+   "en": "Garan. A longhouse! Finally someone who thinks in beams. Your village needs a centre."
+  }
+ },
+ {
+  "id": "kural",
+  "name": {
+   "de": "Kural",
+   "en": "Kural"
+  },
+  "title": {
+   "de": "der Fremde",
+   "en": "the Stranger"
+  },
+  "cloth": "#4f8a7a",
+  "hair": "#c8b8a0",
+  "skin": "#8a5a3a",
+  "extra": [
+   "copper",
+   "cloak"
+  ],
+  "home": "smelter",
+  "arrive": {
+   "type": "pop",
+   "tier": "villagers",
+   "n": 200
+  },
+  "greeting": {
+   "de": "Ich bin Kural, von weit hinter den Bergen. Ich bringe euch etwas, das glänzt wie die Abendsonne.",
+   "en": "I am Kural, from far beyond the mountains. I bring you something that shines like the evening sun."
+  }
+ }
+]

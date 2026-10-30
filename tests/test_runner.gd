@@ -50,37 +50,126 @@ func test_deterministic() -> void:
 	var a := World.create(99)
 	var b := World.create(99)
 	expect(a.terrain == b.terrain and a.nature == b.nature, "same seed, same map")
-	Bot.run_minutes(a, 1)
-	Bot.run_minutes(b, 1)
-	expect(a.checksum() == b.checksum(), "same seed, same simulation")
+	Bot.play(a, 4)
+	Bot.play(b, 4)
+	expect(a.checksum() == b.checksum(), "same seed, same simulation (story included)")
+	# crises and luck from the third year on: still in lockstep
+	for w in [a, b]:
+		w.time = World.YEAR * 3.0 - 2.0
+	for i in int(World.YEAR * 1.2 / World.TICK):
+		a.step()
+		b.step()
+	expect(a.checksum() == b.checksum(), "events stay deterministic")
 
 
-func test_village_grows_and_settles_down() -> void:
+func test_story_opens_the_game_step_by_step() -> void:
 	var w := World.create(42)
 	var home: int = w.home_valley().idx
+	expect(Story.here(w, "ama"), "Ama is there from the start")
+	expect(Story.offered(w, "ama") == "ama_heart", "Ama offers the first task")
+	expect(not w.is_unlocked("tent") and not w.is_unlocked("hearth"), "nothing to build but paths before the first task")
+	expect(Commands.apply(w, {"type": "accept_quest", "id": "ama_heart"}).ok, "accept the first task")
+	expect(w.is_unlocked("hearth"), "accepting unlocks the valley heart")
 	Bot.lay_roads(w, home)
-	for i in 6:
+	expect(Bot.build_near(w, home, "hearth", 3), "hearth built")
+	expect(not Commands.apply(w, {"type": "build", "building": "hearth", "x": 0, "y": 0}).ok, "only one valley heart")
+	for i in 20:
+		w.step()
+	expect(w.quests.ama_heart.state == "done", "first task done")
+	expect(w.is_unlocked("tent"), "reward: hide domes")
+	expect(Story.offered(w, "ama") == "ama_roof", "the next task follows")
+	expect(not Story.here(w, "borr"), "Borr is still away")
+
+
+func test_pacing_no_second_age_in_ten_minutes() -> void:
+	var w := World.create(42)
+	var log := []
+	Bot.play(w, 12, log)
+	var pop := w.player_population()
+	expect(pop.foragers >= 40, "the village grows (%d foragers)" % pop.foragers)
+	expect(not w.tier_unlocked("sedentary"), "no second age after 12 minutes (the concept: ~30)")
+	expect(log.is_empty(), "no age change logged")
+	expect(Story.here(w, "borr") and Story.here(w, "sela"), "Borr and Sela have arrived")
+	expect(w.quests.get("ama_warmth", {}).get("state", "") == "done", "early tasks done")
+	var houses := w.buildings.values().filter(func(b): return b.owner == World.PLAYER and b.has("tier"))
+	expect(houses.all(func(b): return b.tier == "foragers"), "no home upgraded itself")
+
+
+func test_manual_upgrade() -> void:
+	var w := World.create(8, "sandbox")
+	var home: int = w.home_valley().idx
+	var v: Dictionary = w.valleys[home]
+	Bot.lay_roads(w, home)
+	for i in 3:
 		expect(Bot.build_near(w, home, "tent"), "tent %d" % i)
 	expect(Bot.build_near(w, home, "fireplace"), "fireplace")
 	expect(Bot.build_near(w, home, "berrygatherer", 4), "berry gatherer")
-	expect(Bot.build_near(w, home, "woodcutter", 4), "woodcutter")
-	expect(Bot.build_near(w, home, "hunter", 4), "hunter")
+	v.storage.berries = 60.0
 	Bot.run_minutes(w, 2)
-	for i in 12:
+	var tents := w.buildings.values().filter(func(b): return b.type == "tent" and b.owner == World.PLAYER)
+	expect(tents.size() == 3, "homes stay tents until the player acts (%s)" % [w.buildings.values().map(func(b): return b.type)])
+	var ready := tents.filter(func(b): return b.ready)
+	expect(not ready.is_empty(), "a content home is ready for the next age")
+	if ready.is_empty():
+		return
+	var b: Dictionary = ready[0]
+	v.storage.wood = 0.0
+	expect(not Commands.apply(w, {"type": "upgrade", "id": b.id}).ok, "upgrading needs building materials")
+	v.storage.wood = 10.0
+	v.storage.hides = 5.0
+	v.storage.stone = 5.0
+	expect(Commands.apply(w, {"type": "lock_upgrade", "id": b.id, "locked": true}).ok, "lock")
+	expect(not Commands.apply(w, {"type": "upgrade", "id": b.id}).ok, "a locked home is not upgraded")
+	Commands.apply(w, {"type": "lock_upgrade", "id": b.id, "locked": false})
+	expect(Commands.apply(w, {"type": "upgrade", "id": b.id}).ok, "upgrade")
+	expect(b.type == "hut" and b.tier == "sedentary", "the dome became a pit house")
+	expect(v.storage.stone == 3.0, "fieldstones were used")
+
+
+func test_winter_firewood_spoilage_and_wildlife() -> void:
+	var w := World.create(9, "sandbox")
+	var home: int = w.home_valley().idx
+	var v: Dictionary = w.valleys[home]
+	Bot.lay_roads(w, home)
+	for i in 4:
 		Bot.build_near(w, home, "tent")
-	Bot.build_near(w, home, "berrygatherer", 4)
-	Bot.build_near(w, home, "hunter", 4)
-	Bot.build_near(w, home, "fireplace")
-	Bot.run_minutes(w, 6)
-	var pop := w.player_population()
-	expect(pop.foragers >= 60, "60+ foragers (got %d)" % pop.foragers)
-	expect(w.tier_unlocked("sedentary"), "sedentary unlocked")
-	expect(w.shells > 0, "still solvent (%d)" % w.shells)
-	expect(w.valleys[home].storage.get("wood", 0) > 10, "woodcutter produces")
-	# upgrades once hides arrive
-	expect(Bot.build_near(w, home, "trapper", 4), "trapper")
+	v.storage = {"berries": 30.0, "wood": 0.0}
+	w.time = World.SEASON_LENGTH * 3.0 + 1.0
+	w.last_season = World.WINTER
+	for i in 100:
+		w.step()
+	expect(v.freezing, "no firewood in winter: the homes freeze")
+	expect(v.storage.berries < 30.0, "food is eaten or spoils")
+	v.storage.wood = 50.0
+	for i in 50:
+		w.step()
+	expect(not v.freezing, "firewood warms the homes")
+	expect(v.storage.wood < 50.0, "firewood is burnt")
+	# wildlife: hunters thin out the game
+	w.time = World.SEASON_LENGTH + 1.0
+	w.last_season = 1
+	for i in 6:
+		Bot.build_near(w, home, "hunter", 4)
+	var game: float = v.game
 	Bot.run_minutes(w, 3)
-	expect(w.player_population().sedentary > 0, "a tent became a pit house")
+	expect(v.game < game, "hunting thins the game (%.2f → %.2f)" % [game, v.game])
+
+
+func test_festival_and_treasures() -> void:
+	var w := World.create(10, "sandbox")
+	var home: int = w.home_valley().idx
+	var v: Dictionary = w.valleys[home]
+	Bot.lay_roads(w, home)
+	expect(not Commands.apply(w, {"type": "festival", "valley": home, "festival": "herdfest"}).ok, "festivals need a valley heart")
+	expect(Bot.build_near(w, home, "hearth", 3), "valley heart")
+	v.storage = {"meat": 40.0, "berries": 40.0, "wood": 40.0}
+	expect(Commands.apply(w, {"type": "festival", "valley": home, "festival": "herdfest"}).ok, "herd feast")
+	expect(v.storage.meat == 20.0, "the feast costs supplies")
+	expect(not Commands.apply(w, {"type": "festival", "valley": home, "festival": "herdfest"}).ok, "once a year")
+	expect(w.stats.festivals.get("herdfest", 0) == 1, "counted")
+	w.items.append("flute")
+	expect(Commands.apply(w, {"type": "place_item", "item": "flute", "valley": home, "slot": 0}).ok, "treasure into a niche")
+	expect(Life.mods(w, home).get("mood", 0.0) > 0.0, "the flute and the feast lift the mood")
 
 
 func test_rejects_foreign_valley() -> void:
@@ -115,10 +204,14 @@ func _pass_between(w: World, a: int, b: int) -> Dictionary:
 
 
 func test_explore_settle_and_caravan() -> void:
-	var w := World.create(5, "normal")
+	var w := World.create(5)
 	w.shells = 50000
+	w.prestige_pts = 100.0
 	var home := w.home_valley()
 	w.unlocked_tiers.append("sedentary")
+	for b in Content.buildings:
+		if b.unlockTier in w.unlocked_tiers:
+			w.unlocked[b.id] = true
 	home.storage.meat = 10.0
 	home.storage.wood = 80.0
 	home.storage.hides = 10.0
@@ -151,7 +244,8 @@ func test_explore_settle_and_caravan() -> void:
 	expect(r.ok, "porter team hired (%s)" % r.get("reason", {}).get("en", ""))
 	if not r.ok:
 		return
-	flint.storage.wood = 40.0
+	flint.storage.wood = 25.0
+	home.storage.wood = 5.0
 	Commands.apply(w, {"type": "caravan_stops", "id": r.id, "stops": [{"v": flint.idx, "load": ["wood"], "unload": []}, {"v": home.idx, "load": [], "unload": ["wood"]}]})
 	var before: float = home.storage.get("wood", 0.0)
 	Bot.run_minutes(w, 3)
@@ -208,15 +302,42 @@ func test_content_is_consistent() -> void:
 			expect(g == "shells" or producible.has(g), "%s cost %s producible" % [b.id, g])
 	for g in Content.goods:
 		expect(producible.has(g.id), "good %s is produced" % g.id)
+	# the story: every reference resolves and every building can be unlocked somehow
+	var unlockable := {}
+	for b in Content.buildings:
+		var u: Dictionary = b.get("unlock", {})
+		if u.get("start", false) or u.has("pop") or u.has("quest"):
+			unlockable[b.id] = true
+	for c in Content.characters:
+		expect(Content.BUILDING.has(c.home), "%s lives at %s" % [c.id, c.home])
+	for q in Content.quests:
+		expect(Content.CHARACTER.has(q.char), "%s belongs to %s" % [q.id, q.char])
+		for a in q.after:
+			expect(Content.QUEST.has(a), "%s comes after %s" % [q.id, a])
+		for b in q.unlock + q.reward.get("unlock", []):
+			expect(Content.BUILDING.has(b), "%s unlocks %s" % [q.id, b])
+			unlockable[b] = true
+		for i in q.reward.get("items", []):
+			expect(Content.ITEM.has(i), "%s gives %s" % [q.id, i])
+		for f in q.get("festivals", []):
+			expect(Content.FESTIVAL.has(f), "%s teaches %s" % [q.id, f])
+		for g in q.goals:
+			if g.has("building"):
+				expect(Content.BUILDING.has(g.building), "%s goal %s" % [q.id, g.building])
+			if g.has("good"):
+				expect(Content.GOOD.has(g.good), "%s goal %s" % [q.id, g.good])
+	for t in Content.tiers.slice(1):
+		unlockable[t.house] = true # reached by upgrading, never built directly
+	for b in Content.buildings:
+		expect(unlockable.has(b.id), "%s can be unlocked" % b.id)
+	for t in Content.tiers.slice(1):
+		expect(Content.quests.any(func(q): return q.reward.get("tier", "") == t.id), "a threshold task opens %s" % t.id)
 
 
 func test_save_roundtrip() -> void:
 	var w := World.create(11)
-	var home: int = w.home_valley().idx
-	Bot.lay_roads(w, home)
-	for i in 4:
-		Bot.build_near(w, home, "tent")
-	Bot.run_minutes(w, 1)
+	Bot.play(w, 4)
+	expect(w.quests.size() > 2, "some story to save")
 	var bytes := var_to_bytes(w.to_dict())
 	var copy := World.from_dict(bytes_to_var(bytes))
 	for i in 300:

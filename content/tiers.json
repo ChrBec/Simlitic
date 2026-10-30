@@ -12,7 +12,6 @@
   "house": "tent",
   "baseResidents": 1,
   "color": "#9a7a4a",
-  "unlock": null,
   "upgradeCost": {},
   "intro": {
    "de": "Kleine Gruppen ziehen den Herden und den Jahreszeiten hinterher. Jagd, Beeren, Feuer – mehr braucht es nicht.",
@@ -28,26 +27,28 @@
     "kind": "basic",
     "consumption": 0.07,
     "residents": 1,
-    "income": 0.8
+    "income": 0.55
+   },
+   {
+    "id": "fireplace",
+    "kind": "service",
+    "residents": 1,
+    "income": 0.3
    },
    {
     "id": "meat",
     "kind": "basic",
     "consumption": 0.05,
     "residents": 1,
-    "income": 0.8
-   },
-   {
-    "id": "fireplace",
-    "kind": "service",
-    "residents": 1,
-    "income": 0.4
+    "income": 0.55,
+    "at": 12
    },
    {
     "id": "nuts",
     "kind": "luxury",
     "consumption": 0.04,
-    "income": 1.0
+    "income": 0.7,
+    "at": 30
    }
   ]
  },
@@ -64,13 +65,10 @@
   "house": "hut",
   "baseResidents": 2,
   "color": "#8a5a2a",
-  "unlock": {
-   "tier": "foragers",
-   "population": 60
-  },
   "upgradeCost": {
-   "wood": 2,
-   "hides": 1
+   "wood": 4,
+   "hides": 2,
+   "stone": 2
   },
   "intro": {
    "de": "Wo wildes Getreide dicht steht, lohnt es sich zu bleiben. Runde Grubenhäuser, Sicheln aus Feuerstein, Vorratsgruben – und die Toten werden unter dem Haus bestattet.",
@@ -82,42 +80,54 @@
   },
   "needs": [
    {
-    "id": "fish",
+    "id": "meat",
     "kind": "basic",
-    "consumption": 0.06,
-    "residents": 2,
-    "income": 1.0
+    "consumption": 0.05,
+    "residents": 1,
+    "income": 0.6
    },
    {
     "id": "porridge",
     "kind": "basic",
     "consumption": 0.06,
     "residents": 2,
-    "income": 1.2
+    "income": 0.7
+   },
+   {
+    "id": "fish",
+    "kind": "basic",
+    "consumption": 0.05,
+    "residents": 1,
+    "income": 0.6,
+    "at": 10
    },
    {
     "id": "furs",
     "kind": "basic",
     "consumption": 0.03,
     "residents": 1,
-    "income": 1.2
+    "income": 0.7,
+    "at": 20
    },
    {
     "id": "shaman",
     "kind": "service",
     "residents": 1,
-    "income": 0.5
+    "income": 0.3,
+    "at": 40
+   },
+   {
+    "id": "ancestors",
+    "kind": "service-luxury",
+    "income": 0.6,
+    "at": 40
    },
    {
     "id": "honey",
     "kind": "luxury",
     "consumption": 0.03,
-    "income": 1.6
-   },
-   {
-    "id": "ancestors",
-    "kind": "service-luxury",
-    "income": 1.0
+    "income": 1.0,
+    "at": 60
    }
   ]
  },
@@ -134,13 +144,10 @@
   "house": "cottage",
   "baseResidents": 3,
   "color": "#a0603a",
-  "unlock": {
-   "tier": "sedentary",
-   "population": 100
-  },
   "upgradeCost": {
-   "wood": 2,
-   "tools": 2
+   "wood": 4,
+   "tools": 3,
+   "stone": 3
   },
   "intro": {
    "de": "Aus Sammeln wird Säen: Emmer und Gerste werden angebaut, Ziegen und Schafe gezähmt. Eckige Lehmziegelhäuser drängen sich aneinander.",
@@ -152,42 +159,46 @@
   },
   "needs": [
    {
-    "id": "bread",
-    "kind": "basic",
-    "consumption": 0.07,
-    "residents": 3,
-    "income": 1.5
-   },
-   {
     "id": "meat",
     "kind": "basic",
     "consumption": 0.05,
     "residents": 2,
-    "income": 1.2
+    "income": 0.85
    },
    {
     "id": "furs",
     "kind": "basic",
     "consumption": 0.03,
     "residents": 2,
-    "income": 1.3
+    "income": 0.9
+   },
+   {
+    "id": "bread",
+    "kind": "basic",
+    "consumption": 0.07,
+    "residents": 3,
+    "income": 1.05,
+    "at": 1
    },
    {
     "id": "shrine",
     "kind": "service",
     "residents": 2,
-    "income": 0.7
+    "income": 0.5,
+    "at": 60
    },
    {
     "id": "herbs",
     "kind": "luxury",
     "consumption": 0.03,
-    "income": 2.0
+    "income": 1.4,
+    "at": 60
    },
    {
     "id": "dance",
     "kind": "service-luxury",
-    "income": 1.2
+    "income": 0.85,
+    "at": 100
    }
   ]
  },
@@ -204,13 +215,10 @@
   "house": "longhouse",
   "baseResidents": 4,
   "color": "#8a4a3a",
-  "unlock": {
-   "tier": "farmers",
-   "population": 150
-  },
   "upgradeCost": {
-   "bricks": 2,
-   "tools": 1
+   "bricks": 5,
+   "tools": 2,
+   "wood": 2
   },
   "intro": {
    "de": "Töpfe aus gebranntem Ton, Leinen vom Webstuhl, Bier aus Gerste. Dörfer wachsen zu Hunderten Menschen, Obsidian wird über weite Wege gehandelt.",
@@ -236,35 +244,39 @@
     "income": 2.0
    },
    {
-    "id": "linen",
-    "kind": "basic",
-    "consumption": 0.03,
-    "residents": 3,
-    "income": 2.0
-   },
-   {
     "id": "shrine",
     "kind": "service",
     "residents": 2,
     "income": 0.8
    },
    {
+    "id": "linen",
+    "kind": "basic",
+    "consumption": 0.03,
+    "residents": 3,
+    "income": 2.0,
+    "at": 20
+   },
+   {
     "id": "square",
     "kind": "service",
     "residents": 1,
-    "income": 0.6
+    "income": 0.6,
+    "at": 1
    },
    {
     "id": "beer",
     "kind": "luxury",
     "consumption": 0.04,
-    "income": 2.6
+    "income": 2.6,
+    "at": 50
    },
    {
     "id": "jewelry",
     "kind": "luxury",
     "consumption": 0.02,
-    "income": 3.0
+    "income": 3.0,
+    "at": 150
    }
   ]
  },
@@ -281,13 +293,9 @@
   "house": "farmstead",
   "baseResidents": 5,
   "color": "#b07a3a",
-  "unlock": {
-   "tier": "villagers",
-   "population": 200
-  },
   "upgradeCost": {
-   "bricks": 3,
-   "pottery": 2
+   "bricks": 6,
+   "pottery": 3
   },
   "intro": {
    "de": "Kupfer wird geschmolzen, Rinder ziehen den Hakenpflug, Schafe geben Wolle, Kühe Milch. Mit dem Rad beginnt eine neue Zeit – und am Horizont glänzt die Bronze.",
@@ -306,20 +314,6 @@
     "income": 1.5
    },
    {
-    "id": "cheese",
-    "kind": "basic",
-    "consumption": 0.05,
-    "residents": 3,
-    "income": 2.2
-   },
-   {
-    "id": "woolcloth",
-    "kind": "basic",
-    "consumption": 0.03,
-    "residents": 3,
-    "income": 2.4
-   },
-   {
     "id": "coppertools",
     "kind": "basic",
     "consumption": 0.02,
@@ -333,21 +327,40 @@
     "income": 0.8
    },
    {
+    "id": "cheese",
+    "kind": "basic",
+    "consumption": 0.05,
+    "residents": 3,
+    "income": 2.2,
+    "at": 30
+   },
+   {
+    "id": "woolcloth",
+    "kind": "basic",
+    "consumption": 0.03,
+    "residents": 3,
+    "income": 2.4,
+    "at": 60
+   },
+   {
     "id": "wine",
     "kind": "luxury",
     "consumption": 0.03,
-    "income": 3.2
+    "income": 3.2,
+    "at": 100
    },
    {
     "id": "bronzeware",
     "kind": "luxury",
     "consumption": 0.015,
-    "income": 4.5
+    "income": 4.5,
+    "at": 150
    },
    {
     "id": "megalith",
     "kind": "service-luxury",
-    "income": 2.0
+    "income": 2.0,
+    "at": 200
    }
   ]
  }

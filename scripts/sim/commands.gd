@@ -3,7 +3,11 @@ class_name Commands
 ## simulation deterministic and lets lockstep multiplayer replay the same command stream on every peer.
 ##
 ## {type: "build", building, x, y} | {type: "path", tiles: [Vector2i]} | {type: "demolish", x, y}
-## {type: "pause", id, paused} | {type: "allow_upgrade", tier, allowed} | {type: "explore", pass, from}
+## {type: "pause", id, paused} | {type: "explore", pass, from}
+## {type: "upgrade", id} | {type: "upgrade_all", tier, valley} | {type: "lock_upgrade", id, locked}
+## {type: "accept_quest", id} | {type: "quest_choice", id, choice} | {type: "find", id}
+## {type: "festival", valley, festival} | {type: "spirit", spirit} | {type: "custom", custom, on}
+## {type: "place_item", item, valley, slot} | {type: "remove_item", valley, slot} | {type: "resolve_event", id}
 ## {type: "clear_pass", pass} | {type: "plank_pass", pass}
 ## {type: "buy_caravan", valley, caravan} | {type: "caravan_stops", id, stops: [{v, load, unload}]} | {type: "delete_caravan", id}
 ## {type: "trade", partner: "trader"|rival id, good, amount (>0 buy, <0 sell)} | {type: "gift", rival}
@@ -46,9 +50,78 @@ static func apply(w: World, c: Dictionary) -> Dictionary:
 				return _fail("Unbekannt", "Unknown")
 			w.buildings[c.id].paused = c.paused
 			return {"ok": true}
-		"allow_upgrade":
-			w.upgrade_allowed[c.tier] = c.allowed
+		"upgrade":
+			return upgrade(w, int(c.id))
+		"upgrade_all":
+			var n := 0
+			var last := {}
+			var ids := w.buildings.keys()
+			ids.sort()
+			for id in ids:
+				var b: Dictionary = w.buildings[id]
+				if b.get("tier", "") == c.tier and (int(c.get("valley", -1)) < 0 or b.valley == int(c.valley)) and b.ready and not b.locked:
+					last = upgrade(w, id)
+					if last.ok:
+						n += 1
+			if n == 0:
+				return last if not last.is_empty() else _fail("Kein Haus ist bereit", "No home is ready")
+			return {"ok": true, "count": n}
+		"lock_upgrade":
+			if not w.buildings.has(c.id) or not w.buildings[c.id].has("tier"):
+				return _fail("Unbekannt", "Unknown")
+			w.buildings[c.id].locked = c.locked
 			return {"ok": true}
+		"accept_quest":
+			return Story.accept(w, c.id)
+		"quest_choice":
+			if w.quests.get(c.id, {}).get("state", "") != "choose":
+				return _fail("Noch nicht so weit", "Not yet")
+			Story.finish(w, c.id, int(c.choice))
+			return {"ok": true}
+		"find":
+			return Story.find(w, c.id)
+		"festival":
+			var v := int(c.valley)
+			if v < 0 or v >= w.valleys.size() or w.valleys[v].owner != World.PLAYER:
+				return _fail("Nur in eigenen Tälern", "Only in your own valleys")
+			var block := Life.festival_block(w, v, c.festival)
+			if not block.is_empty():
+				return {"ok": false, "reason": block}
+			Life.hold_festival(w, v, c.festival)
+			return {"ok": true}
+		"spirit":
+			if not w.flags.get("choose_spirit", false) or not Content.SPIRIT.has(c.spirit):
+				return _fail("Erst zur Wintersonnwende", "Only at the winter solstice")
+			w.spirit = {"id": c.spirit, "until": w.time + World.YEAR}
+			w.flags.choose_spirit = false
+			var sp: Dictionary = Content.SPIRIT[c.spirit]
+			w.notify({"de": "Der %s wacht ein Jahr lang über deinen Stamm: %s" % [sp.name.de, sp.desc.de], "en": "The %s watches over your tribe for a year: %s" % [sp.name.en, sp.desc.en]}, "good")
+			return {"ok": true}
+		"custom":
+			return _custom(w, c)
+		"place_item":
+			var v := int(c.valley)
+			var slot := int(c.slot)
+			if v < 0 or v >= w.valleys.size() or w.valleys[v].owner != World.PLAYER or w.hearth_of(v) == null:
+				return _fail("Kostbarkeiten ruhen im Talherz", "Treasures rest in a Valley Heart")
+			if slot < 0 or slot >= World.NICHES or not c.item in w.items:
+				return _fail("Unbekannt", "Unknown")
+			var niches: Array = w.valleys[v].niches
+			if niches[slot] != "":
+				w.items.append(niches[slot])
+			niches[slot] = c.item
+			w.items.erase(c.item)
+			return {"ok": true}
+		"remove_item":
+			var v := int(c.valley)
+			var niches: Array = w.valleys[v].niches
+			if niches[int(c.slot)] == "":
+				return _fail("Die Nische ist leer", "The niche is empty")
+			w.items.append(niches[int(c.slot)])
+			niches[int(c.slot)] = ""
+			return {"ok": true}
+		"resolve_event":
+			return Events.resolve(w, int(c.id))
 		"explore":
 			return _explore(w, c)
 		"clear_pass", "plank_pass":
@@ -99,6 +172,59 @@ static func apply(w: World, c: Dictionary) -> Dictionary:
 	return _fail("Unbekannter Befehl", "Unknown command")
 
 
+## Upgrades one home to the next age: its residents must be content and the materials in storage.
+static func upgrade(w: World, id: int) -> Dictionary:
+	if not w.buildings.has(id):
+		return _fail("Unbekannt", "Unknown")
+	var b: Dictionary = w.buildings[id]
+	if b.owner != World.PLAYER or not b.has("tier"):
+		return _fail("Kein Wohnhaus", "Not a home")
+	var nt = Content.next_tier(b.tier)
+	if nt == null:
+		return _fail("Höchste Stufe erreicht", "Highest age reached")
+	if not w.tier_unlocked(nt.id):
+		return _fail("%s sind noch nicht freigeschaltet – Ama kennt den Weg" % nt.name.de, "%s are not unlocked yet – Ama knows the way" % nt.name.en)
+	if b.locked:
+		return _fail("Aufwertung für dieses Haus gesperrt", "Upgrading is locked for this home")
+	if not b.ready:
+		return _fail("Die Bewohner sind noch nicht so weit (Grundbedürfnisse ≥ 70 %, Stimmung ≥ 30, Haus voll)", "The residents aren't ready yet (basic needs ≥ 70%, mood ≥ 30, home full)")
+	var st: Dictionary = w.valleys[b.valley].storage
+	if not w.can_afford(nt.upgradeCost, st):
+		return _fail("Es fehlt Baumaterial im Lager", "Building materials are missing in storage")
+	w.pay(nt.upgradeCost, st)
+	var keep := {}
+	for n in nt.needs:
+		if b.needs.has(n.id):
+			keep[n.id] = b.needs[n.id]
+	b.type = nt.house
+	b.tier = nt.id
+	b.needs = keep
+	b.grace = 60.0 # nobody moves out while the new wishes are being met
+	b.ready = false
+	w.stats.upgrades += 1
+	w.dirty += 1
+	return {"ok": true}
+
+
+static func _custom(w: World, c: Dictionary) -> Dictionary:
+	if not Content.CUSTOM.has(c.custom):
+		return _fail("Unbekannt", "Unknown")
+	if not c.on:
+		w.customs.erase(c.custom)
+		return {"ok": true}
+	if w.custom_slots <= 0:
+		return _fail("Bräuche kennt dein Stamm noch nicht – Ama erzählt davon", "Your tribe has no customs yet – Ama will tell you")
+	if c.custom in w.customs:
+		return _fail("Schon angenommen", "Already adopted")
+	if w.customs.size() >= w.custom_slots:
+		return _fail("Alle Plätze für Bräuche sind belegt", "All custom slots are taken")
+	if w.prestige_pts < Life.CUSTOM_COST:
+		return _fail("Ein Brauch kostet %d Ansehen" % Life.CUSTOM_COST, "A custom costs %d prestige" % Life.CUSTOM_COST)
+	w.prestige_pts -= Life.CUSTOM_COST
+	w.customs.append(c.custom)
+	return {"ok": true}
+
+
 static func _build(w: World, c: Dictionary) -> Dictionary:
 	var check := w.check_placement(c.building, c.x, c.y)
 	if not check.ok:
@@ -107,6 +233,8 @@ static func _build(w: World, c: Dictionary) -> Dictionary:
 	var from: Dictionary = w.valleys[check.pay_from]
 	w.pay(def.cost, from.storage)
 	var founding: bool = c.building == "storage" and w.valleys[check.valley].owner != World.PLAYER
+	if founding:
+		w.prestige_pts -= w.found_cost()
 	w.place_building(c.building, c.x, c.y, World.PLAYER)
 	if founding:
 		# the founding party carries the building wood across the pass and leaves it as a first stock

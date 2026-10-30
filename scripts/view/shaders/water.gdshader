@@ -6,10 +6,10 @@ render_mode diffuse_lambert_wrap, specular_schlick_ggx;
 
 uniform sampler2D data_tex : filter_linear, repeat_disable;
 uniform float map_size = 112.0;
-uniform vec3 shallow : source_color = vec3(0.36, 0.60, 0.64);
-uniform vec3 deep : source_color = vec3(0.17, 0.33, 0.46);
-uniform vec3 foam : source_color = vec3(0.95, 0.94, 0.88);
-uniform vec3 mist_color : source_color = vec3(0.84, 0.83, 0.80);
+uniform vec3 shallow : source_color = vec3(0.38, 0.75, 0.72);
+uniform vec3 deep : source_color = vec3(0.17, 0.48, 0.56);
+uniform vec3 foam : source_color = vec3(0.98, 0.97, 0.94);
+uniform vec3 mist_color : source_color = vec3(0.85, 0.81, 0.86);
 
 varying vec3 wpos;
 

@@ -1,0 +1,66 @@
+[
+ {
+  "id": "deer",
+  "name": {
+   "de": "Hirschgeist",
+   "en": "Deer Spirit"
+  },
+  "desc": {
+   "de": "Jagd +20 %, Wild wächst schneller nach.",
+   "en": "Hunting +20%, game regrows faster."
+  },
+  "effect": {
+   "hunt": 0.2,
+   "regrow": 0.5
+  },
+  "color": "#9a6a3a"
+ },
+ {
+  "id": "earth",
+  "name": {
+   "de": "Erdmutter",
+   "en": "Earth Mother"
+  },
+  "desc": {
+   "de": "Sammler und Felder +15 %.",
+   "en": "Gatherers and fields +15%."
+  },
+  "effect": {
+   "gather": 0.15,
+   "field": 0.15
+  },
+  "color": "#5f7a3a"
+ },
+ {
+  "id": "river",
+  "name": {
+   "de": "Flussgeist",
+   "en": "River Spirit"
+  },
+  "desc": {
+   "de": "Fischfang +20 %, keine Hochwasser.",
+   "en": "Fishing +20%, no floods."
+  },
+  "effect": {
+   "fish": 0.2,
+   "no_flood": 1
+  },
+  "color": "#3a6a8a"
+ },
+ {
+  "id": "fire",
+  "name": {
+   "de": "Feuergeist",
+   "en": "Fire Spirit"
+  },
+  "desc": {
+   "de": "Werkstätten +15 %, seltener Brände.",
+   "en": "Workshops +15%, fewer fires."
+  },
+  "effect": {
+   "workshop": 0.15,
+   "fire": -0.5
+  },
+  "color": "#c0602e"
+ }
+]

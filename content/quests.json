@@ -1,0 +1,1236 @@
+[
+ {
+  "id": "ama_heart",
+  "char": "ama",
+  "title": {
+   "de": "Ein Herz für das Tal",
+   "en": "A Heart for the Valley"
+  },
+  "text": {
+   "de": "Wir sind lange gewandert, über Schnee und Geröll. Dieses Tal soll uns tragen. Bevor wir Zelte schlagen, braucht es ein Herz: einen Herdring, an dem wir uns versammeln. Bau das Talherz – mitten ins Tal, wo alle es sehen.",
+   "en": "We have walked a long way, over snow and scree. This valley shall carry us. Before we pitch tents we need a heart: a hearth ring where we gather. Build the Valley Heart – in the middle, where all can see it."
+  },
+  "goals": [
+   {
+    "type": "build",
+    "building": "hearth",
+    "n": 1
+   }
+  ],
+  "done": {
+   "de": "Das Feuer brennt. Jetzt sind wir angekommen.",
+   "en": "The fire burns. Now we have arrived."
+  },
+  "unlock": [
+   "hearth"
+  ],
+  "reward": {
+   "unlock": [
+    "tent"
+   ],
+   "shells": 100
+  },
+  "after": [],
+  "when": []
+ },
+ {
+  "id": "ama_roof",
+  "char": "ama",
+  "title": {
+   "de": "Ein Dach über dem Kopf",
+   "en": "A Roof Overhead"
+  },
+  "text": {
+   "de": "Die Nächte sind kalt, und die Kinder schlafen im Gras. Spannt Häute über Weidenruten – vier Kuppeln für den Anfang. Und vergiss die Pfade nicht: Wer keinen Weg zum Lagerplatz hat, bekommt nichts ab.",
+   "en": "The nights are cold and the children sleep in the grass. Stretch hides over willow rods – four domes to begin with. And don't forget the paths: whoever has no way to the storage yard gets nothing."
+  },
+  "goals": [
+   {
+    "type": "build",
+    "building": "tent",
+    "n": 4
+   }
+  ],
+  "done": {
+   "de": "Vier Kuppeln! Jetzt brauchen wir Holz und etwas im Magen.",
+   "en": "Four domes! Now we need wood and something to eat."
+  },
+  "unlock": [],
+  "reward": {
+   "unlock": [
+    "woodcutter",
+    "berrygatherer"
+   ],
+   "shells": 100
+  },
+  "after": [
+   "ama_heart"
+  ],
+  "when": []
+ },
+ {
+  "id": "ama_baskets",
+  "char": "ama",
+  "title": {
+   "de": "Volle Körbe",
+   "en": "Full Baskets"
+  },
+  "text": {
+   "de": "Hunger ist ein schlechter Gast. Schick Sammler zu den Beerensträuchern und Holzfäller an den Waldrand. Wenn die Körbe voll sind, zeige ich dir, wie man ein Feuer für alle hütet.",
+   "en": "Hunger is a bad guest. Send gatherers to the berry bushes and woodcutters to the forest edge. When the baskets are full I'll show you how to keep a fire for everyone."
+  },
+  "goals": [
+   {
+    "type": "stock",
+    "good": "berries",
+    "n": 15
+   },
+   {
+    "type": "stock",
+    "good": "wood",
+    "n": 15
+   }
+  ],
+  "done": {
+   "de": "Gut gemacht. Hier – so legt man ein Lagerfeuer an, das die ganze Nacht brennt.",
+   "en": "Well done. Here – this is how to lay a campfire that burns all night."
+  },
+  "unlock": [],
+  "reward": {
+   "unlock": [
+    "fireplace"
+   ],
+   "shells": 150
+  },
+  "after": [
+   "ama_roof"
+  ],
+  "when": []
+ },
+ {
+  "id": "ama_warmth",
+  "char": "ama",
+  "title": {
+   "de": "Wärme für alle",
+   "en": "Warmth for Everyone"
+  },
+  "text": {
+   "de": "Ein Lagerfeuer wärmt nur die, die nah genug sitzen. Leg es so, dass sechs Kuppeln seinen Schein abbekommen. Dann erzählen wir uns abends Geschichten – und vielleicht hören andere davon.",
+   "en": "A campfire only warms those who sit close enough. Place it so six domes catch its glow. Then we'll tell stories in the evening – and perhaps others will hear of it."
+  },
+  "goals": [
+   {
+    "type": "served",
+    "service": "fireplace",
+    "n": 6
+   }
+  ],
+  "done": {
+   "de": "Hörst du das Lachen am Feuer? So zieht man Menschen an. Bald kommen mehr – und mit ihnen neues Wissen.",
+   "en": "Do you hear the laughter at the fire? That's how you draw people in. Soon more will come – and new knowledge with them."
+  },
+  "unlock": [],
+  "reward": {
+   "shells": 200,
+   "prestige": 5
+  },
+  "after": [
+   "ama_baskets"
+  ],
+  "when": []
+ },
+ {
+  "id": "ama_beauty",
+  "char": "ama",
+  "title": {
+   "de": "Blumen zwischen den Kuppeln",
+   "en": "Flowers between the Domes"
+  },
+  "text": {
+   "de": "Die Leute sagen, unser Lager sei grau. Pflanzt Blüten zwischen die Kuppeln – wer Schönes sieht, bleibt gern. Schönheit hebt die Stimmung, und gute Stimmung lockt Zuzügler.",
+   "en": "People say our camp is grey. Plant flowers between the domes – whoever sees beauty likes to stay. Beauty lifts the mood, and good mood draws newcomers."
+  },
+  "goals": [
+   {
+    "type": "build",
+    "building": "gardenbed",
+    "n": 3
+   }
+  ],
+  "done": {
+   "de": "Viel schöner! Siehst du, wie die Kinder dazwischen spielen?",
+   "en": "Much nicer! See how the children play among them?"
+  },
+  "unlock": [],
+  "reward": {
+   "prestige": 5,
+   "shells": 100
+  },
+  "after": [
+   "ama_warmth"
+  ],
+  "when": [
+   {
+    "type": "pop",
+    "n": 20
+   }
+  ]
+ },
+ {
+  "id": "ama_feast",
+  "char": "ama",
+  "title": {
+   "de": "Das erste Fest",
+   "en": "The First Feast"
+  },
+  "text": {
+   "de": "Ein Stamm, der nicht feiert, zerfällt. Sammle Fleisch, Beeren und Holz und lade alle ans Talherz ein: ein Herdfest! Danach erzähle ich dir von unseren Bräuchen.",
+   "en": "A tribe that never celebrates falls apart. Gather meat, berries and wood and invite everyone to the Valley Heart: a hearth feast! Afterwards I'll tell you about our customs."
+  },
+  "goals": [
+   {
+    "type": "festival",
+    "festival": "herdfest"
+   }
+  ],
+  "done": {
+   "de": "Was für eine Nacht! Nimm diese Knochenflöte und leg sie in eine Nische des Talherzens. Und denk über unsere Bräuche nach – sie geben uns Halt.",
+   "en": "What a night! Take this bone flute and lay it in a niche of the Valley Heart. And think about our customs – they hold us together."
+  },
+  "unlock": [],
+  "reward": {
+   "items": [
+    "flute"
+   ],
+   "customs": 1,
+   "prestige": 5
+  },
+  "after": [
+   "ama_warmth"
+  ],
+  "when": [
+   {
+    "type": "pop",
+    "n": 25
+   }
+  ],
+  "festivals": [
+   "herdfest"
+  ]
+ },
+ {
+  "id": "ama_custom",
+  "char": "ama",
+  "title": {
+   "de": "Was uns zusammenhält",
+   "en": "What Holds Us Together"
+  },
+  "text": {
+   "de": "Jeder Stamm hat seine Bräuche. Manche teilen alles am Herd, andere ehren die Ahnen, wieder andere nehmen jeden Gast auf. Wähle am Talherz einen Brauch – jeder hat seinen Preis.",
+   "en": "Every tribe has its customs. Some share everything at the hearth, others honour the ancestors, others again welcome every guest. Choose a custom at the Valley Heart – each has its price."
+  },
+  "goals": [
+   {
+    "type": "custom",
+    "n": 1
+   }
+  ],
+  "done": {
+   "de": "So sei es. Ein Brauch ist wie ein Pfad: Je öfter man ihn geht, desto fester wird er.",
+   "en": "So be it. A custom is like a path: the more often it's walked, the firmer it gets."
+  },
+  "unlock": [],
+  "reward": {
+   "prestige": 5
+  },
+  "after": [
+   "ama_feast"
+  ],
+  "when": []
+ },
+ {
+  "id": "ama_stay",
+  "char": "ama",
+  "title": {
+   "de": "Bleiben",
+   "en": "Staying"
+  },
+  "text": {
+   "de": "Wir sind Wanderer, seit es Menschen gibt. Aber dieses Tal … Sela sagt, das wilde Korn reicht für alle, wenn wir bleiben. Beweisen wir es: achtzig von uns, ein Winter mit vollen Vorratsgruben – hundertzwanzig Körbe Nahrung, wenn der erste Schnee fällt – und zehn Feldsteine für die ersten festen Häuser. Dann bleiben wir.",
+   "en": "We have been wanderers since there were people. But this valley … Sela says the wild grain is enough for all if we stay. Let's prove it: eighty of us, a winter with full storage pits – a hundred and twenty baskets of food when the first snow falls – and ten fieldstones for the first solid houses. Then we stay."
+  },
+  "goals": [
+   {
+    "type": "pop",
+    "tier": "foragers",
+    "n": 80
+   },
+   {
+    "type": "winter_food",
+    "n": 120
+   },
+   {
+    "type": "deliver",
+    "good": "stone",
+    "n": 10
+   }
+  ],
+  "done": {
+   "de": "Wir bleiben. Bau Grubenhäuser mit Steinfundament – wer will, zieht aus den Kuppeln um.",
+   "en": "We stay. Build pit houses on stone footings – whoever wishes moves out of the domes."
+  },
+  "unlock": [],
+  "reward": {
+   "tier": "sedentary",
+   "prestige": 10
+  },
+  "after": [
+   "ama_feast",
+   "sela_autumn",
+   "nuri_beyond"
+  ],
+  "when": [
+   {
+    "type": "pop",
+    "n": 50
+   }
+  ],
+  "threshold": true,
+  "festivals": [
+   "harvestfest"
+  ]
+ },
+ {
+  "id": "ama_huts",
+  "char": "ama",
+  "title": {
+   "de": "Steinerne Ringe",
+   "en": "Rings of Stone"
+  },
+  "text": {
+   "de": "Ein Grubenhaus entsteht nicht von allein. Klick eine zufriedene Kuppel an und wähle »Aufwerten«, wenn Holz, Häute und Feldsteine im Lager liegen. Ein Pfeil über dem Dach zeigt dir, wer bereit ist. Wertet fünf Kuppeln auf.",
+   "en": "A pit house doesn't build itself. Click a content dome and choose \"Upgrade\" when wood, hides and fieldstones are in storage. An arrow above the roof shows who is ready. Upgrade five domes."
+  },
+  "goals": [
+   {
+    "type": "houses",
+    "tier": "sedentary",
+    "n": 5
+   }
+  ],
+  "done": {
+   "de": "Fünf feste Häuser! Bald wollen die Leute auch anderes essen als Fleisch – frag Sela nach dem wilden Korn.",
+   "en": "Five solid houses! Soon people will want more than meat – ask Sela about the wild grain."
+  },
+  "unlock": [],
+  "reward": {
+   "shells": 300
+  },
+  "after": [
+   "ama_stay"
+  ],
+  "when": []
+ },
+ {
+  "id": "ama_sow",
+  "char": "ama",
+  "title": {
+   "de": "Säen",
+   "en": "Sowing"
+  },
+  "text": {
+   "de": "Selas Beet trägt. Aber Ilun hat im Rauch einen Winter gesehen, so kalt wie keiner zuvor – die Große Kälte. Wenn wir die überstehen, mit hundertzwanzig Sesshaften und dicken Holzstapeln, dann säen wir im Frühling auf ganzen Feldern.",
+   "en": "Sela's plot bears grain. But Ilun saw a winter in the smoke, colder than any before – the Great Cold. If we survive it, with a hundred and twenty settled folk and thick woodpiles, we will sow whole fields in spring."
+  },
+  "goals": [
+   {
+    "type": "pop",
+    "tier": "sedentary",
+    "n": 120
+   },
+   {
+    "type": "survive",
+    "what": "cold"
+   }
+  ],
+  "done": {
+   "de": "Wir haben die Kälte überstanden. Jetzt säen wir! Die Zeit der Bauern beginnt.",
+   "en": "We survived the cold. Now we sow! The age of farmers begins."
+  },
+  "unlock": [],
+  "reward": {
+   "tier": "farmers",
+   "prestige": 15
+  },
+  "after": [
+   "sela_seed"
+  ],
+  "when": [
+   {
+    "type": "pop",
+    "tier": "sedentary",
+    "n": 80
+   }
+  ],
+  "threshold": true,
+  "festivals": [
+   "springfest"
+  ]
+ },
+ {
+  "id": "ama_vessel",
+  "char": "ama",
+  "title": {
+   "de": "Das erste Gefäß",
+   "en": "The First Vessel"
+  },
+  "text": {
+   "de": "Hesas Töpfe halten Wasser, Brei und Saatgut, ohne dass Mäuse daran kommen. Ein Dorf, das Vorräte in Ton aufbewahrt, kann wachsen wie keines zuvor. Zweihundert Bauern, zwanzig Gefäße und dreißig Lehmziegel – dann bauen wir Langhäuser.",
+   "en": "Hesa's pots hold water, porridge and seed corn out of the mice's reach. A village that stores in clay can grow like none before. Two hundred farmers, twenty vessels and thirty mud bricks – then we build longhouses."
+  },
+  "goals": [
+   {
+    "type": "pop",
+    "tier": "farmers",
+    "n": 200
+   },
+   {
+    "type": "deliver",
+    "good": "pottery",
+    "n": 20
+   },
+   {
+    "type": "deliver",
+    "good": "bricks",
+    "n": 30
+   }
+  ],
+  "done": {
+   "de": "Langhäuser! Unser Dorf ist jetzt größer als jedes Lager, das ich als Kind gesehen habe.",
+   "en": "Longhouses! Our village is now bigger than any camp I saw as a child."
+  },
+  "unlock": [],
+  "reward": {
+   "tier": "villagers",
+   "prestige": 20
+  },
+  "after": [
+   "hesa_pot"
+  ],
+  "when": [
+   {
+    "type": "pop",
+    "tier": "farmers",
+    "n": 120
+   }
+  ],
+  "threshold": true
+ },
+ {
+  "id": "ama_ore",
+  "char": "ama",
+  "title": {
+   "de": "Das grüne Erz",
+   "en": "The Green Ore"
+  },
+  "text": {
+   "de": "Kural sagt, im grünen Stein steckt ein Metall, das man gießen kann. Ich bin alt, aber ich will es sehen: dreihundert Dörfler und ein Probeguss – zehn Barren Kupfer am Talherz.",
+   "en": "Kural says the green stone holds a metal that can be poured. I am old, but I want to see it: three hundred villagers and a trial casting – ten bars of copper at the Valley Heart."
+  },
+  "goals": [
+   {
+    "type": "pop",
+    "tier": "villagers",
+    "n": 300
+   },
+   {
+    "type": "deliver",
+    "good": "copper",
+    "n": 10
+   }
+  ],
+  "done": {
+   "de": "Es glänzt wie die Abendsonne … Die Sippen werden davon noch in tausend Jahren erzählen.",
+   "en": "It shines like the evening sun … The clans will still speak of this in a thousand years."
+  },
+  "unlock": [],
+  "reward": {
+   "tier": "chieftains",
+   "prestige": 25
+  },
+  "after": [
+   "kural_ore"
+  ],
+  "when": [],
+  "threshold": true
+ },
+ {
+  "id": "ama_final",
+  "char": "ama",
+  "title": {
+   "de": "Das große Talherz-Fest",
+   "en": "The Great Valley Heart Feast"
+  },
+  "text": {
+   "de": "Sieh, was aus dem Lager am See geworden ist. Lass uns ein Fest feiern, von dem man jenseits aller Berge hört: zweihundertfünfzig Sippenleute und zwanzig Stücke Bronzeschmuck für die Gäste.",
+   "en": "Look what has become of the camp by the lake. Let us hold a feast heard of beyond all mountains: two hundred and fifty clansfolk and twenty pieces of bronze finery for the guests."
+  },
+  "goals": [
+   {
+    "type": "pop",
+    "tier": "chieftains",
+    "n": 250
+   },
+   {
+    "type": "deliver",
+    "good": "bronzeware",
+    "n": 20
+   }
+  ],
+  "done": {
+   "de": "Die Steinzeit endet hier, an unserem Herd. Danke, dass du uns geführt hast.",
+   "en": "The Stone Age ends here, at our hearth. Thank you for leading us."
+  },
+  "unlock": [],
+  "reward": {
+   "win": true,
+   "prestige": 50
+  },
+  "after": [
+   "kural_bronze"
+  ],
+  "when": [],
+  "threshold": true
+ },
+ {
+  "id": "borr_tracks",
+  "char": "borr",
+  "title": {
+   "de": "Spuren im Wald",
+   "en": "Tracks in the Forest"
+  },
+  "text": {
+   "de": "Gib mir ein Jagdlager am Waldrand, dann bringe ich Fleisch. Aber merk dir eins: Wer zu viel jagt, jagt bald gar nichts mehr. Das Wild braucht Zeit, um nachzuwachsen.",
+   "en": "Give me a hunting camp at the forest edge and I'll bring meat. But remember: whoever hunts too much soon hunts nothing at all. The game needs time to recover."
+  },
+  "goals": [
+   {
+    "type": "build",
+    "building": "hunter",
+    "n": 1
+   }
+  ],
+  "done": {
+   "de": "Der erste Hirsch! Heute Abend gibt's Fleisch am Feuer.",
+   "en": "The first deer! Tonight there's meat at the fire."
+  },
+  "unlock": [
+   "hunter"
+  ],
+  "reward": {
+   "shells": 150
+  },
+  "after": [],
+  "when": []
+ },
+ {
+  "id": "borr_fenn",
+  "char": "borr",
+  "title": {
+   "de": "Fenn ist weg",
+   "en": "Fenn Is Gone"
+  },
+  "text": {
+   "de": "Fenn! Er ist einer Fährte nachgelaufen und nicht zurückgekommen. Hilf mir suchen – irgendwo im Wald muss er sein. Halte Ausschau und klick ihn an, wenn du ihn siehst.",
+   "en": "Fenn! He ran after a scent and never came back. Help me look – he must be somewhere in the forest. Keep an eye out and click him when you see him."
+  },
+  "goals": [
+   {
+    "type": "find",
+    "what": "fenn"
+   }
+  ],
+  "done": {
+   "de": "Da ist er ja, der Dummkopf! Nimm sein altes Halsband als Dank – leg es ins Talherz, dann jagen wir besser.",
+   "en": "There he is, the fool! Take his old collar as thanks – lay it in the Valley Heart and we'll hunt better."
+  },
+  "unlock": [],
+  "reward": {
+   "items": [
+    "collar"
+   ]
+  },
+  "after": [
+   "borr_tracks"
+  ],
+  "when": []
+ },
+ {
+  "id": "borr_hides",
+  "char": "borr",
+  "title": {
+   "de": "Häute für den Winter",
+   "en": "Hides for Winter"
+  },
+  "text": {
+   "de": "Der Winter kommt, und dann gibt's keine Beeren mehr – nur was wir eingelagert haben und was wir jagen. Ein Fallensteller bringt Häute, eine Räucherhütte hält das Fleisch länger frisch.",
+   "en": "Winter is coming, and then there are no berries – only what we stored and what we hunt. A trapper brings hides, a smokehouse keeps the meat fresh longer."
+  },
+  "goals": [
+   {
+    "type": "stock",
+    "good": "hides",
+    "n": 10
+   },
+   {
+    "type": "build",
+    "building": "smokehouse",
+    "n": 1
+   }
+  ],
+  "done": {
+   "de": "So überstehen wir die Kälte. Und aus den Häuten werden später feste Dächer.",
+   "en": "That's how we'll get through the cold. And later the hides will make solid roofs."
+  },
+  "unlock": [
+   "trapper",
+   "smokehouse"
+  ],
+  "reward": {
+   "shells": 200
+  },
+  "after": [
+   "borr_fenn"
+  ],
+  "when": [
+   {
+    "type": "pop",
+    "n": 18
+   }
+  ]
+ },
+ {
+  "id": "borr_balance",
+  "char": "borr",
+  "title": {
+   "de": "Das Wild schonen",
+   "en": "Sparing the Game"
+  },
+  "text": {
+   "de": "Drei Jagdlager und trotzdem genug Wild im Wald – das ist die Kunst. Halte den Wildbestand im Haupttal über sechzig von hundert. Notfalls lass ein Lager ruhen.",
+   "en": "Three hunting camps and still enough game in the forest – that is the art. Keep the main valley's game above sixty in a hundred. If need be, let a camp rest."
+  },
+  "goals": [
+   {
+    "type": "build",
+    "building": "hunter",
+    "n": 3
+   },
+   {
+    "type": "game",
+    "n": 60
+   }
+  ],
+  "done": {
+   "de": "Siehst du die Kälber am Waldrand? So bleibt das Tal reich.",
+   "en": "See the calves at the forest edge? That's how the valley stays rich."
+  },
+  "unlock": [],
+  "reward": {
+   "prestige": 8,
+   "shells": 250
+  },
+  "after": [
+   "borr_hides"
+  ],
+  "when": [
+   {
+    "type": "tier",
+    "tier": "sedentary"
+   }
+  ]
+ },
+ {
+  "id": "sela_autumn",
+  "char": "sela",
+  "title": {
+   "de": "Was der Herbst schenkt",
+   "en": "Autumn's Gifts"
+  },
+  "text": {
+   "de": "Im Herbst tragen die Haselsträucher schwer, und am Fuß der Berge liegen Steine, aus denen man Vorratsgruben baut. Beeren verderben schnell – in einer Grube halten sie doppelt so lang. Bau eine Vorratsgrube und lagere zehn Haselnüsse ein.",
+   "en": "In autumn the hazels bear heavily, and at the foot of the mountains lie stones to build storage pits. Berries spoil quickly – in a pit they keep twice as long. Build a storage pit and store ten hazelnuts."
+  },
+  "goals": [
+   {
+    "type": "build",
+    "building": "storagepit",
+    "n": 1
+   },
+   {
+    "type": "stock",
+    "good": "nuts",
+    "n": 10
+   }
+  ],
+  "done": {
+   "de": "Nüsse halten fast ewig. Damit kommen wir durch jeden Winter.",
+   "en": "Nuts keep almost forever. With them we'll get through any winter."
+  },
+  "unlock": [
+   "nutgatherer",
+   "stonegatherer",
+   "storagepit"
+  ],
+  "reward": {
+   "shells": 200
+  },
+  "after": [],
+  "when": []
+ },
+ {
+  "id": "sela_grain",
+  "char": "sela",
+  "title": {
+   "de": "Das wilde Korn",
+   "en": "The Wild Grain"
+  },
+  "text": {
+   "de": "Siehst du die Halme am Ufer? Wilde Gerste, wildes Einkorn. Mit Feuersteinsicheln ernten wir sie, auf Mahlsteinen wird Brei daraus. Das ist der Grund, warum wir bleiben können. Koche fünfzehn Töpfe Brei.",
+   "en": "See the stalks by the shore? Wild barley, wild einkorn. We harvest them with flint sickles and grind porridge on querns. That's why we can stay. Cook fifteen pots of porridge."
+  },
+  "goals": [
+   {
+    "type": "produce",
+    "good": "porridge",
+    "n": 15
+   }
+  ],
+  "done": {
+   "de": "Warmer Brei im Winter – die Alten weinen fast vor Freude.",
+   "en": "Warm porridge in winter – the old ones nearly weep with joy."
+  },
+  "unlock": [
+   "graingatherer",
+   "grinder"
+  ],
+  "reward": {
+   "shells": 300,
+   "prestige": 5
+  },
+  "after": [
+   "sela_autumn"
+  ],
+  "when": [
+   {
+    "type": "tier",
+    "tier": "sedentary"
+   }
+  ]
+ },
+ {
+  "id": "sela_seed",
+  "char": "sela",
+  "title": {
+   "de": "Das Versuchsbeet",
+   "en": "The Trial Plot"
+  },
+  "text": {
+   "de": "Mir ist etwas aufgefallen: Wo Körner auf die Erde fallen, wachsen im nächsten Jahr neue Halme. Was, wenn wir die dicksten Körner zurückbehalten und selbst in die Erde legen? Gib mir ein kleines Beet. Im Frühling säen, im Herbst ernten – fünf Garben Emmer.",
+   "en": "I've noticed something: where grains fall on the earth, new stalks grow the next year. What if we keep back the fattest grains and put them in the earth ourselves? Give me a small plot. Sow in spring, harvest in autumn – five sheaves of emmer."
+  },
+  "goals": [
+   {
+    "type": "produce",
+    "good": "emmer",
+    "n": 5
+   }
+  ],
+  "done": {
+   "de": "Es wächst! Und die Körner sitzen fester als bei den wilden Halmen. Ama muss das sehen. Nimm meine Sichel – sie hat schon tausend Halme geschnitten.",
+   "en": "It grows! And the grains sit firmer than on the wild stalks. Ama must see this. Take my sickle – it has cut a thousand stalks."
+  },
+  "unlock": [
+   "trialbed"
+  ],
+  "reward": {
+   "items": [
+    "sickle"
+   ],
+   "prestige": 10
+  },
+  "after": [
+   "sela_grain"
+  ],
+  "when": [
+   {
+    "type": "pop",
+    "tier": "sedentary",
+    "n": 50
+   }
+  ]
+ },
+ {
+  "id": "nuri_beyond",
+  "char": "nuri",
+  "title": {
+   "de": "Hinter den Bergen",
+   "en": "Beyond the Mountains"
+  },
+  "text": {
+   "de": "Gib mir ein Kundschafterlager und Proviant – fünf Fleisch –, und ich finde die Pfade über die Berge. Manche sind offen, andere versperren Geröll, Schluchten oder Eis.",
+   "en": "Give me a scout camp and provisions – five meat – and I'll find the paths across the mountains. Some are open, others blocked by scree, gorges or ice."
+  },
+  "goals": [
+   {
+    "type": "explore",
+    "n": 1
+   }
+  ],
+  "done": {
+   "de": "Hinter dem Grat liegt ein ganzes Tal! Wir sind nicht allein auf der Welt.",
+   "en": "Beyond the ridge lies a whole valley! We're not alone in the world."
+  },
+  "unlock": [
+   "scout"
+  ],
+  "reward": {
+   "shells": 200,
+   "prestige": 5
+  },
+  "after": [],
+  "when": []
+ },
+ {
+  "id": "nuri_found",
+  "char": "nuri",
+  "title": {
+   "de": "Ein zweites Feuer",
+   "en": "A Second Fire"
+  },
+  "text": {
+   "de": "Die Feuersteinschlucht liegt nur einen Tagesmarsch entfernt. Gründe dort einen Lagerplatz, und wir haben Feuerstein, so viel wir wollen. Das kostet Ansehen – die anderen Sippen müssen sehen, dass wir ein Tal halten können.",
+   "en": "Flint Gorge is only a day's walk away. Found a storage yard there and we'll have all the flint we want. It costs prestige – the other clans must see that we can hold a valley."
+  },
+  "goals": [
+   {
+    "type": "valleys",
+    "n": 2
+   }
+  ],
+  "done": {
+   "de": "Zwei Feuer, ein Stamm. Jetzt braucht es Träger, die zwischen den Tälern laufen.",
+   "en": "Two fires, one tribe. Now we need porters to walk between the valleys."
+  },
+  "unlock": [],
+  "reward": {
+   "shells": 300
+  },
+  "after": [
+   "nuri_beyond"
+  ],
+  "when": [
+   {
+    "type": "tier",
+    "tier": "sedentary"
+   }
+  ]
+ },
+ {
+  "id": "nuri_rival",
+  "char": "nuri",
+  "title": {
+   "de": "Fremde Feuer",
+   "en": "Foreign Fires"
+  },
+  "text": {
+   "de": "Nachts sehe ich Rauch hinter dem Graufels. Andere Menschen! Finde den Pfad zu ihnen. Ob Freund oder Feind – wir sollten es wissen, bevor sie uns finden.",
+   "en": "At night I see smoke beyond Greyrock. Other people! Find the path to them. Friend or foe – we should know before they find us."
+  },
+  "goals": [
+   {
+    "type": "contact",
+    "n": 1
+   }
+  ],
+  "done": {
+   "de": "Aruk der Graue. Stolz und misstrauisch – aber er handelt.",
+   "en": "Aruk the Grey. Proud and wary – but he trades."
+  },
+  "unlock": [],
+  "reward": {
+   "prestige": 8
+  },
+  "after": [
+   "nuri_found"
+  ],
+  "when": []
+ },
+ {
+  "id": "oro_flint",
+  "char": "oro",
+  "title": {
+   "de": "Der Klang des Feuersteins",
+   "en": "The Ring of Flint"
+  },
+  "text": {
+   "de": "Für Grubenhäuser reichen Feldsteine – aber wer Bauernhäuser will, braucht gute Werkzeuge. Feuerstein gibt es in der Feuersteinschlucht. Bau dort einen Steinbruch und eine Werkstatt und schlag fünf Werkzeuge.",
+   "en": "Fieldstones are enough for pit houses – but whoever wants farmhouses needs good tools. Flint lies in Flint Gorge. Build a quarry and a workshop there and knap five tools."
+  },
+  "goals": [
+   {
+    "type": "produce",
+    "good": "tools",
+    "n": 5
+   }
+  ],
+  "done": {
+   "de": "Hörst du, wie sie klingen? Gute Klingen singen, wenn man sie anschlägt.",
+   "en": "Hear how they ring? Good blades sing when struck."
+  },
+  "unlock": [
+   "flintquarry",
+   "toolmaker"
+  ],
+  "reward": {
+   "shells": 300,
+   "prestige": 5
+  },
+  "after": [],
+  "when": []
+ },
+ {
+  "id": "ilun_spirits",
+  "char": "ilun",
+  "title": {
+   "de": "Die Stimme der Ahnen",
+   "en": "The Voice of the Ancestors"
+  },
+  "text": {
+   "de": "Ein Schamanenplatz heilt Kranke und hält die Geister freundlich. Und zur Wintersonnwende dürfen wir einen von ihnen um seinen Segen bitten – den Hirschgeist, die Erdmutter, den Fluss oder das Feuer.",
+   "en": "A shaman's place heals the sick and keeps the spirits friendly. And at the winter solstice we may ask one of them for a blessing – the deer spirit, the earth mother, the river or the fire."
+  },
+  "goals": [
+   {
+    "type": "build",
+    "building": "shaman",
+    "n": 1
+   }
+  ],
+  "done": {
+   "de": "Die Ahnen nicken. Trag dieses Amulett aus Bernstein ins Talherz – es hält Krankheiten fern.",
+   "en": "The ancestors nod. Bring this amber amulet to the Valley Heart – it keeps sickness away."
+  },
+  "unlock": [
+   "shaman",
+   "ancestors"
+  ],
+  "reward": {
+   "items": [
+    "amber"
+   ],
+   "prestige": 5
+  },
+  "after": [],
+  "when": [],
+  "festivals": [
+   "solstice"
+  ]
+ },
+ {
+  "id": "ilun_solstice",
+  "char": "ilun",
+  "title": {
+   "de": "Die lange Nacht",
+   "en": "The Long Night"
+  },
+  "text": {
+   "de": "Wenn die Nacht am längsten ist, entzünden wir alle Feuer des Tals und wählen einen Schutzgeist für das kommende Jahr. Halte die Wintersonnwende am Talherz.",
+   "en": "When the night is longest we light every fire in the valley and choose a guardian spirit for the year to come. Hold the winter solstice at the Valley Heart."
+  },
+  "goals": [
+   {
+    "type": "festival",
+    "festival": "solstice"
+   }
+  ],
+  "done": {
+   "de": "Der Geist hat geantwortet. Er wird uns ein Jahr lang begleiten.",
+   "en": "The spirit has answered. It will walk with us for a year."
+  },
+  "unlock": [],
+  "reward": {
+   "prestige": 10
+  },
+  "after": [
+   "ilun_spirits"
+  ],
+  "when": []
+ },
+ {
+  "id": "tamo_trade",
+  "char": "tamo",
+  "title": {
+   "de": "Muscheln vom Meer",
+   "en": "Shells from the Sea"
+  },
+  "text": {
+   "de": "Ihr habt Häute und Feuerstein, das ist gut. Baut einen Rastplatz am Fuß eines Passes und stellt einen Trägertrupp mit einer Route über zwei Täler auf. Dann kommen auch die Flusshändler zu euch.",
+   "en": "You have hides and flint, that's good. Build a caravan camp at the foot of a pass and hire a porter team with a route through two valleys. Then the river traders will come to you too."
+  },
+  "goals": [
+   {
+    "type": "caravan",
+    "n": 1
+   }
+  ],
+  "done": {
+   "de": "Ware, die läuft, ist Ware, die wächst! Ab jetzt schauen die Flusshändler regelmäßig vorbei.",
+   "en": "Goods that move are goods that grow! From now on the river traders will drop by regularly."
+  },
+  "unlock": [
+   "caravanpost"
+  ],
+  "reward": {
+   "shells": 400
+  },
+  "after": [],
+  "when": [],
+  "flags": [
+   "trade"
+  ]
+ },
+ {
+  "id": "tamo_deal",
+  "char": "tamo",
+  "title": {
+   "de": "Ein Tauschangebot",
+   "en": "A Trade Offer"
+  },
+  "text": {
+   "de": "Ich habe zwei Schätze im Gepäck. Für fünfzehn Fellkleider gebe ich dir einen: den Mahlstein aus Basalt – damit mahlt ihr schneller – oder den Armreif aus Spondylus-Muschel, für den die Leute gern mehr Muscheln zahlen. Du musst dich entscheiden.",
+   "en": "I carry two treasures. For fifteen fur garments I'll give you one: the basalt quern – you'll grind faster – or the spondylus shell bracelet, for which people gladly pay more shells. You must choose."
+  },
+  "goals": [
+   {
+    "type": "deliver",
+    "good": "furs",
+    "n": 15
+   }
+  ],
+  "done": {
+   "de": "Ein guter Tausch – für uns beide.",
+   "en": "A good trade – for both of us."
+  },
+  "unlock": [],
+  "reward": {},
+  "after": [
+   "tamo_trade"
+  ],
+  "when": [],
+  "choices": [
+   {
+    "label": {
+     "de": "Basaltmahlstein",
+     "en": "Basalt Quern"
+    },
+    "reward": {
+     "items": [
+      "quern"
+     ]
+    }
+   },
+   {
+    "label": {
+     "de": "Spondylus-Armreif",
+     "en": "Spondylus Bracelet"
+    },
+    "reward": {
+     "items": [
+      "spondylus"
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "enna_goats",
+  "char": "enna",
+  "title": {
+   "de": "Die zahmen Ziegen",
+   "en": "The Tame Goats"
+  },
+  "text": {
+   "de": "Wilde Ziegen fliehen, zahme bleiben. Bau einen Pferch, dann haben wir Fleisch und Häute, ohne dass Borr das Wild leerjagen muss.",
+   "en": "Wild goats flee, tame ones stay. Build a pen and we'll have meat and hides without Borr emptying the forest."
+  },
+  "goals": [
+   {
+    "type": "build",
+    "building": "goatfarm",
+    "n": 1
+   }
+  ],
+  "done": {
+   "de": "Hörst du sie meckern? Musik in meinen Ohren.",
+   "en": "Hear them bleat? Music to my ears."
+  },
+  "unlock": [
+   "goatfarm"
+  ],
+  "reward": {
+   "shells": 300,
+   "prestige": 5
+  },
+  "after": [],
+  "when": []
+ },
+ {
+  "id": "hesa_pot",
+  "char": "hesa",
+  "title": {
+   "de": "Ton und Feuer",
+   "en": "Clay and Fire"
+  },
+  "text": {
+   "de": "Lehm, Wasser, ein heißer Ofen – und Geduld. Bau eine Töpferei und brenne zehn Gefäße. Damit verdirbt euch nichts mehr.",
+   "en": "Clay, water, a hot kiln – and patience. Build a pottery and fire ten vessels. Then nothing will spoil on you any more."
+  },
+  "goals": [
+   {
+    "type": "produce",
+    "good": "pottery",
+    "n": 10
+   }
+  ],
+  "done": {
+   "de": "Sieh dir diese Wand an – dünn wie ein Blatt und hart wie Stein.",
+   "en": "Look at this wall – thin as a leaf and hard as stone."
+  },
+  "unlock": [
+   "potter"
+  ],
+  "reward": {
+   "prestige": 10,
+   "shells": 400
+  },
+  "after": [],
+  "when": []
+ },
+ {
+  "id": "garan_square",
+  "char": "garan",
+  "title": {
+   "de": "Eine Mitte für das Dorf",
+   "en": "A Centre for the Village"
+  },
+  "text": {
+   "de": "Ein Dorf ohne Platz ist nur ein Haufen Häuser. Leg einen Dorfplatz an und stell zwei bemalte Steine auf – dann wissen alle, wo sie sich treffen.",
+   "en": "A village without a square is just a heap of houses. Lay out a village square and raise two painted stones – then everyone knows where to meet."
+  },
+  "goals": [
+   {
+    "type": "build",
+    "building": "square",
+    "n": 1
+   },
+   {
+    "type": "build",
+    "building": "paintedstone",
+    "n": 2
+   }
+  ],
+  "done": {
+   "de": "Jetzt ist es ein Dorf. Nimm diesen Spiegel aus Obsidian – wer hineinsieht, sieht die Festgäste von morgen.",
+   "en": "Now it's a village. Take this obsidian mirror – whoever looks in sees tomorrow's feast guests."
+  },
+  "unlock": [
+   "square",
+   "paintedstone",
+   "totempost"
+  ],
+  "reward": {
+   "items": [
+    "mirror"
+   ],
+   "prestige": 10
+  },
+  "after": [],
+  "when": []
+ },
+ {
+  "id": "kural_ore",
+  "char": "kural",
+  "title": {
+   "de": "Das grüne Erz",
+   "en": "The Green Ore"
+  },
+  "text": {
+   "de": "In euren Bergen steckt grüner Stein. Grabt ihn aus, verkohlt Holz zu Holzkohle und schmelzt ihn im Ofen – heraus fließt Kupfer. Gieß fünf Barren.",
+   "en": "Your mountains hold green stone. Dig it out, turn wood into charcoal and smelt it in a furnace – out flows copper. Cast five bars."
+  },
+  "goals": [
+   {
+    "type": "produce",
+    "good": "copper",
+    "n": 5
+   }
+  ],
+  "done": {
+   "de": "Ihr habt es geschafft. Nimm dieses Beil – Kupfer schneidet Holz wie Butter.",
+   "en": "You did it. Take this axe – copper cuts wood like butter."
+  },
+  "unlock": [
+   "coppermine",
+   "charcoal",
+   "smelter"
+  ],
+  "reward": {
+   "items": [
+    "copperaxe"
+   ],
+   "prestige": 10
+  },
+  "after": [],
+  "when": []
+ },
+ {
+  "id": "kural_bronze",
+  "char": "kural",
+  "title": {
+   "de": "Kupfer und Zinn",
+   "en": "Copper and Tin"
+  },
+  "text": {
+   "de": "Kupfer ist weich. Aber mischt man es mit Zinn, wird es hart und golden. Zinn gibt es nur hinter dem Gletscher. Gieß drei Stücke Bronzeschmuck.",
+   "en": "Copper is soft. But mix it with tin and it turns hard and golden. Tin lies only beyond the glacier. Cast three pieces of bronze finery."
+  },
+  "goals": [
+   {
+    "type": "produce",
+    "good": "bronzeware",
+    "n": 3
+   }
+  ],
+  "done": {
+   "de": "Bronze. Die Welt wird nie mehr dieselbe sein.",
+   "en": "Bronze. The world will never be the same."
+  },
+  "unlock": [
+   "tinmine",
+   "bronzesmith"
+  ],
+  "reward": {
+   "prestige": 20
+  },
+  "after": [
+   "kural_ore"
+  ],
+  "when": [
+   {
+    "type": "tier",
+    "tier": "chieftains"
+   }
+  ]
+ }
+]

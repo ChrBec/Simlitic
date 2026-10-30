@@ -1,0 +1,138 @@
+[
+ {
+  "id": "collar",
+  "name": {
+   "de": "Fenns Halsband",
+   "en": "Fenn's Collar"
+  },
+  "desc": {
+   "de": "Jagdlager und Fallensteller im Tal +20 %.",
+   "en": "Hunting camps and trappers in the valley +20%."
+  },
+  "effect": {
+   "hunt": 0.2
+  },
+  "color": "#8a5a32"
+ },
+ {
+  "id": "flute",
+  "name": {
+   "de": "Knöcherne Flöte",
+   "en": "Bone Flute"
+  },
+  "desc": {
+   "de": "Stimmung im Tal +5.",
+   "en": "Mood in the valley +5."
+  },
+  "effect": {
+   "mood": 5
+  },
+  "color": "#efe4cc"
+ },
+ {
+  "id": "sickle",
+  "name": {
+   "de": "Sichel mit Sichelglanz",
+   "en": "Polished Sickle"
+  },
+  "desc": {
+   "de": "Sammler und Felder im Tal +15 %.",
+   "en": "Gatherers and fields in the valley +15%."
+  },
+  "effect": {
+   "gather": 0.15,
+   "field": 0.15
+  },
+  "color": "#c9a24a"
+ },
+ {
+  "id": "quern",
+  "name": {
+   "de": "Basaltmahlstein",
+   "en": "Basalt Quern"
+  },
+  "desc": {
+   "de": "Mahlplätze und Mühlen im Tal +25 %.",
+   "en": "Grinding places and mills in the valley +25%."
+  },
+  "effect": {
+   "mill": 0.25
+  },
+  "color": "#4a4440"
+ },
+ {
+  "id": "amber",
+  "name": {
+   "de": "Bernsteinamulett",
+   "en": "Amber Amulet"
+  },
+  "desc": {
+   "de": "Krankheiten treffen das Tal nur halb so oft.",
+   "en": "Sickness strikes the valley only half as often."
+  },
+  "effect": {
+   "illness": -0.5
+  },
+  "color": "#e0a12c"
+ },
+ {
+  "id": "wolftooth",
+  "name": {
+   "de": "Wolfszahnkette",
+   "en": "Wolf-Tooth Necklace"
+  },
+  "desc": {
+   "de": "Keine Wölfe mehr im Tal.",
+   "en": "No more wolves in the valley."
+  },
+  "effect": {
+   "no_wolves": 1
+  },
+  "color": "#efe4cc"
+ },
+ {
+  "id": "spondylus",
+  "name": {
+   "de": "Spondylus-Armreif",
+   "en": "Spondylus Bracelet"
+  },
+  "desc": {
+   "de": "Einnahmen im Tal +10 %.",
+   "en": "Income in the valley +10%."
+  },
+  "effect": {
+   "income": 0.1
+  },
+  "color": "#c0503a"
+ },
+ {
+  "id": "mirror",
+  "name": {
+   "de": "Obsidianspiegel",
+   "en": "Obsidian Mirror"
+  },
+  "desc": {
+   "de": "Jedes Fest im Tal bringt +2 Ansehen.",
+   "en": "Every festival in the valley yields +2 prestige."
+  },
+  "effect": {
+   "fest_prestige": 2
+  },
+  "color": "#2a2a34"
+ },
+ {
+  "id": "copperaxe",
+  "name": {
+   "de": "Kupferbeil",
+   "en": "Copper Axe"
+  },
+  "desc": {
+   "de": "Holzfäller im Tal +30 %.",
+   "en": "Woodcutters in the valley +30%."
+  },
+  "effect": {
+   "wood": 0.3
+  },
+  "color": "#c06a3a"
+ }
+]

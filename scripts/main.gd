@@ -26,7 +26,7 @@ func _ready() -> void:
 	Settings.changed.connect(_on_settings_changed)
 	var args := OS.get_cmdline_user_args()
 	if "--new-game" in args:
-		start_new(42, "normal")
+		start_new(42, "talherz")
 	elif "--demo" in args:
 		_start(demo_world(7))
 	else:
@@ -64,6 +64,10 @@ func _ready() -> void:
 				"settings": show_settings(show_main_menu)
 				"credits": show_credits()
 				"tier": show_tier_card("sedentary")
+				"victory": show_victory()
+				"dialog":
+					if game and game.hud:
+						game.hud.open_dialog("ama")
 		if a.begins_with("--shot="):
 			_screenshot_and_quit(a.substr(7))
 
@@ -121,25 +125,44 @@ func _make_backdrop() -> void:
 	backdrop.view.set_zoom(1.15)
 
 
-## A settled forager village with a colony and a porter caravan, built by the bot. Used for the menu backdrop and `--demo`.
+## A settled village around the Talherz with a colony and a porter caravan, built by the bot.
+## Used for the menu backdrop, screenshots and `--demo`.
 static func demo_world(seed_value: int) -> World:
-	var w := World.create(seed_value)
+	var w := World.create(seed_value, "talherz")
 	var home: int = w.home_valley().idx
 	w.shells = 100000
-	Bot.lay_roads(w, home)
-	for i in 16:
-		Bot.build_near(w, home, "tent")
-	for t in ["fireplace", "fireplace"]:
-		Bot.build_near(w, home, t)
-	for t in ["berrygatherer", "woodcutter", "woodcutter", "nutgatherer", "hunter", "trapper"]:
-		Bot.build_near(w, home, t, 5)
-	Bot.run_minutes(w, 3)
+	w.prestige_pts = 60.0
+	w.flags.trade = true
 	if not w.tier_unlocked("sedentary"):
 		w.unlocked_tiers.append("sedentary")
+	for b in Content.buildings:
+		if b.unlockTier in w.unlocked_tiers:
+			w.unlocked[b.id] = true
+	for id in ["ama", "borr", "sela", "nuri", "oro"]:
+		w.chars[id].state = "here"
+	w.valleys[home].storage = {"wood": 600.0, "hides": 80.0, "stone": 80.0, "tools": 40.0, "berries": 60.0, "meat": 40.0}
+	Bot.lay_roads(w, home)
+	Bot.build_near(w, home, "hearth", 3)
+	for i in 16:
+		Bot.build_near(w, home, "tent")
+	for t in ["fireplace", "fireplace", "gardenbed", "gardenbed", "gardenbed", "totempost"]:
+		Bot.build_near(w, home, t)
+	for t in ["berrygatherer", "woodcutter", "woodcutter", "nutgatherer", "hunter", "trapper", "stonegatherer", "storagepit", "smokehouse"]:
+		Bot.build_near(w, home, t, 5)
+	Bot.run_minutes(w, 3)
 	for t in ["fisher", "graingatherer", "grinder", "tanner", "toolmaker"]:
 		Bot.build_near(w, home, t, 5)
 	for t in ["shaman", "ancestors", "scout"]:
 		Bot.build_near(w, home, t)
+	# a few families have already settled down in pit houses
+	var n := 0
+	for b in w.buildings.values():
+		if b.type == "tent" and b.owner == World.PLAYER and n < 6:
+			b.type = "hut"
+			b.tier = "sedentary"
+			b.needs = {}
+			n += 1
+	w.dirty += 1
 	# reveal the neighbouring valleys and found the flint gorge
 	for p in w.passes:
 		if p.a == home or p.b == home:
@@ -152,8 +175,6 @@ static func demo_world(seed_value: int) -> World:
 			flint = v.idx
 	var fv: Dictionary = w.valleys[flint]
 	var spot := w.find_free_spot(flint, 3, 3, fv.cx, fv.cy)
-	w.valleys[home].storage.wood = 120.0
-	w.valleys[home].storage.hides = 20.0
 	var founded := Commands.apply(w, {"type": "build", "building": "storage", "x": spot.x, "y": spot.y})
 	if not founded.ok:
 		push_warning("demo: could not found the flint gorge: %s" % founded.reason.en)
@@ -234,7 +255,7 @@ func _screen(content: Control, dim := true) -> void:
 func show_main_menu() -> void:
 	_make_backdrop()
 	UI.clear(menu_root)
-	var title := UI.label("SimLitic", "Title")
+	var title := UI.label("Talherz", "Title")
 	title.add_theme_font_size_override("font_size", 150)
 	title.add_theme_color_override("font_color", Color("fbf0d6"))
 	title.add_theme_color_override("font_outline_color", UI.INK)
@@ -286,17 +307,27 @@ func _centered(c: Control) -> Control:
 	return cc
 
 
+const PRESETS := [
+	["lagerfeuer", "Lagerfeuer", "Campfire", "Viel Zuzug, wenig Verderb, selten Krisen. Zum Kennenlernen.", "Many newcomers, little spoilage, rare crises. For getting to know the game."],
+	["talherz", "Talherz", "Valley Heart", "Das Spiel, wie es gedacht ist: Winter, Verderb und Krisen fordern Vorausplanung.", "The game as intended: winters, spoilage and crises demand foresight."],
+	["bergwinter", "Bergwinter", "Mountain Winter", "Knappe Vorräte, häufigere Krisen, stärkere Nachbarn.", "Scarce stores, more frequent crises, stronger neighbours."],
+	["eiszeit", "Eiszeit", "Ice Age", "Für Kenner: wenig Zuzug, rascher Verderb, harte Winter.", "For veterans: few newcomers, fast spoilage, hard winters."],
+	["sandbox", "Sandkasten", "Sandbox", "Alles freigeschaltet, keine Krisen, keine Geschichte – freies Bauen.", "Everything unlocked, no crises, no story – free building."],
+]
+
+
 func show_new_game() -> void:
 	var seed_edit := LineEdit.new()
 	seed_edit.text = str(randi() % 1000000)
 	seed_edit.custom_minimum_size.x = 160
 	var diff := OptionButton.new()
-	diff.add_item(Content.L("Entspannt (4000 Muscheln)", "Relaxed (4000 shells)"))
-	diff.add_item(Content.L("Normal (2500 Muscheln)", "Normal (2500 shells)"))
-	diff.add_item(Content.L("Herausfordernd (1500 Muscheln)", "Challenging (1500 shells)"))
+	for p in PRESETS:
+		diff.add_item(Content.L(p[1], p[2]))
 	diff.select(1)
+	var desc := _wrap(Content.L(PRESETS[1][3], PRESETS[1][4]), 440, "Muted")
+	diff.item_selected.connect(func(i): desc.text = Content.L(PRESETS[i][3], PRESETS[i][4]))
 	var hints := CheckBox.new()
-	hints.text = Content.L("Ziele & Hinweise anzeigen", "Show objectives & hints")
+	hints.text = Content.L("Hinweise der Figuren anzeigen", "Show the characters' hints")
 	hints.button_pressed = Settings.data.tutorial_hints
 	var grid := GridContainer.new()
 	grid.columns = 2
@@ -304,17 +335,19 @@ func show_new_game() -> void:
 	grid.add_theme_constant_override("v_separation", 10)
 	grid.add_child(UI.label(Content.L("Weltsamen", "World seed")))
 	grid.add_child(UI.hbox([seed_edit, UI.button("⟳", func(): seed_edit.text = str(randi() % 1000000), "Small")]))
-	grid.add_child(UI.label(Content.L("Schwierigkeit", "Difficulty")))
+	grid.add_child(UI.label(Content.L("Spielart", "Mode")))
 	grid.add_child(diff)
+	grid.add_child(UI.label(""))
+	grid.add_child(desc)
 	grid.add_child(UI.label(""))
 	grid.add_child(hints)
 	var start := UI.button(Content.L("Aufbrechen!", "Set out!"), func():
 		Settings.set_value("tutorial_hints", hints.button_pressed)
-		start_new(int(seed_edit.text) if seed_edit.text.is_valid_int() else hash(seed_edit.text), ["relaxed", "normal", "hard"][diff.selected]))
+		start_new(int(seed_edit.text) if seed_edit.text.is_valid_int() else hash(seed_edit.text), PRESETS[diff.selected][0]))
 	var p := UI.panel([UI.label(Content.L("Neue Partie", "New Game"), "Title"),
-		_wrap(Content.L("Dein Stamm erreicht ein unberührtes Tal. Jenseits der Berge warten weitere Täler, ein fremder Stamm – und die Neolithische Revolution.", "Your tribe reaches an untouched valley. Beyond the mountains lie more valleys, a foreign tribe – and the Neolithic Revolution."), 440),
+		_wrap(Content.L("Eine Handvoll Sammler erreicht ein unberührtes Tal. Ama, die Älteste, entzündet das erste Feuer – das Talherz. Was daraus wird, liegt bei dir.", "A handful of foragers reach an untouched valley. Ama, the elder, lights the first fire – the valley heart. What becomes of it is up to you."), 440),
 		grid, _gap(8), UI.hbox([UI.button(Content.L("Zurück", "Back"), show_main_menu, "Small"), UI.spacer(), start])])
-	p.custom_minimum_size.x = 520
+	p.custom_minimum_size.x = 560
 	_screen(p)
 
 
@@ -443,15 +476,15 @@ func show_settings(back: Callable) -> void:
 	slider.call(Content.L("Scrollgeschwindigkeit", "Scroll speed"), "scroll_speed", 0.4, 2.5, 0.1)
 	check.call(Content.L("Zoom umkehren", "Invert zoom"), "invert_zoom")
 	var keys := _wrap(Content.L(
-		"Steuerung: WASD/Pfeile Kamera · Mausrad Zoom · Rechts/Mitte ziehen schwenken · P Pfad · X Abreißen · 1–9 Gebäude · Tab Stufe wechseln · M Täler · B Bevölkerung · T Handel · H Haupttal · Leertaste Pause · F5 Schnellspeichern · Esc Menü",
-		"Controls: WASD/arrows camera · wheel zoom · right/middle drag pan · P path · X demolish · 1–9 buildings · Tab switch tier · M valleys · B population · T trade · H home valley · Space pause · F5 quicksave · Esc menu"), 520, "Muted")
+		"Steuerung: WASD/Pfeile Kamera · Q/E drehen · Mausrad Zoom · Rechts/Mitte ziehen schwenken · Figuren anklicken für Aufgaben · P Pfad · X Abreißen · 1–9 Gebäude · Tab Stufe wechseln · J Aufgaben · H Talherz · M Täler · B Bevölkerung · T Handel · Leertaste Pause · F5 Schnellspeichern · Esc Menü",
+		"Controls: WASD/arrows camera · Q/E rotate · wheel zoom · right/middle drag pan · click characters for tasks · P path · X demolish · 1–9 buildings · Tab switch tier · J tasks · H valley heart · M valleys · B population · T trade · Space pause · F5 quicksave · Esc menu"), 520, "Muted")
 	_screen(UI.panel([UI.label(Content.L("Einstellungen", "Settings"), "Title"), grid, keys, UI.button(Content.L("Zurück", "Back"), back, "Small")]))
 
 
 func show_credits() -> void:
 	var text := Content.L(
-		"SimLitic – ein Aufbauspiel über die Neolithische Revolution.\n\nSpieldesign, Code und gemalte Platzhalter-Grafik: entstanden mit Claude Code.\nSchriften: Amatic SC und Kalam (SIL Open Font License).\nEngine: Godot 4 (MIT).\n\nAlle Grafiken und Klänge sind austauschbare Platzhalter – siehe docs/ASSETS.md.",
-		"SimLitic – a city builder about the Neolithic Revolution.\n\nGame design, code and painted placeholder art: made with Claude Code.\nFonts: Amatic SC and Kalam (SIL Open Font License).\nEngine: Godot 4 (MIT).\n\nAll art and sound are replaceable placeholders – see docs/ASSETS.md.")
+		"Talherz – ein Aufbauspiel über die Neolithische Revolution.\n\nSpieldesign, Code und gemalte Platzhalter-Grafik: entstanden mit Claude Code.\nSchriften: Amatic SC und Kalam (SIL Open Font License).\nEngine: Godot 4 (MIT).\n\nAlle Grafiken und Klänge sind austauschbare Platzhalter – siehe docs/ASSETS.md.",
+		"Talherz – a city builder about the Neolithic Revolution.\n\nGame design, code and painted placeholder art: made with Claude Code.\nFonts: Amatic SC and Kalam (SIL Open Font License).\nEngine: Godot 4 (MIT).\n\nAll art and sound are replaceable placeholders – see docs/ASSETS.md.")
 	_screen(UI.panel([UI.label(Content.L("Mitwirkende", "Credits"), "Title"), _wrap(text, 520), UI.button(Content.L("Zurück", "Back"), show_main_menu, "Small")]))
 
 
@@ -475,4 +508,33 @@ func show_tier_card(tier_id: String) -> void:
 	hist.theme_type_variation = "Muted"
 	var house := UI.icon(Art.building_icon(t.house), 150)
 	var p := UI.panel([_centered(UI.label(Content.L("Eine neue Zeit beginnt", "A new age begins"), "Heading")), age, name, _centered(house), intro, _gap(4), hist, _gap(6), _centered(UI.button(Content.L("Weiter", "Continue"), close_menu))])
+	_screen(p)
+
+
+## Shown once when Ama's last task is done: the bronze age has come to the valleys.
+func show_victory() -> void:
+	if not game:
+		return
+	var w := game.world
+	_was_paused = game.paused
+	game.paused = true
+	game.view.interactive = false
+	var pop := w.total_population()
+	var mins := int(w.time / 60.0)
+	var fests := 0
+	for k in w.stats.festivals:
+		fests += int(w.stats.festivals[k])
+	var title := UI.label(Content.L("Das Zeitalter der Bronze", "The Age of Bronze"), "Title")
+	title.add_theme_font_size_override("font_size", 64)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var text := _wrap(Content.L(
+		"Aus einer Handvoll Sammler am ersten Feuer ist ein Volk der Täler geworden. Ama blickt über die Dächer und lächelt: „Das Talherz schlägt weiter – in jedem Tal, das ihr besiedelt habt.“",
+		"A handful of foragers at the first fire have become a people of the valleys. Ama looks over the roofs and smiles: \"The valley heart beats on – in every valley you have settled.\""), 480)
+	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var facts := _wrap(Content.L("%d Bewohner · %d Täler · %d Feste · %d Aufwertungen · %d:%02d h gespielt", "%d residents · %d valleys · %d festivals · %d upgrades · %d:%02d h played") % [
+		pop, w.valleys.filter(func(v): return v.owner == World.PLAYER).size(), fests, w.stats.upgrades, mins / 60, mins % 60], 480, "Muted")
+	facts.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var portrait := UI.icon(Art.portrait("ama"), 150) if Art.portrait("ama") else _gap(4)
+	var p := UI.panel([_centered(portrait), title, text, _gap(4), facts, _gap(6),
+		_centered(UI.hbox([UI.button(Content.L("Weiterbauen", "Keep building"), close_menu), UI.button(Content.L("Hauptmenü", "Main menu"), to_main_menu)], 12))])
 	_screen(p)

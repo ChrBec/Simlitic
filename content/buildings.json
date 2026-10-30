@@ -21,6 +21,9 @@
   "desc": {
    "de": "Herz eines Tals: Alle Betriebe müssen über Pfade mit ihm verbunden sein. In einem neuen Tal gründet er die Siedlung – dafür muss ein begehbarer Pfad dorthin führen.",
    "en": "Heart of a valley: every workplace must connect to it by paths. In a new valley it founds the settlement – which needs a passable path leading there."
+  },
+  "unlock": {
+   "start": true
   }
  },
  {
@@ -44,6 +47,9 @@
   "desc": {
    "de": "Verbindet Häuser und Betriebe mit dem Lagerplatz.",
    "en": "Connects homes and workplaces to the storage yard."
+  },
+  "unlock": {
+   "start": true
   }
  },
  {
@@ -68,6 +74,9 @@
   "desc": {
    "de": "Schickt Kundschafter über unbekannte Bergpfade (Proviant: 5 Fleisch). Kundschafter überwinden jedes Hindernis – Karawanen nicht.",
    "en": "Sends scouts across unknown mountain paths (provisions: 5 meat). Scouts cross any obstacle – caravans do not."
+  },
+  "unlock": {
+   "quest": "nuri_beyond"
   }
  },
  {
@@ -96,13 +105,16 @@
   "desc": {
    "de": "Ausgangspunkt der Karawanen – das Gegenstück zu Hafen und Werft. Muss nahe am Fuß eines Bergpfads liegen. Hier werden Trägertrupps, Eselkarawanen und Ochsenkarren ausgerüstet.",
    "en": "Home of the caravans – the counterpart to harbour and shipyard. Must lie near the foot of a mountain path. Porter teams, donkey trains and ox carts are equipped here."
+  },
+  "unlock": {
+   "quest": "tamo_trade"
   }
  },
  {
   "id": "tent",
   "name": {
-   "de": "Fellzelt",
-   "en": "Hide Tent"
+   "de": "Fellkuppel",
+   "en": "Hide Dome"
   },
   "category": "residence",
   "size": [
@@ -113,14 +125,17 @@
   "accent": "#b48a5c",
   "unlockTier": "foragers",
   "cost": {
-   "wood": 1
+   "wood": 3
   },
   "upkeep": 0,
   "desc": {
-   "de": "Wohnstatt der Wildbeuter. Steigt zum Grubenhaus auf, sobald Sesshafte Sammler freigeschaltet und die Grundbedürfnisse gedeckt sind.",
-   "en": "Home of the foragers. Upgrades to a pit house once settled foragers are unlocked and basic needs are met."
+   "de": "Runde Kuppel aus Weidenruten und Häuten – Wohnstatt der Wildbeuter. Du wertest sie selbst zum Grubenhaus auf, sobald die Sesshaften freigeschaltet sind, die Bewohner zufrieden sind und Holz, Häute und Feldsteine im Lager liegen.",
+   "en": "Round dome of willow rods and hides – home of the foragers. You upgrade it yourself to a pit house once settled foragers are unlocked, the residents are content and wood, hides and fieldstones are in storage."
   },
-  "tier": "foragers"
+  "tier": "foragers",
+  "unlock": {
+   "quest": "ama_heart"
+  }
  },
  {
   "id": "hut",
@@ -240,6 +255,9 @@
   "desc": {
    "de": "Wärme, Licht und Geschichten. Versorgt die Zelte im Umkreis.",
    "en": "Warmth, light and stories. Serves the tents around it."
+  },
+  "unlock": {
+   "quest": "ama_baskets"
   }
  },
  {
@@ -269,6 +287,9 @@
   "desc": {
    "de": "Heilkunde und Geisterglaube.",
    "en": "Healing lore and the spirit world."
+  },
+  "unlock": {
+   "quest": "ilun_spirits"
   }
  },
  {
@@ -298,6 +319,9 @@
   "desc": {
    "de": "Hier ehrt man die Toten – die Natufier bestatteten sie unter den Häusern und schmückten Schädel.",
    "en": "Here the dead are honoured – Natufians buried them beneath their houses and adorned skulls."
+  },
+  "unlock": {
+   "quest": "ilun_spirits"
   }
  },
  {
@@ -327,6 +351,12 @@
   "desc": {
    "de": "Ein Kreis aus T-förmigen Steinpfeilern mit Tierreliefs, wie am Göbekli Tepe.",
    "en": "A ring of T-shaped stone pillars carved with animals, as at Göbekli Tepe."
+  },
+  "unlock": {
+   "pop": [
+    "farmers",
+    60
+   ]
   }
  },
  {
@@ -356,6 +386,12 @@
   "desc": {
    "de": "Gemeinsame Feste mit Musik und Tanz stärken das Dorf.",
    "en": "Shared feasts with music and dance bind the village."
+  },
+  "unlock": {
+   "pop": [
+    "farmers",
+    100
+   ]
   }
  },
  {
@@ -385,6 +421,9 @@
   "desc": {
    "de": "Treffpunkt, Tauschplatz, Brunnen.",
    "en": "Meeting place, barter ground, well."
+  },
+  "unlock": {
+   "quest": "garan_square"
   }
  },
  {
@@ -414,6 +453,12 @@
   "desc": {
    "de": "Riesige Steine für die Ahnen der Sippe – sichtbar über das ganze Tal.",
    "en": "Giant stones for the clan's ancestors – visible across the whole valley."
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    200
+   ]
   }
  },
  {
@@ -453,6 +498,10 @@
   "desc": {
    "de": "Fällt Bäume im Umkreis.",
    "en": "Fells trees nearby."
+  },
+  "group": "wood",
+  "unlock": {
+   "quest": "ama_roof"
   }
  },
  {
@@ -493,6 +542,10 @@
   "desc": {
    "de": "Sammelt Beeren an den Sträuchern.",
    "en": "Picks berries from the bushes."
+  },
+  "group": "gather",
+  "unlock": {
+   "quest": "ama_roof"
   }
  },
  {
@@ -533,6 +586,10 @@
   "desc": {
    "de": "Jäger pirschen im Wald.",
    "en": "Hunters stalk the forest."
+  },
+  "group": "hunt",
+  "unlock": {
+   "quest": "borr_tracks"
   }
  },
  {
@@ -572,6 +629,10 @@
   "desc": {
    "de": "Fängt Pelztiere für Häute.",
    "en": "Traps animals for hides."
+  },
+  "group": "hunt",
+  "unlock": {
+   "quest": "borr_hides"
   }
  },
  {
@@ -612,6 +673,49 @@
   "desc": {
    "de": "Sammelt Haselnüsse.",
    "en": "Gathers hazelnuts."
+  },
+  "group": "gather",
+  "unlock": {
+   "quest": "sela_autumn"
+  }
+ },
+ {
+  "id": "stonegatherer",
+  "name": {
+   "de": "Steinsammler",
+   "en": "Stone Gatherer"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "stones",
+  "accent": "#9c93ab",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 60,
+   "wood": 4
+  },
+  "upkeep": 3,
+  "workforce": {
+   "tier": "foragers",
+   "amount": 2
+  },
+  "cycle": 24,
+  "outputs": {
+   "stone": 1
+  },
+  "requires": {
+   "nearMountain": 3
+  },
+  "desc": {
+   "de": "Liest Feldsteine am Fuß der Berge auf – für Herdringe, Fundamente und das Grubenhaus.",
+   "en": "Gathers fieldstones at the foot of the mountains – for hearth rings, footings and the pit house."
+  },
+  "group": "stone",
+  "unlock": {
+   "quest": "sela_autumn"
   }
  },
  {
@@ -648,7 +752,14 @@
   "desc": {
    "de": "Reusen und Speere am Ufer.",
    "en": "Fish traps and spears at the shore."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "sedentary",
+    10
+   ]
+  },
+  "group": "fish"
  },
  {
   "id": "graingatherer",
@@ -683,6 +794,10 @@
   "desc": {
    "de": "Erntet wilde Gerste und Einkorn mit Feuersteinsicheln.",
    "en": "Harvests wild barley and einkorn with flint sickles."
+  },
+  "group": "gather",
+  "unlock": {
+   "quest": "sela_grain"
   }
  },
  {
@@ -718,6 +833,10 @@
   "desc": {
    "de": "Mahlsteine machen aus Körnern Brei.",
    "en": "Grinding stones turn grain into porridge."
+  },
+  "group": "mill",
+  "unlock": {
+   "quest": "sela_grain"
   }
  },
  {
@@ -753,6 +872,17 @@
   "desc": {
    "de": "Gerbt Häute zu warmer Kleidung.",
    "en": "Tans hides into warm clothing."
+  },
+  "unlock": {
+   "pop": [
+    "sedentary",
+    20
+   ]
+  },
+  "group": "workshop",
+  "noise": {
+   "value": 5,
+   "radius": 5
   }
  },
  {
@@ -775,8 +905,8 @@
   },
   "upkeep": 8,
   "workforce": {
-   "tier": "sedentary",
-   "amount": 4
+   "tier": "foragers",
+   "amount": 3
   },
   "cycle": 20,
   "outputs": {
@@ -786,8 +916,12 @@
    "deposit": "flint"
   },
   "desc": {
-   "de": "Muss auf einem Feuersteinvorkommen stehen.",
-   "en": "Must stand on a flint deposit."
+   "de": "Muss auf einem Feuersteinvorkommen stehen. Feuerstein schlagen konnten schon die Wildbeuter.",
+   "en": "Must stand on a flint deposit. Foragers already knew how to knap flint."
+  },
+  "group": "workshop",
+  "unlock": {
+   "quest": "oro_flint"
   }
  },
  {
@@ -810,7 +944,7 @@
   },
   "upkeep": 8,
   "workforce": {
-   "tier": "sedentary",
+   "tier": "foragers",
    "amount": 3
   },
   "cycle": 30,
@@ -824,6 +958,10 @@
   "desc": {
    "de": "Schlägt Klingen und Beile – Baumaterial ab den Ersten Bauern.",
    "en": "Knaps blades and axes – a building material from the First Farmers on."
+  },
+  "group": "workshop",
+  "unlock": {
+   "quest": "oro_flint"
   }
  },
  {
@@ -864,7 +1002,14 @@
   "desc": {
    "de": "Sammelt Honig wilder Bienen in hohlen Bäumen.",
    "en": "Collects wild honey from hollow trees."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "sedentary",
+    60
+   ]
+  },
+  "group": "gather"
  },
  {
   "id": "emmerfield",
@@ -901,7 +1046,14 @@
   "desc": {
    "de": "Domestizierter Weizen – braucht wildes Getreide als Fruchtbarkeit.",
    "en": "Domesticated wheat – needs wild cereals as a fertility."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "farmers",
+    1
+   ]
+  },
+  "group": "field"
  },
  {
   "id": "mill",
@@ -937,7 +1089,14 @@
   "desc": {
    "de": "Mahlt Emmer zu Mehl.",
    "en": "Grinds emmer into flour."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "farmers",
+    1
+   ]
+  },
+  "group": "mill"
  },
  {
   "id": "bakery",
@@ -974,7 +1133,14 @@
   "desc": {
    "de": "Bäckt Fladenbrot auf heißen Steinen.",
    "en": "Bakes flatbread on hot stones."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "farmers",
+    1
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "goatfarm",
@@ -1011,6 +1177,10 @@
   "desc": {
    "de": "Gezähmte Ziegen liefern Fleisch und Häute – braucht Wildziegen im Tal.",
    "en": "Tamed goats give meat and hides – needs wild goats in the valley."
+  },
+  "group": "pasture",
+  "unlock": {
+   "quest": "enna_goats"
   }
  },
  {
@@ -1046,7 +1216,14 @@
   "desc": {
    "de": "Sticht Lehm.",
    "en": "Digs clay."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "farmers",
+    20
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "brickmaker",
@@ -1083,6 +1260,17 @@
   "desc": {
    "de": "Formt Lehm und Stroh zu Ziegeln und trocknet sie in der Sonne.",
    "en": "Shapes clay and straw into bricks and dries them in the sun."
+  },
+  "unlock": {
+   "pop": [
+    "farmers",
+    20
+   ]
+  },
+  "group": "workshop",
+  "noise": {
+   "value": 3,
+   "radius": 5
   }
  },
  {
@@ -1119,7 +1307,14 @@
   "desc": {
    "de": "Heil- und Würzkräuter.",
    "en": "Healing and seasoning herbs."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "farmers",
+    60
+   ]
+  },
+  "group": "gather"
  },
  {
   "id": "potter",
@@ -1134,7 +1329,7 @@
   ],
   "style": "kiln",
   "accent": "#c0703e",
-  "unlockTier": "villagers",
+  "unlockTier": "farmers",
   "cost": {
    "shells": 300,
    "bricks": 4,
@@ -1142,7 +1337,7 @@
   },
   "upkeep": 12,
   "workforce": {
-   "tier": "villagers",
+   "tier": "farmers",
    "amount": 4
   },
   "cycle": 30,
@@ -1156,6 +1351,14 @@
   "desc": {
    "de": "Brennt Gefäße aus Ton.",
    "en": "Fires vessels of clay."
+  },
+  "group": "workshop",
+  "noise": {
+   "value": 4,
+   "radius": 5
+  },
+  "unlock": {
+   "quest": "hesa_pot"
   }
  },
  {
@@ -1192,7 +1395,14 @@
   "desc": {
    "de": "Braucht wilden Flachs als Fruchtbarkeit.",
    "en": "Needs wild flax as a fertility."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "villagers",
+    20
+   ]
+  },
+  "group": "field"
  },
  {
   "id": "weaver",
@@ -1228,7 +1438,14 @@
   "desc": {
    "de": "Webt Leinen auf dem Gewichtswebstuhl.",
    "en": "Weaves linen on the warp-weighted loom."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "villagers",
+    20
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "ropemaker",
@@ -1264,7 +1481,14 @@
   "desc": {
    "de": "Dreht Seile – für Brücken, Fähren und Karawanen.",
    "en": "Twists rope – for bridges, ferries and caravans."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "villagers",
+    80
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "barleyfield",
@@ -1300,7 +1524,14 @@
   "desc": {
    "de": "Braucht wildes Getreide als Fruchtbarkeit.",
    "en": "Needs wild cereals as a fertility."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "villagers",
+    50
+   ]
+  },
+  "group": "field"
  },
  {
   "id": "malthouse",
@@ -1336,7 +1567,14 @@
   "desc": {
    "de": "Lässt Gerste keimen und darrt sie.",
    "en": "Sprouts and kilns barley."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "villagers",
+    50
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "brewery",
@@ -1373,7 +1611,14 @@
   "desc": {
    "de": "Braut Bier in großen Tonkrügen.",
    "en": "Brews beer in large clay jars."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "villagers",
+    50
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "obsidianquarry",
@@ -1409,7 +1654,14 @@
   "desc": {
    "de": "Muss auf einem Obsidianvorkommen stehen.",
    "en": "Must stand on an obsidian deposit."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "villagers",
+    150
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "jeweler",
@@ -1445,7 +1697,14 @@
   "desc": {
    "de": "Schleift Obsidian zu Spiegeln und Perlen.",
    "en": "Grinds obsidian into mirrors and beads."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "villagers",
+    150
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "coppermine",
@@ -1481,6 +1740,10 @@
   "desc": {
    "de": "Muss auf einem Kupfervorkommen stehen.",
    "en": "Must stand on a copper deposit."
+  },
+  "group": "workshop",
+  "unlock": {
+   "quest": "kural_ore"
   }
  },
  {
@@ -1524,6 +1787,14 @@
   "desc": {
    "de": "Verkohlt Holz im Meiler.",
    "en": "Turns wood into charcoal in a clamp."
+  },
+  "group": "workshop",
+  "noise": {
+   "value": 5,
+   "radius": 5
+  },
+  "unlock": {
+   "quest": "kural_ore"
   }
  },
  {
@@ -1561,6 +1832,14 @@
   "desc": {
    "de": "Schmilzt Kupfer aus dem Erz.",
    "en": "Smelts copper from the ore."
+  },
+  "group": "workshop",
+  "noise": {
+   "value": 6,
+   "radius": 5
+  },
+  "unlock": {
+   "quest": "kural_ore"
   }
  },
  {
@@ -1598,6 +1877,17 @@
   "desc": {
    "de": "Treibt Beile, Ahlen und Dolche aus Kupfer.",
    "en": "Hammers axes, awls and daggers from copper."
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    1
+   ]
+  },
+  "group": "workshop",
+  "noise": {
+   "value": 5,
+   "radius": 5
   }
  },
  {
@@ -1634,7 +1924,14 @@
   "desc": {
    "de": "Gezähmte Auerochsen geben Milch – braucht Auerochsen im Tal.",
    "en": "Tamed aurochs give milk – needs aurochs in the valley."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    30
+   ]
+  },
+  "group": "pasture"
  },
  {
   "id": "dairy",
@@ -1671,7 +1968,14 @@
   "desc": {
    "de": "Lässt Milch in Siebgefäßen zu Käse reifen.",
    "en": "Turns milk into cheese in strainer pots."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    30
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "sheepfarm",
@@ -1707,7 +2011,14 @@
   "desc": {
    "de": "Wollschafe – braucht Wildschafe im Tal.",
    "en": "Wool sheep – needs wild sheep in the valley."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    60
+   ]
+  },
+  "group": "pasture"
  },
  {
   "id": "woolweaver",
@@ -1743,7 +2054,14 @@
   "desc": {
    "de": "Spinnt und webt Wolle.",
    "en": "Spins and weaves wool."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    60
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "vineyard",
@@ -1779,7 +2097,14 @@
   "desc": {
    "de": "Braucht wilde Reben als Fruchtbarkeit.",
    "en": "Needs wild vines as a fertility."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    100
+   ]
+  },
+  "group": "field"
  },
  {
   "id": "winery",
@@ -1816,7 +2141,14 @@
   "desc": {
    "de": "Keltert Wein und füllt ihn in Krüge.",
    "en": "Presses wine and fills it into jars."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    100
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "carpenter",
@@ -1853,7 +2185,14 @@
   "desc": {
    "de": "Spaltet Bretter mit Kupferbeilen – für Bohlenwege und Wagen.",
    "en": "Splits planks with copper axes – for plank roads and carts."
-  }
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    150
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "wheelwright",
@@ -1890,7 +2229,14 @@
   "desc": {
    "de": "Baut Scheibenräder – die neueste Erfindung!",
    "en": "Builds disc wheels – the latest invention!"
-  }
+  },
+  "unlock": {
+   "pop": [
+    "chieftains",
+    150
+   ]
+  },
+  "group": "workshop"
  },
  {
   "id": "tinmine",
@@ -1926,6 +2272,10 @@
   "desc": {
    "de": "Muss auf einem Zinnvorkommen stehen. Zinn ist selten – nur hinter dem Gletscher.",
    "en": "Must stand on a tin deposit. Tin is rare – only beyond the glacier."
+  },
+  "group": "workshop",
+  "unlock": {
+   "quest": "kural_bronze"
   }
  },
  {
@@ -1963,6 +2313,294 @@
   "desc": {
    "de": "Legiert Kupfer mit Zinn – die Bronzezeit beginnt.",
    "en": "Alloys copper with tin – the Bronze Age begins."
+  },
+  "group": "workshop",
+  "noise": {
+   "value": 6,
+   "radius": 5
+  },
+  "unlock": {
+   "quest": "kural_bronze"
+  }
+ },
+ {
+  "id": "hearth",
+  "name": {
+   "de": "Talherz",
+   "en": "Valley Heart"
+  },
+  "category": "special",
+  "size": [
+   3,
+   3
+  ],
+  "style": "hearth",
+  "accent": "#c0602e",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 100,
+   "wood": 10
+  },
+  "upkeep": 0,
+  "unique": true,
+  "beauty": {
+   "value": 4,
+   "radius": 9
+  },
+  "desc": {
+   "de": "Das Herz deines Tals: ein großer Herdring aus bemalten Steinen. Hier feiert ihr Feste, hier ruhen eure Kostbarkeiten (3 Nischen) – und hier versammeln sich die Ältesten. Nur eines je Tal.",
+   "en": "The heart of your valley: a great hearth ring of painted stones. Here you hold festivals, here your treasures rest (3 niches) – and here the elders gather. Only one per valley."
+  },
+  "unlock": {
+   "quest": "ama_heart"
+  }
+ },
+ {
+  "id": "storagepit",
+  "name": {
+   "de": "Vorratsgrube",
+   "en": "Storage Pit"
+  },
+  "category": "storage",
+  "size": [
+   2,
+   2
+  ],
+  "style": "storepit",
+  "accent": "#a8743a",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 60,
+   "wood": 4,
+   "stone": 4
+  },
+  "upkeep": 2,
+  "store": {
+   "cap": 20,
+   "protect": [
+    "berries"
+   ]
+  },
+  "desc": {
+   "de": "Eine mit Steinen ausgekleidete Grube unter einem Deckel aus Ästen. +20 Lagerplatz je Ware im Tal; Beeren verderben nur halb so schnell.",
+   "en": "A stone-lined pit under a lid of branches. +20 storage per good in the valley; berries spoil only half as fast."
+  },
+  "unlock": {
+   "quest": "sela_autumn"
+  }
+ },
+ {
+  "id": "smokehouse",
+  "name": {
+   "de": "Räucherhütte",
+   "en": "Smokehouse"
+  },
+  "category": "storage",
+  "size": [
+   2,
+   2
+  ],
+  "style": "smoke",
+  "accent": "#8a5a3a",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 80,
+   "wood": 6,
+   "stone": 2
+  },
+  "upkeep": 3,
+  "store": {
+   "cap": 0,
+   "protect": [
+    "meat",
+    "fish"
+   ]
+  },
+  "desc": {
+   "de": "Über schwelendem Feuer halten sich Fleisch und Fisch viel länger: Sie verderben im ganzen Tal nur halb so schnell.",
+   "en": "Over smouldering fire meat and fish keep much longer: in the whole valley they spoil only half as fast."
+  },
+  "unlock": {
+   "quest": "borr_hides"
+  }
+ },
+ {
+  "id": "granary",
+  "name": {
+   "de": "Speicher auf Stelzen",
+   "en": "Stilted Granary"
+  },
+  "category": "storage",
+  "size": [
+   2,
+   2
+  ],
+  "style": "granary",
+  "accent": "#c9a24a",
+  "unlockTier": "farmers",
+  "cost": {
+   "shells": 200,
+   "wood": 8,
+   "bricks": 2
+  },
+  "upkeep": 4,
+  "store": {
+   "cap": 20,
+   "protect": [
+    "nuts",
+    "wildgrain",
+    "emmer",
+    "barley",
+    "flour",
+    "porridge",
+    "bread"
+   ]
+  },
+  "desc": {
+   "de": "Auf Stelzen, damit keine Maus hinaufkommt. +20 Lagerplatz je Ware; Nüsse und Getreide verderben nur halb so schnell.",
+   "en": "On stilts so no mouse gets in. +20 storage per good; nuts and grain spoil only half as fast."
+  },
+  "unlock": {
+   "pop": [
+    "farmers",
+    1
+   ]
+  }
+ },
+ {
+  "id": "gardenbed",
+  "name": {
+   "de": "Blütenwiese",
+   "en": "Flower Patch"
+  },
+  "category": "decoration",
+  "size": [
+   1,
+   1
+  ],
+  "style": "flowers",
+  "accent": "#d26a8a",
+  "unlockTier": "foragers",
+  "cost": {
+   "shells": 20,
+   "stone": 1
+  },
+  "upkeep": 0,
+  "beauty": {
+   "value": 2,
+   "radius": 5
+  },
+  "desc": {
+   "de": "Wilde Blumen, mit Steinen eingefasst. Schönheit hebt die Stimmung der Häuser im Umkreis.",
+   "en": "Wild flowers framed by stones. Beauty lifts the mood of homes nearby."
+  },
+  "unlock": {
+   "pop": [
+    "foragers",
+    20
+   ]
+  }
+ },
+ {
+  "id": "paintedstone",
+  "name": {
+   "de": "Bemalter Stein",
+   "en": "Painted Stone"
+  },
+  "category": "decoration",
+  "size": [
+   1,
+   1
+  ],
+  "style": "menhir",
+  "accent": "#c0602e",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 40,
+   "stone": 3
+  },
+  "upkeep": 0,
+  "beauty": {
+   "value": 3,
+   "radius": 6
+  },
+  "desc": {
+   "de": "Ein aufrechter Stein mit Ocker-Spiralen und Handabdrücken.",
+   "en": "An upright stone with ochre spirals and handprints."
+  },
+  "unlock": {
+   "quest": "garan_square"
+  }
+ },
+ {
+  "id": "totempost",
+  "name": {
+   "de": "Ahnenpfahl",
+   "en": "Ancestor Post"
+  },
+  "category": "decoration",
+  "size": [
+   1,
+   1
+  ],
+  "style": "post",
+  "accent": "#8a3a32",
+  "unlockTier": "villagers",
+  "cost": {
+   "shells": 60,
+   "wood": 4
+  },
+  "upkeep": 0,
+  "beauty": {
+   "value": 4,
+   "radius": 6
+  },
+  "desc": {
+   "de": "Ein geschnitzter Pfahl mit den Zeichen der Sippen.",
+   "en": "A carved post bearing the signs of the clans."
+  },
+  "unlock": {
+   "quest": "garan_square"
+  }
+ },
+ {
+  "id": "trialbed",
+  "name": {
+   "de": "Versuchsbeet",
+   "en": "Trial Plot"
+  },
+  "category": "production",
+  "size": [
+   2,
+   2
+  ],
+  "style": "field",
+  "accent": "#d6b04e",
+  "unlockTier": "sedentary",
+  "cost": {
+   "shells": 120,
+   "wood": 4,
+   "stone": 2
+  },
+  "upkeep": 2,
+  "workforce": {
+   "tier": "sedentary",
+   "amount": 2
+  },
+  "cycle": 75,
+  "outputs": {
+   "emmer": 1
+  },
+  "requires": {
+   "fertility": "wildgrain"
+  },
+  "desc": {
+   "de": "Selas Experiment: die dicksten Körner zurückbehalten und aussäen. Wächst im Frühling, reift im Herbst, ruht im Winter.",
+   "en": "Sela's experiment: keep back the fattest grains and sow them. Grows in spring, ripens in autumn, rests in winter."
+  },
+  "group": "field",
+  "unlock": {
+   "quest": "sela_seed"
   }
  }
 ]

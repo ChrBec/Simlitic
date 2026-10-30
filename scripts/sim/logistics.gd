@@ -237,6 +237,8 @@ static func _scouts(w: World, dt: float) -> void:
 
 
 static func _trader(w: World, dt: float) -> void:
+	if not w.flags.get("trade", false):
+		return
 	var tr := w.trader
 	tr.timer -= dt
 	if tr.timer > 0.0:
@@ -268,7 +270,7 @@ static func tradeable(w: World, good: String) -> bool:
 				if n.id == good:
 					return true
 	for b in Content.buildings:
-		if w.tier_unlocked(b.unlockTier) and b.has("outputs") and b.outputs.has(good):
+		if w.is_unlocked(b.id) and b.has("outputs") and b.outputs.has(good):
 			return true
 	return false
 
@@ -278,7 +280,8 @@ static func buy_price(w: World, good: String) -> int:
 
 
 static func sell_price(w: World, good: String) -> int:
-	return floori(float(w.trader.prices.get(good, Content.GOOD[good].value)) * 0.75)
+	var k: float = 1.0 + w.home_valley().get("mods", {}).get("price", 0.0)
+	return floori(float(w.trader.prices.get(good, Content.GOOD[good].value)) * 0.75 * k)
 
 
 static func rival_buy_price(good: String, relation: float) -> int:

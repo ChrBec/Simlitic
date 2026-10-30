@@ -223,3 +223,107 @@ static func clear(n: Node) -> void:
 	for c in n.get_children():
 		n.remove_child(c)
 		c.queue_free()
+
+
+## Small hand-drawn vector icons for round buttons and the season card (no font glyphs needed).
+class Glyph extends Control:
+	var kind := ""
+	var color := Color("3a2a1e")
+
+	func _init(k := "", px := 30, c := Color("3a2a1e")) -> void:
+		kind = k
+		color = c
+		custom_minimum_size = Vector2(px, px)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		var s := minf(size.x, size.y)
+		var o := (size - Vector2(s, s)) / 2.0
+		var c := color
+		var w := maxf(1.5, s * 0.07)
+		var P := func(x: float, y: float) -> Vector2: return o + Vector2(x, y) * s
+		match kind:
+			"build":
+				draw_line(P.call(0.28, 0.85), P.call(0.62, 0.42), c, w * 1.3)
+				draw_colored_polygon(PackedVector2Array([P.call(0.45, 0.22), P.call(0.82, 0.48), P.call(0.72, 0.6), P.call(0.36, 0.34)]), c)
+			"people":
+				for i in 3:
+					var x := 0.22 + i * 0.28
+					var big := 1.0 if i == 1 else 0.85
+					draw_circle(P.call(x, 0.33 if i == 1 else 0.38), s * 0.09 * big, c)
+					draw_colored_polygon(PackedVector2Array([P.call(x - 0.12 * big, 0.85), P.call(x - 0.08 * big, 0.52), P.call(x + 0.08 * big, 0.52), P.call(x + 0.12 * big, 0.85)]), c)
+			"chains":
+				draw_arc(P.call(0.38, 0.5), s * 0.2, 0, TAU, 24, c, w)
+				draw_arc(P.call(0.62, 0.5), s * 0.2, 0, TAU, 24, c, w)
+			"valleys":
+				draw_colored_polygon(PackedVector2Array([P.call(0.05, 0.85), P.call(0.38, 0.25), P.call(0.62, 0.85)]), c)
+				draw_colored_polygon(PackedVector2Array([P.call(0.4, 0.85), P.call(0.68, 0.38), P.call(0.95, 0.85)]), c.lightened(0.25))
+				draw_colored_polygon(PackedVector2Array([P.call(0.31, 0.38), P.call(0.38, 0.25), P.call(0.45, 0.38)]), Color("f4ead8"))
+			"caravans":
+				draw_rect(Rect2(P.call(0.25, 0.35), Vector2(s * 0.5, s * 0.45)), c)
+				draw_arc(P.call(0.5, 0.36), s * 0.16, PI, TAU, 12, c, w)
+				draw_line(P.call(0.25, 0.55), P.call(0.75, 0.55), Color("f4ead8"), w * 0.7)
+			"trade":
+				for i in 7:
+					var a := PI + PI * (i + 0.5) / 7.0
+					draw_line(P.call(0.5, 0.78), P.call(0.5, 0.78) + Vector2(cos(a), sin(a)) * s * 0.42, c, w)
+				draw_arc(P.call(0.5, 0.78), s * 0.42, PI, TAU, 18, c, w)
+			"hearth":
+				draw_colored_polygon(PackedVector2Array([P.call(0.5, 0.12), P.call(0.68, 0.45), P.call(0.66, 0.68), P.call(0.5, 0.75), P.call(0.34, 0.68), P.call(0.32, 0.45), P.call(0.43, 0.3), P.call(0.45, 0.45)]), Color("c0602e"))
+				draw_colored_polygon(PackedVector2Array([P.call(0.5, 0.42), P.call(0.58, 0.6), P.call(0.5, 0.72), P.call(0.42, 0.6)]), Color("f2c24a"))
+				for i in 5:
+					draw_circle(P.call(0.18 + i * 0.16, 0.84), s * 0.07, c)
+			"quests":
+				draw_rect(Rect2(P.call(0.25, 0.2), Vector2(s * 0.5, s * 0.62)), c, false, w)
+				draw_line(P.call(0.18, 0.2), P.call(0.82, 0.2), c, w * 1.6)
+				draw_line(P.call(0.18, 0.82), P.call(0.82, 0.82), c, w * 1.6)
+				for i in 3:
+					draw_line(P.call(0.34, 0.36 + i * 0.13), P.call(0.66, 0.36 + i * 0.13), c, w * 0.6)
+			"menu":
+				for i in 3:
+					draw_line(P.call(0.22, 0.3 + i * 0.2), P.call(0.78, 0.3 + i * 0.2), c, w * 1.2)
+			"sun":
+				draw_circle(P.call(0.5, 0.5), s * 0.2, Color("e8a13a"))
+				for i in 8:
+					var a := TAU * i / 8.0
+					draw_line(P.call(0.5, 0.5) + Vector2(cos(a), sin(a)) * s * 0.28, P.call(0.5, 0.5) + Vector2(cos(a), sin(a)) * s * 0.42, Color("e8a13a"), w)
+			"sprout":
+				draw_line(P.call(0.5, 0.88), P.call(0.5, 0.45), Color("5f7a3a"), w)
+				draw_colored_polygon(PackedVector2Array([P.call(0.5, 0.5), P.call(0.18, 0.3), P.call(0.22, 0.18), P.call(0.45, 0.32)]), Color("6f9a3a"))
+				draw_colored_polygon(PackedVector2Array([P.call(0.5, 0.45), P.call(0.86, 0.22), P.call(0.8, 0.1), P.call(0.55, 0.28)]), Color("5f8a32"))
+			"leaf":
+				draw_colored_polygon(PackedVector2Array([P.call(0.2, 0.85), P.call(0.25, 0.4), P.call(0.55, 0.15), P.call(0.85, 0.15), P.call(0.8, 0.5), P.call(0.5, 0.8)]), Color("c0602e"))
+				draw_line(P.call(0.2, 0.85), P.call(0.75, 0.25), Color("8a3a20"), w * 0.7)
+			"snow":
+				for i in 3:
+					var a := PI * i / 3.0
+					var d := Vector2(cos(a), sin(a)) * s * 0.38
+					draw_line(P.call(0.5, 0.5) - d, P.call(0.5, 0.5) + d, Color("6a8aa8"), w)
+			"pause":
+				draw_rect(Rect2(P.call(0.3, 0.25), Vector2(s * 0.13, s * 0.5)), c)
+				draw_rect(Rect2(P.call(0.57, 0.25), Vector2(s * 0.13, s * 0.5)), c)
+			"play", "fast", "faster":
+				var n: int = {"play": 1, "fast": 2, "faster": 3}[kind]
+				for i in n:
+					var x0 := 0.5 - n * 0.12 + i * 0.24
+					draw_colored_polygon(PackedVector2Array([P.call(x0, 0.28), P.call(x0 + 0.24, 0.5), P.call(x0, 0.72)]), c)
+			"mood":
+				draw_circle(P.call(0.5, 0.5), s * 0.38, c)
+				draw_circle(P.call(0.38, 0.42), s * 0.05, Color("f4ead8"))
+				draw_circle(P.call(0.62, 0.42), s * 0.05, Color("f4ead8"))
+				draw_arc(P.call(0.5, 0.52), s * 0.18, 0.4, PI - 0.4, 10, Color("f4ead8"), w * 0.8)
+			"prestige":
+				var pts := PackedVector2Array()
+				for i in 10:
+					var a := -PI / 2.0 + TAU * i / 10.0
+					var r := 0.42 if i % 2 == 0 else 0.18
+					pts.append(P.call(0.5, 0.52) + Vector2(cos(a), sin(a)) * s * r)
+				draw_colored_polygon(pts, Color("c9a24a"))
+			"food":
+				draw_arc(P.call(0.5, 0.45), s * 0.32, 0.0, PI, 16, c, w * 1.2)
+				draw_line(P.call(0.16, 0.45), P.call(0.84, 0.45), c, w * 1.2)
+				draw_circle(P.call(0.4, 0.38), s * 0.09, Color("a8344a"))
+				draw_circle(P.call(0.58, 0.36), s * 0.09, Color("a8344a"))
+			"close":
+				draw_line(P.call(0.28, 0.28), P.call(0.72, 0.72), c, w * 1.2)
+				draw_line(P.call(0.72, 0.28), P.call(0.28, 0.72), c, w * 1.2)

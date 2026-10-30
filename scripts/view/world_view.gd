@@ -24,9 +24,17 @@ var show_markers := true # warning markers over buildings (off for the menu back
 var _seen_dirty := -1
 var _nature := {} # "chunk:mesh id" -> MultiMeshInstance3D
 var _winter := 0.0
+var _autumn := 0.0
+var _spring := 0.0
+var _chars := {} # character id -> {node, mark, label, pos, phase}
+var _finds := {} # find id -> {node, mark}
+var _spots := {} # character id -> where they stand (recomputed when buildings change)
+var _spots_dirty := -1
 var _sig := "" # discovery state the reveal map was computed for
 const NATURE_CHUNK := 32
-const NATURE_IDS := ["nature/conifer", "nature/broadleaf", "nature/bush", "nature/hazel", "nature/rock"]
+const NATURE_IDS := ["nature/conifer", "nature/broadleaf", "nature/bush", "nature/hazel", "nature/rock", "nature/stump", "nature/flowers", "nature/grass"]
+const CHAR_SCALE := 2.1
+const PICK_PX := 34.0
 var _deposits: Array[Node3D] = []
 var _buildings := {} # building id -> {node, type}
 var _walkers: Array = []
@@ -61,24 +69,24 @@ func setup(g, w: World) -> void:
 func _setup_environment() -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color("d9cdb2")
+	env.background_color = Color("d8cfdc")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("b9c4d6")
-	env.ambient_light_energy = 0.55
+	env.ambient_light_color = Color("b4a6cc") # lilac shade, as in the Talherz paintings
+	env.ambient_light_energy = 0.5
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 0.95
+	env.tonemap_exposure = 0.9
 	env.fog_enabled = true
-	env.fog_light_color = Color("c9cdd0")
+	env.fog_light_color = Color("d4c9dc")
 	env.fog_density = 0.0015
 	env.fog_sky_affect = 0.0
 	env.adjustment_enabled = true
-	env.adjustment_saturation = 1.12
+	env.adjustment_saturation = 1.18
 	env.adjustment_contrast = 1.06
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
-	sun.light_color = Color("ffe9c8")
-	sun.light_energy = 1.05
+	sun.light_color = Color("ffe6c0")
+	sun.light_energy = 1.0
 	sun.shadow_enabled = true
 	sun.shadow_opacity = 0.85
 	sun.shadow_blur = 1.5
@@ -155,8 +163,16 @@ func _process(delta: float) -> void:
 		sync()
 	_update_walkers(delta)
 	_update_caravans(delta)
+	_update_chars(delta)
+	_update_finds()
+	var s := world.season()
 	_winter = move_toward(_winter, 1.0 if world.is_winter() else 0.0, delta * 0.25)
+	_autumn = move_toward(_autumn, 1.0 if s == 2 else 0.0, delta * 0.25)
+	_spring = move_toward(_spring, 1.0 if s == 0 else 0.0, delta * 0.25)
 	terrain.mat.set_shader_parameter("winter", _winter)
+	terrain.mat.set_shader_parameter("autumn", _autumn)
+	terrain.mat.set_shader_parameter("spring", _spring)
+	Models.set_season(_spring, _autumn, _winter)
 	overlay.redraw()
 	if interactive:
 		_keyboard(delta)
@@ -211,6 +227,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			_start_pan(mb)
 			return
 		var tile := screen_to_tile(mb.position)
+		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT and game.tool.kind == "select":
+			# people and finds in the world take the click before buildings do
+			var who := pick_character(mb.position)
+			if who != "" and game.hud:
+				Sfx.play("click")
+				game.hud.open_dialog(who)
+				get_viewport().set_input_as_handled()
+				return
+			var found := pick_find(mb.position)
+			if found != "":
+				game.command({"type": "find", "id": found}, "tier")
+				get_viewport().set_input_as_handled()
+				return
 		if mb.pressed:
 			if mb.button_index == MOUSE_BUTTON_LEFT and game.tool.kind == "select":
 				var i := world.idx(tile.x, tile.y) if world.inside(tile.x, tile.y) else -1
@@ -342,7 +371,16 @@ func _sync_nature_chunk(c: Vector2i) -> void:
 			var h := SimNoise.hash2(x, y, s + 101)
 			var h2 := SimNoise.hash2(x, y, s + 202)
 			var free := w.bmap[i] == 0 and not w.road[i]
+			if nat == World.N_NONE and free and w.terrain[i] == World.GRASS:
+				# lavender and grass tufts brighten the open meadows
+				if h > 0.94:
+					lists["nature/flowers"].append(_xf(x + 0.2 + h2 * 0.6, y + 0.2 + h * 0.5, 0.9 + h2 * 0.6, h2))
+				elif h > 0.8:
+					lists["nature/grass"].append(_xf(x + 0.2 + h2 * 0.6, y + 0.3 + h * 0.4, 0.9 + h2 * 0.8, h2))
+				continue
 			match nat if free else World.N_NONE:
+				World.N_STUMP:
+					lists["nature/stump"].append(_xf(x + 0.5, y + 0.5, 1.0 + h * 0.4, h2))
 				World.N_TREE:
 					var pine := SimNoise.fbm(x * 0.1, y * 0.1, s + 61) > 0.52
 					lists["nature/conifer" if pine else "nature/broadleaf"].append(_xf(x + 0.3 + h * 0.4, y + 0.3 + h2 * 0.4, 0.85 + h2 * 0.5, h))
@@ -523,6 +561,174 @@ func _place(n: Node3D, f: Vector2, dir: Vector2, phase: float) -> void:
 	n.visible = r > 0.3
 
 
+# ---------------------------------------------------------------- characters & finds
+
+## Where a character stands: on a free tile beside their home building (or the Talherz).
+func char_spot(id: String) -> Vector2:
+	var c: Dictionary = Content.CHARACTER[id]
+	var home := world.home_valley()
+	var at = null
+	for b in world.buildings.values():
+		if b.owner == World.PLAYER and b.type == c.home and b.valley == home.idx:
+			at = b
+			break
+	if at == null:
+		at = world.hearth_of(home.idx)
+	if at == null:
+		at = world.storage_of(home.idx)
+	if at == null:
+		return Vector2(home.cx, home.cy)
+	var k := 0
+	for i in Content.characters.size():
+		if Content.characters[i].id == id:
+			k = i
+	var ring: Array = world.perimeter(at.type, at.x, at.y).filter(func(t): return world.inside(t.x, t.y) and world.bmap[world.idx(t.x, t.y)] == 0 and world.terrain[world.idx(t.x, t.y)] == World.GRASS)
+	if ring.is_empty():
+		var def: Dictionary = Content.BUILDING[at.type]
+		return Vector2(at.x + def.size[0] / 2.0, at.y + def.size[1] + 0.5)
+	var t: Vector2i = ring[(k * 5 + 2) % ring.size()]
+	return Vector2(t.x + 0.5, t.y + 0.5)
+
+
+## Newcomers walk in from the saddle of a pass leading into the home valley.
+func _arrival_start() -> Vector2:
+	var home: int = world.home_valley().idx
+	for p in world.passes:
+		if (p.a == home or p.b == home) and not p.core.is_empty():
+			var t: int = p.core[p.core.size() / 2]
+			return Vector2(t % world.size + 0.5, t / world.size + 0.5)
+	return Vector2(world.home_valley().cx + 20.0, world.home_valley().cy)
+
+
+func _update_chars(delta: float) -> void:
+	if _spots_dirty != world.dirty:
+		_spots_dirty = world.dirty
+		for c in Content.characters:
+			_spots[c.id] = char_spot(c.id)
+	for c in Content.characters:
+		var st: Dictionary = world.chars.get(c.id, {})
+		var state: String = st.get("state", "away")
+		var e = _chars.get(c.id)
+		if state == "away":
+			if e != null:
+				e.node.queue_free()
+				_chars.erase(c.id)
+			continue
+		if e == null:
+			var node := Node3D.new()
+			var body := MeshInstance3D.new()
+			body.mesh = Models.mesh("chars/" + c.id)
+			body.scale = Vector3.ONE * CHAR_SCALE
+			node.add_child(body)
+			var mark := MeshInstance3D.new()
+			mark.mesh = Models.mesh("misc/quest")
+			mark.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			mark.position = Vector3(0, 1.45, 0)
+			node.add_child(mark)
+			var label := Label3D.new()
+			label.text = Content.tx(c.name)
+			label.font = UI.font_display if UI.font_display else UI.font_bold
+			label.font_size = 44
+			label.outline_size = 12
+			label.modulate = Color("fbf0d6")
+			label.outline_modulate = Color("3a2a1e")
+			label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+			label.no_depth_test = true
+			label.pixel_size = 0.006
+			label.position = Vector3(0, 1.2, 0)
+			node.add_child(label)
+			add_child(node)
+			e = {"node": node, "body": body, "mark": mark, "label": label, "phase": randf() * TAU, "choose": false}
+			_chars[c.id] = e
+		var spot: Vector2 = _spots.get(c.id, Vector2.ZERO)
+		var pos := spot
+		var dir := Vector2.ZERO
+		if state == "arriving":
+			var start := _arrival_start()
+			var f := clampf(float(st.get("t", 0.0)) / Story.WALK_TIME, 0.0, 1.0)
+			pos = start.lerp(spot, f)
+			dir = (spot - start).normalized()
+		else:
+			e.phase += delta
+			# idle: shift weight, look around, face the camera now and then
+			pos += Vector2(sin(e.phase * 0.31), cos(e.phase * 0.23)) * 0.12
+			e.body.rotation.y = lerp_angle(e.body.rotation.y, yaw + PI + sin(e.phase * 0.4) * 0.7, delta * 2.0)
+		e.node.position = Vector3(pos.x, terrain.height_at(pos.x, pos.y) + (absf(sin(e.phase * 6.0)) * 0.04 if state == "arriving" else 0.0), pos.y)
+		if state == "arriving":
+			e.phase += delta
+			e.body.rotation.y = atan2(dir.x, dir.y)
+		var q := Story.offered(world, c.id) if state == "here" else ""
+		var choose: bool = q != "" and world.quests[q].state == "choose"
+		if choose != e.choose:
+			e.choose = choose
+			e.mark.mesh = Models.mesh("misc/choose" if choose else "misc/quest")
+		e.mark.visible = q != "" and show_markers
+		e.mark.position.y = 1.45 + sin(e.phase * 3.0) * 0.08
+		e.mark.rotation.y = e.phase * 1.4
+		e.label.visible = show_markers and (q != "" or _zoom_t() > 0.5 or state == "arriving")
+		var r := reveal[world.idx(clampi(int(pos.x), 0, world.size - 1), clampi(int(pos.y), 0, world.size - 1))]
+		e.node.visible = r > 0.3
+
+
+## The character under a screen position (within a few pixels of their body), or "".
+func pick_character(screen: Vector2) -> String:
+	var best := ""
+	var best_d := PICK_PX
+	for id in _chars:
+		var e: Dictionary = _chars[id]
+		if not e.node.visible:
+			continue
+		for hgt in [0.3, 0.7, 1.1]:
+			var p: Vector3 = e.node.position + Vector3(0, hgt, 0)
+			if camera.is_position_behind(p):
+				continue
+			var d := camera.unproject_position(p).distance_to(screen)
+			if d < best_d:
+				best_d = d
+				best = id
+	return best
+
+
+func _update_finds() -> void:
+	var live := {}
+	for f in world.finds:
+		if f.found:
+			continue
+		live[f.id] = true
+		var e = _finds.get(f.id)
+		if e == null:
+			var node := Node3D.new()
+			var body := MeshInstance3D.new()
+			body.mesh = Models.mesh("find/" + f.id)
+			body.scale = Vector3.ONE * CHAR_SCALE
+			node.add_child(body)
+			var mark := MeshInstance3D.new()
+			mark.mesh = Models.mesh("misc/quest")
+			mark.scale = Vector3.ONE * 0.7
+			mark.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			node.add_child(mark)
+			node.position = Vector3(f.x + 0.5, terrain.height_at(f.x + 0.5, f.y + 0.5), f.y + 0.5)
+			add_child(node)
+			e = {"node": node, "mark": mark}
+			_finds[f.id] = e
+		var tt := Time.get_ticks_msec() / 1000.0
+		e.mark.position.y = 0.9 + sin(tt * 3.0) * 0.08
+		e.mark.rotation.y = tt * 1.4
+	for id in _finds.keys():
+		if not live.has(id):
+			_finds[id].node.queue_free()
+			_finds.erase(id)
+
+
+func pick_find(screen: Vector2) -> String:
+	for id in _finds:
+		var n: Node3D = _finds[id].node
+		var p := n.position + Vector3(0, 0.3, 0)
+		if not camera.is_position_behind(p) and camera.unproject_position(p).distance_to(screen) < PICK_PX * 1.3:
+			return id
+	return ""
+
+
 ## Obstacles on discovered passes, and the stairways, ferries, bridges or cairns that overcome them.
 func _sync_passes() -> void:
 	var w := world
@@ -626,6 +832,8 @@ func _update_caravans(_delta: float) -> void:
 class BuildingNode extends Node3D:
 	var b: Dictionary
 	var warn := MeshInstance3D.new()
+	var ready_mark: MeshInstance3D
+	var blaze: CPUParticles3D
 	var _view
 	var fire_light: OmniLight3D
 	var t := 0.0
@@ -651,7 +859,7 @@ class BuildingNode extends Node3D:
 			flag.mesh = k.commit(Models.material())
 			flag.position = Vector3(-sw * 0.4, 0, -sh * 0.4)
 			add_child(flag)
-		var fire: bool = def.style == "fire" or def.style == "dance"
+		var fire: bool = def.style == "fire" or def.style == "dance" or def.style == "hearth"
 		if fire:
 			add_child(_flames())
 			fire_light = OmniLight3D.new()
@@ -660,7 +868,7 @@ class BuildingNode extends Node3D:
 			fire_light.light_energy = 1.4
 			fire_light.position = Vector3(0, 0.5, 0)
 			add_child(fire_light)
-		var smoky: bool = (def.category == "residence" and def.style != "tent") or def.style == "kiln" or def.style == "storage" or fire
+		var smoky: bool = (def.category == "residence" and def.style != "tent") or def.style in ["kiln", "storage", "smoke"] or fire
 		if smoky:
 			var at := Vector3(0, 0.4, 0) if fire else Vector3(0.25, 1.3 if def.style != "kiln" else 1.0, -0.2)
 			add_child(_smoke(at, def.style == "storage"))
@@ -675,11 +883,29 @@ class BuildingNode extends Node3D:
 		t += delta
 		if b.owner == World.PLAYER:
 			var def: Dictionary = Content.BUILDING[b.type]
-			var bad: bool = (def.category == "production" and b.status != "ok" and b.status != "full") or (not b.connected and def.category != "infrastructure")
+			var bad: bool = (def.category == "production" and not b.status in ["ok", "full", "season", "winter", "paused"]) or (not b.connected and def.category != "infrastructure")
 			warn.visible = bad and _view.show_markers
 			if warn.visible:
 				warn.position.y = 2.4 + sin(t * 3.0) * 0.1
 				warn.rotation.y = t * 1.5
+			var ready: bool = b.get("ready", false) and not b.get("locked", false) and _view.show_markers
+			if ready and ready_mark == null:
+				ready_mark = MeshInstance3D.new()
+				ready_mark.mesh = Models.mesh("misc/ready")
+				ready_mark.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+				add_child(ready_mark)
+			if ready_mark:
+				ready_mark.visible = ready
+				ready_mark.position = Vector3(0, 2.2 + absf(sin(t * 2.5)) * 0.25, 0)
+				ready_mark.rotation.y = t * 1.2
+			var burning: bool = b.get("burning", false)
+			if burning and blaze == null:
+				blaze = _flames()
+				blaze.scale = Vector3.ONE * 3.5
+				blaze.position = Vector3(0, 0.4, 0)
+				add_child(blaze)
+			if blaze:
+				blaze.emitting = burning
 		if _puffs:
 			_animate_smoke()
 		if fire_light:

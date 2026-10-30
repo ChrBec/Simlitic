@@ -283,9 +283,13 @@ func refresh_tiles(tiles: PackedInt32Array, reveal: PackedFloat32Array) -> void:
 	if _tint_bytes.is_empty():
 		refresh(reveal)
 		return
+	var done := {}
 	for i in tiles:
-		if i >= 0 and i < size * size:
-			_paint_tile(i, reveal)
+		# neighbours too: trodden ground spreads around new buildings and paths
+		for j in [i, i - 1, i + 1, i - size, i + size]:
+			if j >= 0 and j < size * size and not done.has(j):
+				done[j] = true
+				_paint_tile(j, reveal)
 	_upload()
 
 
@@ -297,7 +301,7 @@ func _paint_tile(i: int, reveal: PackedFloat32Array) -> void:
 	_tint_bytes[o + 1] = c.g8
 	_tint_bytes[o + 2] = c.b8
 	var plot: bool = w.bmap[i] != 0 and Content.BUILDING[w.buildings[w.bmap[i]].type].style != "field"
-	_tint_bytes[o + 3] = 255 if plot else 0
+	_tint_bytes[o + 3] = 255 if plot else (130 if _trampled(i) else 0)
 	var road: bool = w.road[i] != 0
 	var tr := 0
 	if w.terrain[i] == World.PASS:
@@ -310,6 +314,26 @@ func _paint_tile(i: int, reveal: PackedFloat32Array) -> void:
 	var rv := reveal[i] if w.terrain[i] != World.MOUNTAIN else maxf(reveal[i], 0.85)
 	_data_bytes[o + 2] = int(clampf(rv, 0.0, 1.0) * 255.0)
 	_data_bytes[o + 3] = 255 if w.terrain[i] == World.WATER else 0
+
+
+## Ground next to homes and paths is trodden bare: the warm ochre earth of a settlement.
+func _trampled(i: int) -> bool:
+	var w := world
+	if w.terrain[i] != World.GRASS:
+		return false
+	var x := i % size
+	var y := i / size
+	for o in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+		var nx: int = x + o.x
+		var ny: int = y + o.y
+		if nx < 0 or ny < 0 or nx >= size or ny >= size:
+			continue
+		var j := ny * size + nx
+		if w.bmap[j] != 0 and Content.BUILDING[w.buildings[w.bmap[j]].type].style != "field":
+			return true
+		if w.road[j] and (SimNoise.hash2(x, y, w.seed + 5) > 0.45 or w.road[i]):
+			return true
+	return false
 
 
 func _upload() -> void:

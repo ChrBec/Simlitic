@@ -20,6 +20,16 @@
   "glyph": "berries"
  },
  {
+  "id": "stone",
+  "name": {
+   "de": "Feldsteine",
+   "en": "Fieldstones"
+  },
+  "value": 3,
+  "color": "#9c93ab",
+  "glyph": "stone"
+ },
+ {
   "id": "meat",
   "name": {
    "de": "Fleisch",

@@ -67,3 +67,8 @@ static func building_icon(id: String) -> Texture2D:
 	if IconBaker.icons.has(id):
 		return IconBaker.icons[id]
 	return tex("buildings/" + id)
+
+
+## A character's face, rendered from their 3D figure (see IconBaker).
+static func portrait(id: String) -> Texture2D:
+	return IconBaker.portraits.get(id, null)

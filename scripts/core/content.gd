@@ -11,6 +11,12 @@ var rivals: Array = []
 var passes: Array = []
 var obstacles: Array = []
 var caravans: Array = []
+var characters: Array = []
+var quests: Array = []
+var items: Array = []
+var customs: Array = []
+var festivals: Array = []
+var spirits: Array = []
 
 var GOOD := {}
 var TIER := {}
@@ -19,6 +25,12 @@ var FERTILITY := {}
 var RIVAL := {}
 var OBSTACLE := {}
 var CARAVAN := {}
+var CHARACTER := {}
+var QUEST := {}
+var ITEM := {}
+var CUSTOM := {}
+var FESTIVAL := {}
+var SPIRIT := {}
 var service_ids := {}
 
 var lang := "de"
@@ -34,6 +46,12 @@ func _init() -> void:
 	passes = _load("passes")
 	obstacles = _load("obstacles")
 	caravans = _load("caravans")
+	characters = _load("characters")
+	quests = _load("quests")
+	items = _load("items")
+	customs = _load("customs")
+	festivals = _load("festivals")
+	spirits = _load("spirits")
 	GOOD = _index(goods)
 	TIER = _index(tiers)
 	BUILDING = _index(buildings)
@@ -41,6 +59,12 @@ func _init() -> void:
 	RIVAL = _index(rivals)
 	OBSTACLE = _index(obstacles)
 	CARAVAN = _index(caravans)
+	CHARACTER = _index(characters)
+	QUEST = _index(quests)
+	ITEM = _index(items)
+	CUSTOM = _index(customs)
+	FESTIVAL = _index(festivals)
+	SPIRIT = _index(spirits)
 	for b in buildings:
 		if b.has("service"):
 			service_ids[b.service.id] = b.id
@@ -101,6 +125,17 @@ func max_residents(tier_id: String) -> int:
 	for need in t.needs:
 		n += int(need.get("residents", 0))
 	return n
+
+
+func tier_house(house_type: String) -> String:
+	for t in tiers:
+		if t.house == house_type:
+			return t.id
+	return ""
+
+
+func season_name(s: int) -> String:
+	return [L("Frühling", "Spring"), L("Sommer", "Summer"), L("Herbst", "Autumn"), L("Winter", "Winter")][s]
 
 
 # ---------------------------------------------------------------- language
