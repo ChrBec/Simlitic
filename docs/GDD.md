@@ -1,10 +1,15 @@
 # SimLitic – Game Design Document
 
-> Arbeitstitel: **SimLitic – Täler der Ersten**
+> **Hinweis (v0.3):** Das aktuelle, ausführliche Spielkonzept steht im Dokument
+> [Talherz – Spielkonzept](https://claude.ai/artifact/RkiA8pEtYnQFyAx8vxBPHL) (Figuren und Aufgaben,
+> Aufwerten von Hand, Stimmung, Winter, Talherz, Krisen, Tempo-Ziele). Dieses Dokument bleibt die
+> Grundlage für Welt, Stufen und Technik.
+
+> Arbeitstitel: **Talherz – Täler der Ersten** (vorher SimLitic)
 > Genre: Aufbau-Strategie / Wirtschaftssimulation (im Geiste von Anno 1800)
 > Epoche: Jungpaläolithikum → Neolithische Revolution → frühe Kupfer-/Bronzezeit
 > Plattform: PC (Steam), Windows / Linux / macOS (Steam Deck verifiziert als Ziel)
-> Stand: Version 0.1 (Konzeptphase + spielbarer Prototyp)
+> Stand: Version 0.3 (spielbare Alpha mit Geschichte)
 
 ---
 
@@ -364,7 +369,8 @@ tools/artgen/       Generator für die gemalten Platzhalter-Grafiken
 | Phase | Inhalt | Ergebnis |
 |---|---|---|
 | **1 – Prototyp** | GDD, Technik, spielbarer Vertical Slice, Menüs, Einstellungen, Speichern | erledigt |
-| **2 – Kernspiel** *(dieser Stand)* | Historisch begründete 5 Stufen, 42 Waren, 58 Gebäude, 12 Täler, 21 Pässe mit Hindernissen, Karawanen mit Routen, Jahreszeiten, Kettenplaner, Ziele bis zur Bronze. Offen: Vorfälle, Erzähler, Feinbalancing der späten Stufen | Alpha |
+| **2 – Kernspiel** | Historisch begründete 5 Stufen, 42 Waren, 58 Gebäude, 12 Täler, 21 Pässe mit Hindernissen, Karawanen mit Routen, Jahreszeiten, Kettenplaner, Ziele bis zur Bronze. Offen: Vorfälle, Erzähler, Feinbalancing der späten Stufen | Alpha |
+| **2.5 – Geschichte des Tals** *(dieser Stand, v0.3)* | 11 Figuren mit 33 Aufgaben, Aufwerten von Hand, Stimmung, Zuzug, Winter/Feuerholz, Verderb, Wild, Talherz mit Festen, Geistern, Bräuchen und Kostbarkeiten, Krisen, Spielarten, Talherz-Look | Alpha |
 | **3 – Inhalt & Kunst** | Professionelle gemalte Assets (Künstler), Musik, Flusstiefland-Region, Naturwunder, Religion, Monumente | Beta, Steam „Demnächst“-Seite |
 | **4 – Multiplayer & Steam** | Steam-Networking-Lockstep, Lobbys, Achievements, Cloud-Saves, Steam Deck | Early Access |
 | **5 – Release** | Gletscherpässe, Steppe, Diplomatie/Konflikt-Feinschliff, Lokalisierung, Performance | 1.0 |
@@ -386,18 +392,20 @@ Ein Spiel im Umfang von Anno 1800 entsteht dort mit Teams von über 100 Menschen
 | Bedarf/Luxus | Grund-/Luxus-/Dienstbedürfnisse | ✅ |
 | Arbeitskraft | Arbeitskraft talweit | ✅ |
 | Gold / Steuern | Muscheln | ✅ |
-| Einfluss | Ansehen | 🟡 Anzeige |
+| Einfluss | Ansehen | ✅ Gründungen, Bräuche |
 | Expeditionen | Kundschafter | ✅ (vereinfacht) |
 | Schiffe & Handelsrouten | Trägerzüge & Handelspfade | ✅ (vereinfacht) |
 | Händler | Wandernder Händler | ✅ |
 | KI-Gegner | Rivalenstämme | 🟡 wachsendes Tal + Handel |
 | Neue Welt | Flusstiefland | ⏳ Phase 3 |
 | Arktis (Hitze) | Gletscherpässe (Wärme) | ⏳ Phase 5 |
-| Zeitung | Lagerfeuer-Erzähler | ⏳ Phase 2 |
-| Spezialisten/Items | Kundige/Talismane | ⏳ Phase 2 |
+| Zeitung | Figuren-Sprüche am Bildrand | ✅ |
+| Spezialisten/Items | Kostbarkeiten in Talherz-Nischen | ✅ |
 | Weltausstellung, Zoo, Museum | Steinkreis, Tierhain, Ahnenhöhle | ⏳ Phase 3 |
-| Feuer/Seuche/Unruhen | Buschfeuer/Krankheit/Unruhen | ⏳ Phase 2 |
+| Feuer/Seuche/Unruhen | Feuer, Fieber, Wölfe, Hochwasser, Dürre, Kälte | ✅ |
 | Elektrizität | Glut/Wärme-Netz (Gletscher) | ⏳ Phase 5 |
 | Multiplayer | Lockstep über Steam | 🟡 Architektur |
 | Blaupausenmodus | Planungsmodus | ⏳ Phase 2 |
 | Statistiken | Bilanz-Panel | 🟡 einfach |
+| Quests mit Figuren | Menschen des Tals mit Aufgaben | ✅ |
+| Festivals / Attraktivität | Feste am Talherz, Stimmung | ✅ |

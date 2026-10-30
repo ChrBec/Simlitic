@@ -1,29 +1,32 @@
-# SimLitic – Täler der Ersten
+# Talherz – Täler der Ersten
 
-Ein stilisiertes 3D-Aufbau- und Wirtschaftsspiel in der Steinzeit, inspiriert von Anno 1800: Statt Inseln besiedelst du Täler zwischen den Bergen, statt Schiffen ziehen Karawanen über Pässe. Dein Stamm durchläuft die Neolithische Revolution so, wie sie wirklich ablief – erst sesshaft, dann Ackerbau, dann Keramik, Milch, Wolle, Rad und Kupfer, bis zur Bronze.
+Ein stilisiertes 3D-Aufbau- und Wirtschaftsspiel in der Steinzeit, inspiriert von Anno 1800: Statt Inseln besiedelst du Täler zwischen den Bergen, statt Schiffen ziehen Karawanen über Pässe. Dein Stamm durchläuft die Neolithische Revolution so, wie sie wirklich ablief – erst sesshaft, dann Ackerbau, dann Keramik, Milch, Wolle, Rad und Kupfer, bis zur Bronze. (Projekt- und Repository-Name: SimLitic.)
 
-Das vollständige Spielkonzept steht in [docs/GDD.md](docs/GDD.md).
+Das Spielkonzept (v0.3, als Abschlussarbeit ausgearbeitet): [Talherz – Spielkonzept](https://claude.ai/artifact/RkiA8pEtYnQFyAx8vxBPHL). Das ältere Grundlagen-Dokument steht in [docs/GDD.md](docs/GDD.md).
 
-## Stand: Kernspiel (Phase 2)
+## Stand: Version 0.3 – die Geschichte des Tals
 
-Spielbar:
-- 3D-Bergwelt mit 12 Tälern (Haupttal plus zwei Ringe) und 21 Pässen; unerkundetes Land liegt im Nebel
-- 5 historisch begründete Stufen: Wildbeuter → Sesshafte Sammler (Natufien) → Erste Bauern → Dorfgemeinschaft → Kupferzeitliche Sippen
-- 42 Waren, 58 Gebäude, Ketten mit bis zu vier Stufen (z. B. Emmerfeld → Mühle → Backofen, Erz + Holzkohle → Schmelze → Kupferschmied)
-- Pässe mit Hindernissen (Geröllhang, Wildfluss, Schlucht, Gletscher), die man mit Steigen, Fähren, Seilbrücken und Steinmännern überwindet, plus Bohlenwege für Ochsenkarren
-- Karawanen als „Schiffe der Berge“: Trägertrupp, Eselkarawane, Ochsenkarren mit Routen, Ladeplätzen und Laden/Abladen je Halt
-- Jahreszeiten mit Winter: Schnee, Felder ruhen, Gletscherpässe gesperrt
-- Kettenplaner (wie viele Betriebe für 100 Bewohner, wo liegt die Fruchtbarkeit), Warenbilanz, 23 Ziele bis zur Bronze
-- Fahrender Händler, zwei rivalisierende Stämme (Handel, Geschenke), Hauptmenü, Speichern/Laden, Einstellungen (DE/EN)
+Neu in 0.3:
+- **Figuren statt Freischalt-Liste:** 11 Menschen (Ama die Älteste, Borr der Jäger mit Hund Fenn, Sela, Nuri, Oro, Ilun, Tamo, Enna, Hesa, Garan, Kural) kommen über die Berge ins Tal, stehen sichtbar neben ihrem Gebäude und tragen ein „!“, wenn sie eine Aufgabe haben. Anklicken öffnet den Dialog mit Porträt. 33 Aufgaben schalten Gebäude, Feste, Bräuche und Kostbarkeiten frei; Amas Schwellen-Aufgaben öffnen die nächste Zeit.
+- **Aufwerten von Hand:** Häuser steigen nicht mehr selbst auf. Ein grüner Pfeil zeigt bereite Häuser; Aufwerten kostet Baumaterial (Holz, Häute, Feldsteine …) und lässt sich je Haus sperren.
+- **Bedürfnisse wachsen mit dem Dorf** (wie Anno: neue Wünsche ab 12, 30, 60 … Bewohnern), Stimmung (Schönheit, Lärm, Hunger, Kälte, Feste), Zuzug abhängig von der Stimmung.
+- **Winter mit Folgen:** Feuerholz je Haus, Verderb von Vorräten (Vorratsgruben, Räucherhaus, Kornspeicher schützen), Wild und Fisch werden knapp, gefällte Bäume wachsen erst nach zwei Jahren nach.
+- **Das Talherz:** Feste (Herdfest, Sonnwende, Erntefest, Frühlingsfest), Geister des Tals, drei Nischen für Kostbarkeiten, Bräuche mit Vor- und Nachteilen.
+- **Krisen und Glück** ab dem dritten Jahr: Wölfe, Fieber, Feuer, Hochwasser, Dürre, Kälteeinbruch – abwendbar, wenn man vorgesorgt hat.
+- **Spielarten:** Lagerfeuer, Talherz, Bergwinter, Eiszeit, Sandkasten.
+- **Neuer Look nach dem Talherz-Design:** Gouache-Licht in weichen Stufen, lila Fels, ockerner Dorfboden, türkises Wasser, Fellkuppeln mit Flicken, Jahreszeiten (Frühlingsgrün, Herbstlaub, Schnee auf Dächern), Pergament-HUD mit Jahreszeitkarte, Vorratskarte, Ortskarte und runden Knöpfen.
+- **Tempo:** Ein einfacher Testspieler erreicht die zweite Zeit nach rund 27 Minuten (vorher 5).
 
-Noch nicht enthalten (siehe Roadmap im GDD): Multiplayer, Steam-Anbindung, Naturwunder, Religion, Vorfälle, endgültige Grafiken und Musik.
+Aus 0.2 vorhanden: 3D-Bergwelt mit 12 Tälern und 21 Pässen, 5 historische Stufen, 43 Waren, 66 Gebäude, Pass-Hindernisse, Karawanen, Händler, Rivalen, Speichern/Laden, Einstellungen (DE/EN).
+
+Noch nicht enthalten (siehe Konzept, Kapitel 17): Multiplayer, Steam-Anbindung, Expeditionen ins Flusstiefland, Wunder, endgültige Grafiken und Musik.
 
 ## Starten
 
 1. [Godot 4.4](https://godotengine.org/download) (Standard-Version, nicht .NET) installieren.
 2. Godot öffnen → *Importieren* → `project.godot` wählen → *Ausführen* (F5).
 
-Steuerung: WASD/Pfeile oder Rechtsklick ziehen (bzw. Linksklick auf freiem Boden) bewegt die Kamera, `Q`/`E` oder Mittelklick ziehen dreht sie, Mausrad zoomt, Linksklick wählt/baut, Rechtsklick bricht ab. `P` Pfad, `X` Abreißen, `1–9` Gebäude, `Tab` Stufe wechseln, `B` Bevölkerung, `C` Produktionsketten, `M` Täler & Pässe, `K` Karawanen, `T` Handel, `H` zum Haupttal, Leertaste Pause, `F5` Schnellspeichern, `Esc` Menü.
+Steuerung: WASD/Pfeile oder Rechtsklick ziehen (bzw. Linksklick auf freiem Boden) bewegt die Kamera, `Q`/`E` oder Mittelklick ziehen dreht sie, Mausrad zoomt, Linksklick wählt/baut (auch Figuren und Funde in der Welt), Rechtsklick bricht ab. `P` Pfad, `X` Abreißen, `1–9` Gebäude, `Tab` Stufe wechseln, `J` Aufgaben, `H` Talherz, `B` Bevölkerung, `C` Produktionsketten, `M` Täler & Pässe, `K` Karawanen, `T` Handel, Leertaste Pause, `F5` Schnellspeichern, `Esc` Menü.
 
 ## Tests
 
@@ -31,9 +34,9 @@ Steuerung: WASD/Pfeile oder Rechtsklick ziehen (bzw. Linksklick auf freiem Boden
 GODOT=/pfad/zu/godot tests/run.sh
 ```
 
-Die Tests laufen ohne Fenster und prüfen Kartenerzeugung, Determinismus (Grundlage für Multiplayer), Wachstum und Aufstieg, Bauregeln, Erkundung, Pass-Hindernisse, Karawanen, Winter, die Stimmigkeit aller Inhalte (jede Ware hat einen Erzeuger, jede Fruchtbarkeit ein Tal) und Speichern/Laden.
+Die Tests laufen ohne Fenster und prüfen Kartenerzeugung, Determinismus samt Geschichte und Krisen (Grundlage für Multiplayer), den Einstieg über Amas Aufgaben, das Tempo (keine zweite Zeit in den ersten 12 Minuten), Aufwerten von Hand, Winter/Feuerholz/Verderb/Wild, Feste und Kostbarkeiten, Bauregeln, Erkundung, Pass-Hindernisse, Karawanen, die Stimmigkeit aller Inhalte (jede Ware hat einen Erzeuger, jedes Gebäude lässt sich freischalten, jede Aufgabe verweist auf Vorhandenes) und Speichern/Laden.
 
-Werkzeuge für Entwickler: `tools/mapdump.tscn` (Karte als PNG), `tools/balance.tscn` (Testspieler mit Wirtschaftsprotokoll), `tools/content/generate.py` (erzeugt `content/*.json`), `npm run bake:goods` (Waren-Symbole).
+Werkzeuge für Entwickler: `tools/mapdump.tscn` (Karte als PNG), `tools/balance.tscn` (ein Testspieler folgt den Aufgaben und protokolliert jede Minute, wann welche Zeit beginnt: `-- --minutes=90 --seed=42 --mode=talherz`), `tools/content/generate.py` (erzeugt `content/*.json`), `npm run bake:goods` (Waren-Symbole).
 
 Screenshot eines laufenden Spiels (braucht `xvfb-run`):
 
@@ -54,7 +57,8 @@ Für Steam fehlt noch die Anbindung über [GodotSteam](https://godotsteam.com/) 
 ## Projektaufbau
 
 ```
-content/       Spielinhalte als JSON (Güter, Gebäude, Stufen, Täler, Pässe, Hindernisse, Karawanen, Rivalen) – zweisprachig
+content/       Spielinhalte als JSON (Güter, Gebäude, Stufen, Täler, Pässe, Hindernisse, Karawanen, Rivalen,
+               Figuren, Aufgaben, Kostbarkeiten, Bräuche, Feste, Geister) – zweisprachig
 assets/        Austauschbare 3D-Modelle (.glb), Symbole, UI-Skins, Schriften, Klänge
 scripts/sim/   Deterministische Simulation (ohne Grafik)
 scripts/view/  3D-Welt: Gelände, Modelle, Kamera, Shader

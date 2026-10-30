@@ -34,7 +34,11 @@ func _ready() -> void:
 	for a in args:
 		if a.begins_with("--panel=") and game and game.hud:
 			if a.substr(8) == "building":
-				game.selected = game.world.buildings.keys()[3]
+				# the first home: shows needs, mood and the upgrade section
+				for b in game.world.buildings.values():
+					if b.owner == World.PLAYER and b.has("tier"):
+						game.selected = b.id
+						break
 			game.hud.open_panel(a.substr(8))
 		if a.begins_with("--zoom=") and game:
 			game.view.set_zoom(a.substr(7).to_float())

@@ -1,7 +1,7 @@
 {
   "name": "simlitic",
   "productName": "SimLitic",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Build tooling for SimLitic (the game itself is a Godot 4 project). Bakes the painted placeholder art.",
   "scripts": {
